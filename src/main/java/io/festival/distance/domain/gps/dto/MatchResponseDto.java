@@ -5,4 +5,6 @@ import java.util.List;
 import lombok.Builder;
 
 @Builder
-public record MatchResponseDto (List<MatchUserDto> matchedUsers) { }
+public record MatchResponseDto(List<MatchUserDto> matchedUsers) {
+
+}

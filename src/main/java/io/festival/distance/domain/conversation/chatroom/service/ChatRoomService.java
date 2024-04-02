@@ -30,8 +30,8 @@ public class ChatRoomService {
     private final ChatMessageRepository chatMessageRepository;
 
     @Transactional(readOnly = true)
-    public List<ChatRoomInfoDto> findAllRoom(String loginId) {
-        Member member = memberRepository.findByLoginId(loginId) //현재 로그인한 객체
+    public List<ChatRoomInfoDto> findAllRoom(String telNum) {
+        Member member = memberRepository.findByTelNum(telNum) //현재 로그인한 객체
                 .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_MEMBER));
 
         return roomMemberRepository.findAllByMember(member)

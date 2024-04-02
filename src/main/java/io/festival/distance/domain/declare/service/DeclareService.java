@@ -20,7 +20,7 @@ public class DeclareService {
     private final DeclareRepository declareRepository;
     @Transactional
     public void writeDeclare(DeclareDto declareDto, Principal principal) {
-        Member me = memberService.findByLoginId(principal.getName()); //나 => 신고하는 사람
+        Member me = memberService.findByTelNum(principal.getName()); //나 => 신고하는 사람
         Member opponent = memberService.findMember(declareDto.opponentId()); // 상대방 => 신고받는 사람
         if(declareRepository.existsByMeAndOpponent(me,opponent))
             throw new DistanceException(ErrorCode.EXIST_DECLARE);

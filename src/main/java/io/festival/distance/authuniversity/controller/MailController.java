@@ -7,11 +7,13 @@ import io.festival.distance.authuniversity.service.univmail.AuthenticateMail;
 import io.festival.distance.authuniversity.service.univmail.SendSchoolDomain;
 import io.festival.distance.authuniversity.service.univmail.UniversityMailValidService;
 import io.festival.distance.authuniversity.service.univmail.ValidSchoolEmail;
+import javax.mail.Multipart;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,7 +21,6 @@ import javax.mail.MessagingException;
 @CrossOrigin
 public class MailController {
     private final SendSchoolDomain sendSchoolDomain;
-    private final ValidSchoolEmail validationSchoolEmail;
     private final AuthenticateMail authenticateMail;
     private final UniversityMailValidService universityMailValidService;
     private String certificationNumber;

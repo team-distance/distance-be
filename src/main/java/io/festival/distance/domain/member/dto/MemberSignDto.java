@@ -10,22 +10,20 @@ import javax.validation.constraints.Null;
 import java.util.List;
 import java.util.Objects;
 
-/** NOTE
+/**
+ * NOTE
  * 불변 객체를 생성하기 위해 record 사용
  */
 public record MemberSignDto(
-        String schoolEmail,
-        String loginId,
-        String password,
-        String checkPassword,
-        String gender,
-        String telNum,
-        String school,
-        String college,
-		String department,
-		String mbti,
-		String memberCharacter,
-		List<MemberTagDto> memberTagDto,
-		List<MemberHobbyDto> memberHobbyDto
-		) {
+    String telNum,
+    String password,
+    String checkPassword,
+    String gender,
+    String mbti,
+    String department,
+    String memberCharacter,
+    List<MemberTagDto> memberTagDto,
+    List<MemberHobbyDto> memberHobbyDto
+) {
+
 }

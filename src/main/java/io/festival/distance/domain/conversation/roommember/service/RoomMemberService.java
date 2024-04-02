@@ -36,7 +36,7 @@ public class RoomMemberService {
     @Transactional
     public void goOutRoom(Long chatRoomId, Principal principal) {
         ChatRoom chatRoom = chatRoomService.findRoom(chatRoomId);
-        Member member = memberService.findByLoginId(principal.getName());
+        Member member = memberService.findByTelNum(principal.getName());
 
         System.out.println(">>>>> "+roomMemberRepository.countByChatRoom(chatRoom));
 

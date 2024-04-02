@@ -27,8 +27,8 @@ public class GpsService {
 	 * member 테이블의 longitude, latitude 갱신
 	 */
 	@Transactional
-	public GpsResponseDto updateMemberGps(String loginId, GpsDto gpsDto) {
-		Member member = memberService.findByLoginId(loginId);
+	public GpsResponseDto updateMemberGps(String telNum, GpsDto gpsDto) {
+		Member member = memberService.findByTelNum(telNum);
 		member.memberGpsUpdate(gpsDto);
 		return GpsResponseDto.builder()
 				.memberId(member.getMemberId())
@@ -70,10 +70,10 @@ public class GpsService {
 	// 		.build();
 	// }
 	@Transactional
-	public MatchResponseDto matchUser(String loginId) {
+	public MatchResponseDto matchUser(String telNum) {
 		final double searchRange = 2000000000; // 200m 이내 반경
 
-		Member centerUser =memberService.findByLoginId(loginId);
+		Member centerUser =memberService.findByTelNum(telNum); //나
 		double centerLongitude = centerUser.getLongitude();
 		double centerLatitude = centerUser.getLatitude();
 
@@ -84,7 +84,6 @@ public class GpsService {
 				double userLongitude = user.getLongitude();
 				double userLatitude = user.getLatitude();
 				double distance = calculateDistance(centerLatitude, centerLongitude, userLatitude, userLongitude);
-				System.out.println(user.getMemberId() + ": " + String.format("%.3f", distance) + " (m)");
 				return 0 < distance && distance <= searchRange; // 반경 내 user 필터링 (본인 제외)
 			})
 			.map(users->MatchUserDto.fromMember(users, memberService))
@@ -96,7 +95,7 @@ public class GpsService {
 			.limit(4) // 최대 4명
 			.map(user -> MatchUserDto.builder()
 				.memberId(user.memberId())
-				.memberInfoDto(memberService.memberProfile(user.memberId()))
+				.memberInfoDto(memberService.memberProfile(user.telNum()))
 				.nickName(user.nickName())
 				.department(user.department())
 				.build())
