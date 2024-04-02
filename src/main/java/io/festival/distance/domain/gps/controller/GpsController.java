@@ -5,6 +5,7 @@ import io.festival.distance.domain.gps.dto.GpsResponseDto;
 import io.festival.distance.domain.gps.dto.MatchResponseDto;
 import io.festival.distance.domain.gps.service.GpsService;
 import java.security.Principal;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -35,6 +36,9 @@ public class GpsController {
 	 */
 	@GetMapping("/matching")
 	public ResponseEntity<MatchResponseDto> matching(Principal principal) {
+		if (Objects.isNull(principal)){
+			return ResponseEntity.ok(gpsService.matchNonLoginUser());
+		}
 		return ResponseEntity.ok(gpsService.matchUser(principal.getName()));
 	}
 

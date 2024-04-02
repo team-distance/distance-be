@@ -1,5 +1,6 @@
 package io.festival.distance.auth.dto;
 
+import javax.annotation.Nullable;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
@@ -14,6 +15,6 @@ public class LoginDto {
     private String telNum;
     @NotNull
     private String password;
-    @NotNull
+    @Nullable
     private String clientToken;
 }
