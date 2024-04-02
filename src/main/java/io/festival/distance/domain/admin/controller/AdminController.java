@@ -6,9 +6,7 @@ import io.festival.distance.domain.admin.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @CrossOrigin
 @RequestMapping("/api/admin")
-@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
 public class AdminController {
     private final AdminService adminService;
 
@@ -31,7 +28,6 @@ public class AdminController {
     public ResponseEntity<Long> signup(@RequestBody AdminSignUpDto adminSignUpDto){
         return ResponseEntity.ok(adminService.createAdmin(adminSignUpDto));
     }
-
 
     public static PageRequest pageGenerate(PageRequestDto dto) {
         int page=dto.page();
