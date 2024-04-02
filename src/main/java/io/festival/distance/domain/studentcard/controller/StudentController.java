@@ -7,6 +7,7 @@ import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,11 +39,13 @@ public class StudentController {
      * @return
      */
     @GetMapping
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<List<ImageResponse>> showImages(){
         return ResponseEntity.ok(studentService.getImage());
     }
 
     @DeleteMapping("/{studentCardId}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<Void> acceptUniv(@PathVariable Long studentCardId){
         studentService.approve(studentCardId);
         return ResponseEntity.ok().build();

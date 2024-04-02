@@ -4,6 +4,7 @@ import io.festival.distance.domain.gps.dto.GpsDto;
 import io.festival.distance.domain.gps.dto.GpsResponseDto;
 import io.festival.distance.domain.gps.dto.MatchResponseDto;
 import io.festival.distance.domain.gps.dto.MatchUserDto;
+import io.festival.distance.domain.member.entity.Authority;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.repository.MemberRepository;
 import io.festival.distance.domain.member.service.MemberService;
@@ -83,7 +84,7 @@ public class GpsService {
 
         // activate, 거리 내에 있는 유저 필터링 -> 랜덤 4명 선택
         List<MatchUserDto> matchedUserList = memberRepository.findAll().stream()
-            .filter(Member::isActivated)
+            .filter(user -> user.isActivated()&&user.getAuthority().equals(Authority.ROLE_USER))
             .filter(user -> {
                 double userLongitude = user.getLongitude();
                 double userLatitude = user.getLatitude();
