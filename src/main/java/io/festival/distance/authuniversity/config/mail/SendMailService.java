@@ -41,6 +41,19 @@ public class SendMailService {
         return str.toString();
     }
 
+    public static String getAuthenticateNumber() {
+        char[] charSet = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+
+        StringBuilder str = new StringBuilder();
+
+        int idx = 0;
+        for (int i = 0; i < 6; i++) {
+            idx = (int) (charSet.length * Math.random());
+            str.append(charSet[idx]);
+        }
+        return str.toString();
+    }
+
     public void mailSend(UnivMailDto mailDto) throws MessagingException {
         System.out.println("이멜 전송 완료!");
         MimeMessage message = javaMailSender.createMimeMessage();

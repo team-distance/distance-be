@@ -1,28 +1,31 @@
 package io.festival.distance.domain.member.service;
 
-import static io.festival.distance.authuniversity.config.mail.SendMailService.getTempPassword;
+import static io.festival.distance.authuniversity.config.mail.SendMailService.getAuthenticateNumber;
 
-import io.festival.distance.domain.member.dto.*;
+import io.festival.distance.domain.member.dto.AccountRequestDto;
+import io.festival.distance.domain.member.dto.AccountResponseDto;
+import io.festival.distance.domain.member.dto.CheckAuthenticateNum;
+import io.festival.distance.domain.member.dto.MemberHobbyDto;
+import io.festival.distance.domain.member.dto.MemberInfoDto;
+import io.festival.distance.domain.member.dto.MemberSignDto;
+import io.festival.distance.domain.member.dto.MemberTagDto;
+import io.festival.distance.domain.member.dto.MemberTelNumDto;
+import io.festival.distance.domain.member.dto.TelNumRequest;
 import io.festival.distance.domain.member.entity.Authority;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.repository.MemberRepository;
-import io.festival.distance.domain.member.validlogin.ValidLogin;
-import io.festival.distance.domain.member.validsignup.ValidEmail;
 import io.festival.distance.domain.member.validsignup.ValidInfoDto;
 import io.festival.distance.domain.member.validsignup.ValidTelNum;
-import io.festival.distance.domain.member.validsignup.ValidSignup;
 import io.festival.distance.domain.memberhobby.service.MemberHobbyService;
 import io.festival.distance.domain.membertag.service.MemberTagService;
 import io.festival.distance.exception.DistanceException;
 import io.festival.distance.exception.ErrorCode;
 import io.festival.distance.infra.sms.SmsUtil;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.security.Principal;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +36,6 @@ public class MemberService {
     private final ValidTelNum validLoginId;
     private final ValidInfoDto validInfoDto;
     private final MemberTagService memberTagService;
-    private final ValidLogin validLogin;
     private final MemberHobbyService memberHobbyService;
     private final SmsUtil smsUtil;
     private static final String PREFIX = "#";
@@ -41,10 +43,6 @@ public class MemberService {
      * 회원가입
      * 중복된 이메일인지 확인
      * 중복된 아이디인지 확인
-     */
-    /**
-     * TODO
-     * signdto -> signUpDto로 네이밍 변경
      */
     @Transactional
     public Long createMember(MemberSignDto signDto) {
@@ -66,7 +64,7 @@ public class MemberService {
         memberHobbyService.updateHobby(member, signDto.memberHobbyDto());
         memberTagService.updateTag(member, signDto.memberTagDto());
         Long memberId = memberRepository.save(member).getMemberId();
-        member.memberNicknameUpdate(member.getNickName() + "#" + memberId);
+        member.memberNicknameUpdate(member.getNickName() + PREFIX + memberId);
         return member.getMemberId();
     }
 
@@ -162,7 +160,7 @@ public class MemberService {
      * @param telNumRequest 전화번호
      */
     public String sendSms(TelNumRequest telNumRequest) {
-        String num = getTempPassword();
+        String num = getAuthenticateNumber();
         smsUtil.sendOne(telNumRequest.telNum(), num);
         return num;
     }

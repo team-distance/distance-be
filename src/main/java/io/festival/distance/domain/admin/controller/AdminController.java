@@ -32,7 +32,6 @@ public class AdminController {
         return ResponseEntity.ok(adminService.createAdmin(adminSignUpDto));
     }
 
-
     public static PageRequest pageGenerate(PageRequestDto dto) {
         int page=dto.page();
         int size=dto.size();
