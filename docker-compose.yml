@@ -3,7 +3,7 @@ version: '3.1'
 services:
   db:
     image: mysql
-    container_name: distancedb
+    container_name: distanceDB
     restart: always
     ports:
       - 3306:3306
@@ -22,7 +22,7 @@ services:
 
   app:
     image: junseok1204/distance-0.0.1-snapshot
-    container_name: app-container
+    container_name: app-service
     ports:
       - 8080:8080
     env_file:
@@ -40,7 +40,7 @@ services:
   nginx:
     image: nginx:1.15-alpine
     restart: unless-stopped
-    container_name: distance-nginx
+    container_name: distance-Nginx
     ports:
       - "80:80"
       - "443:443"
