@@ -35,7 +35,7 @@ public class ChatWaitingService {
 
     @Transactional(readOnly = true)
     public List<ChatWaitingDto> getWaitingRoom(String loginId) {
-        Member member = memberService.findByLoginId(loginId); //나
+        Member member = memberService.findByTelNum(loginId); //나
         List<ChatWaiting> allByLoveReceiver = chatWaitingRepository.findAllByLoveReceiver(member);
         List<ChatWaitingDto> chatWaitingDtoList = new ArrayList<>();
         for (ChatWaiting chatWaiting : allByLoveReceiver) {
@@ -54,7 +54,7 @@ public class ChatWaitingService {
 
     @Transactional(readOnly = true)
     public ChatWaitingCountDto countingWaitingRoom(String loginId) {
-        Member member = memberService.findByLoginId(loginId);
+        Member member = memberService.findByTelNum(loginId);
         Integer count = chatWaitingRepository.countByLoveReceiver(member);
 
         return ChatWaitingCountDto.builder()
@@ -64,7 +64,7 @@ public class ChatWaitingService {
 
     @Transactional
     public void deleteRoom(Long waitingRoodId,String loginId) {
-        Member member = memberService.findByLoginId(loginId);
+        Member member = memberService.findByTelNum(loginId);
         chatWaitingRepository.deleteByWaitingIdAndLoveReceiver(waitingRoodId,member);
     }
 }

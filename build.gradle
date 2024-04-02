@@ -41,6 +41,7 @@ dependencies {
 	implementation 'com.google.firebase:firebase-admin:7.3.0'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'com.github.JunRock:cussword_lib:0.0.2'
+	implementation 'net.nurigo:sdk:4.3.0'
 }
 
 tasks.named('test') {

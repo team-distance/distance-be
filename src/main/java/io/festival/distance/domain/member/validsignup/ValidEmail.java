@@ -24,7 +24,7 @@ public class ValidEmail {
 		if (!EMAIL_PATTERN.matcher(email).matches()) {
 			throw new DistanceException(ErrorCode.INVALID_EMAIL_FORMAT);
 		}
-		if (memberRepository.existsByLoginId(email)) {
+		if (memberRepository.existsBySchoolEmail(email)) {
 			throw new DistanceException(ErrorCode.EXIST_EMAIL);
 		}
 		return true;

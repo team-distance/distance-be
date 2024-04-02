@@ -1,115 +1,162 @@
 package io.festival.distance.domain.member.controller;
 
-import io.festival.distance.domain.member.dto.*;
+import io.festival.distance.domain.member.dto.AccountRequestDto;
+import io.festival.distance.domain.member.dto.AccountResponseDto;
+import io.festival.distance.domain.member.dto.CheckAuthenticateNum;
+import io.festival.distance.domain.member.dto.CheckEmailDto;
+import io.festival.distance.domain.member.dto.CheckTelNumDto;
+import io.festival.distance.domain.member.dto.MemberInfoDto;
+import io.festival.distance.domain.member.dto.MemberSignDto;
+import io.festival.distance.domain.member.dto.MemberTelNumDto;
+import io.festival.distance.domain.member.dto.TelNumRequest;
 import io.festival.distance.domain.member.service.MemberService;
 import io.festival.distance.domain.member.validsignup.ValidEmail;
 import io.festival.distance.domain.member.validsignup.ValidSignup;
+import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/member")
 @RequiredArgsConstructor
 @CrossOrigin
 public class MemberController {
+
     private final MemberService memberService;
     private final ValidSignup validSignup;
     private final ValidEmail validEmail;
-    /** NOTE
+    private String authenticateNum;
+
+    /**
+     * NOTE
      * 회원가입 API
      */
     @PostMapping("/signup")
-    public ResponseEntity<Long> signup(@RequestBody MemberSignDto signDto){
+    public ResponseEntity<Long> signup(@RequestBody MemberSignDto signDto) {
         return ResponseEntity.ok(memberService.createMember(signDto));
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 회원 탈퇴 API
      */
     @DeleteMapping
-    public ResponseEntity<String> delete(Principal principal){
+    public ResponseEntity<String> delete(Principal principal) {
         return ResponseEntity.ok(memberService.withDrawal(principal.getName()));
     }
 
-    /** NOTE
-     * 멤버 프로필 등록
-     */
-    @PostMapping("/info")
-    public ResponseEntity<Long> createMemberProfile(Principal principal, @RequestBody MemberInfoDto memberInfoDto){
-        return ResponseEntity.ok(memberService.updateMemberInfo(principal.getName(),memberInfoDto));
-    }
-
-    /** NOTE
+    /**
+     * NOTE
      * 멤버 계정 조회
      */
     @GetMapping("/account")
-    public ResponseEntity<AccountResponseDto> showAccount(Principal principal){
+    public ResponseEntity<AccountResponseDto> showAccount(Principal principal) {
         return ResponseEntity.ok(memberService.memberAccount(principal.getName()));
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 멤버 계정 수정
      */
     @PatchMapping("/account/update")
-    public ResponseEntity<Long> updateAccount(Principal principal,@RequestBody AccountRequestDto accountRequestDto){
-        return ResponseEntity.ok(memberService.modifyAccount(principal.getName(),accountRequestDto));
+    public ResponseEntity<Long> updateAccount(Principal principal,
+        @RequestBody AccountRequestDto accountRequestDto) {
+        return ResponseEntity.ok(
+            memberService.modifyAccount(principal.getName(), accountRequestDto));
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 멤버 프로필 조회
      */
-    @GetMapping("/profile/{memberId}")
-    public ResponseEntity<MemberInfoDto> showProfile(@PathVariable Long memberId){
-        return ResponseEntity.ok(memberService.memberProfile(memberId));
+    @GetMapping("/profile")
+    public ResponseEntity<MemberInfoDto> showProfile(Principal principal) {
+        return ResponseEntity.ok(memberService.memberProfile(principal.getName()));
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 멤버 프로필 수정
      */
     @PatchMapping("/profile/update")
-    public ResponseEntity<Long> updateProfile(Principal principal,@RequestBody MemberInfoDto memberInfoDto){
-        return ResponseEntity.ok(memberService.modifyProfile(principal.getName(),memberInfoDto));
+    public ResponseEntity<Long> updateProfile(Principal principal,
+        @RequestBody MemberInfoDto memberInfoDto) {
+        return ResponseEntity.ok(memberService.modifyProfile(principal.getName(), memberInfoDto));
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 멤버 ID값 반환
      */
     @GetMapping("/id")
-    public ResponseEntity<Long> sendMemberId(Principal principal){
-        return ResponseEntity.ok(memberService.findByLoginId(principal.getName()).getMemberId());
+    public ResponseEntity<Long> sendMemberId(Principal principal) {
+        return ResponseEntity.ok(memberService.findByTelNum(principal.getName()).getMemberId());
     }
 
-    /** NOTE
-     * 멤버의 프로필이 등록되어 있으면 true, 등록되어 있지 않으면 false 반환
-     */
-    @GetMapping("/check/profile")
-    public ResponseEntity<Boolean> checkProfile(Principal principal){
-        return ResponseEntity.ok(memberService.isExistProfile(principal));
-    }
-
-    /** NOTE
+    /**
+     * NOTE
      * 사용자 전화번호 조회
      */
     @GetMapping("/tel-num/{memberId}")
-    public ResponseEntity<MemberTelNumDto> getTelNum(@PathVariable Long memberId){
+    public ResponseEntity<MemberTelNumDto> getTelNum(@PathVariable Long memberId) {
         return ResponseEntity.ok(memberService.findTelNum(memberId));
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 아이디 중복 확인
      */
     @PostMapping("/check/id")
-    public ResponseEntity<Boolean> checkLoginId(@RequestBody CheckLoginIdDto checkLoginIdDto){
-        return ResponseEntity.ok(validSignup.validationLoginId(checkLoginIdDto.loginId()));
+    public ResponseEntity<Boolean> checkLoginId(@RequestBody CheckTelNumDto checkTelNumDto) {
+        return ResponseEntity.ok(validSignup.validationTelNum(checkTelNumDto.telNum()));
     }
-    /** NOTE
+
+    /**
+     * NOTE
      * 이메일 형식 확인
      */
     @PostMapping("/check/email")
-    public ResponseEntity<Boolean> checkEmail(@RequestBody CheckEmailDto checkEmailDto){
+    public ResponseEntity<Boolean> checkEmail(@RequestBody CheckEmailDto checkEmailDto) {
         return ResponseEntity.ok(validEmail.checkValidEmail(checkEmailDto.schoolEmail()));
+    }
+
+    /** NOTE
+     * 메시지 전송
+     * @param telNumRequest 전화번호
+     */
+    @PostMapping("/send/sms")
+    public ResponseEntity<Void> sendSms(@RequestBody TelNumRequest telNumRequest) {
+        authenticateNum = memberService.sendSms(telNumRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    /** NOTE
+     * 메시지 인증번호 인증
+     * @param checkAuthenticateNum 사용자가 입력한 인증번호
+     */
+    @PostMapping("/authenticate")
+    public ResponseEntity<Void> authenticateNum(
+        @RequestBody CheckAuthenticateNum checkAuthenticateNum) {
+        memberService.verifyAuthenticateNum(checkAuthenticateNum,authenticateNum);
+        return ResponseEntity.ok().build();
+    }
+
+    /** NOTE
+     * 멤버가 대학인증을 했는지 안했는지 여부
+     * @param principal 현재 로그인한 객체
+     * @return
+     */
+    @GetMapping("/check/university")
+    public ResponseEntity<Boolean> checkIdentity(Principal principal){
+        return ResponseEntity.ok(memberService.verifyUniv(principal.getName()));
     }
 }

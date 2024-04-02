@@ -35,7 +35,7 @@ public class ChatFacadeService {
         Member opponent = memberRepository.findById(chatRoomDto.getMemberId())
                 .orElseThrow(() -> new DistanceException(ErrorCode.EXIST_NICKNAME)); //상대방 7
 
-        Member me = memberRepository.findByLoginId(principal.getName())
+        Member me = memberRepository.findByTelNum(principal.getName())
                 .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_MEMBER)); //나 2
 
         if(validExistRoom.ExistRoom(me,opponent).isPresent()){

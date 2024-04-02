@@ -11,6 +11,7 @@ import io.festival.distance.domain.member.service.MemberService;
 import io.peaceingaza.filtering.cusswordfilter.WordFiltering;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -36,8 +37,9 @@ public class ChatRoomController {
     }
 
     @GetMapping("/{chatRoomId}") //채팅방에 들어온 경우
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<List<ChatMessageResponseDto>> readMessage(@PathVariable Long chatRoomId, Principal principal){
-        return ResponseEntity.ok(chatMessageService.markAllMessagesAsRead(chatRoomService.findRoom(chatRoomId),memberService.findByLoginId(principal.getName())));
+        return ResponseEntity.ok(chatMessageService.markAllMessagesAsRead(chatRoomService.findRoom(chatRoomId),memberService.findByTelNum(principal.getName())));
     }
 
     /** TODO

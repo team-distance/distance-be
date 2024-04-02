@@ -23,6 +23,7 @@ import java.util.Base64;
 @Getter
 @SuperBuilder
 public class Member extends BaseTimeEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
@@ -31,15 +32,13 @@ public class Member extends BaseTimeEntity {
     @Column(name = "school_email")
     private String schoolEmail;
 
-    @Column(name = "login_id")
-    @Valid
-    @NotNull
-    private String loginId;
+    @Column(name = "tel_num")
+    private String telNum;
 
     @Column(name = "encrypted_password")
     private String password;
 
-    @Column(name="mbti")
+    @Column(name = "mbti")
     private String mbti;
 
     @Column(name = "gender")
@@ -47,9 +46,6 @@ public class Member extends BaseTimeEntity {
 
     @Column(name = "nickname")
     private String nickName;
-
-    @Column(name = "tel_num")
-    private String telNum;
 
     @Column(name = "school")
     private String school;
@@ -78,6 +74,9 @@ public class Member extends BaseTimeEntity {
     @Column(name = "declaration_count")
     private Integer declarationCount;
 
+    @Column(name = "auth_univ")
+    private Boolean authUniv;
+
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
@@ -85,30 +84,36 @@ public class Member extends BaseTimeEntity {
         this.mbti = memberInfoDto.mbti();
         this.memberCharacter = memberInfoDto.memberCharacter();
     }
+
     public void memberGpsUpdate(GpsDto gpsDto) {
         this.latitude = gpsDto.latitude();
         this.longitude = gpsDto.longitude();
     }
 
-    public void memberNicknameUpdate(String nickName){
-        this.nickName=nickName;
+    public void updateAuthUniv(){
+        this.authUniv=true;
     }
 
-    public void memberAccountModify(AccountRequestDto accountRequestDto,String encrypted_password){
-        this.loginId=accountRequestDto.loginId();
-        this.password=encrypted_password;
-        this.gender=accountRequestDto.gender();
-        this.telNum=accountRequestDto.telNum();
-    }
-    public void clientTokenUpdate(String clientToken){
-        this.clientToken=clientToken;
+    public void memberNicknameUpdate(String nickName) {
+        this.nickName = nickName;
     }
 
-    public void updateDeclare(){
-        this.declarationCount+=1;
+    public void memberAccountModify(AccountRequestDto accountRequestDto,
+        String encrypted_password) {
+        this.password = encrypted_password;
+        this.gender = accountRequestDto.gender();
+        this.telNum = accountRequestDto.telNum();
     }
 
-    public void disableAccount(){
-        this.activated=false;
+    public void clientTokenUpdate(String clientToken) {
+        this.clientToken = clientToken;
+    }
+
+    public void updateDeclare() {
+        this.declarationCount += 1;
+    }
+
+    public void disableAccount() {
+        this.activated = false;
     }
 }

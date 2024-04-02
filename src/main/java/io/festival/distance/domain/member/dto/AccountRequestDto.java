@@ -1,8 +1,8 @@
 package io.festival.distance.domain.member.dto;
 
-public record AccountRequestDto(String loginId,
+public record AccountRequestDto(String telNum,
                                 String password,
                                 String checkPassword,
-                                String gender,
-                                String telNum) {
+                                String gender
+) {
 }
