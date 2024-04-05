@@ -66,7 +66,7 @@ public class SecurityConfig {
             .antMatchers("/api/admin/signup").permitAll()
             .antMatchers("/swagger-resources/**",
                 "/swagger-ui.html",
-                "/v1/api-docs",
+                "/v2/api-docs",
                 "/webjars/**").permitAll()
             .anyRequest().authenticated()
 
