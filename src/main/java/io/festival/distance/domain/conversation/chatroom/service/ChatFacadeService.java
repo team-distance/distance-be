@@ -33,7 +33,7 @@ public class ChatFacadeService {
     @Transactional(noRollbackFor = ChatRoomException.class)
     public Long generateRoom(ChatRoomDto chatRoomDto, Principal principal, boolean flag) {
         Member opponent = memberRepository.findById(chatRoomDto.getMemberId())
-                .orElseThrow(() -> new DistanceException(ErrorCode.EXIST_NICKNAME)); //상대방 7
+                .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_MEMBER)); //상대방 7
 
         Member me = memberRepository.findByTelNum(principal.getName())
                 .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_MEMBER)); //나 2
@@ -56,7 +56,7 @@ public class ChatFacadeService {
     @Transactional
     public Long approveRoom(Long waitingRoomId, Principal principal) {
         ChatWaiting chatWaiting = chatWaitingRepository.findById(waitingRoomId)
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 대기열방입니다!"));
+                .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_WAITING_ROOM));
 
         ChatRoomDto chatRoomDto = ChatRoomDto.builder()
                 .memberId(chatWaiting.getLoveSender().getMemberId())

@@ -16,8 +16,5 @@ import javax.persistence.MappedSuperclass;
 public class RoomName extends BaseTimeEntity{
     @Column(name = "my_room_name")
     private String myRoomName;
-
-    @Column(name = "opponent_room_name")
-    private String opponentRoomName;
 }
 

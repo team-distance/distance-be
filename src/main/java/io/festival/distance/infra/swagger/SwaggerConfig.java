@@ -1,5 +1,6 @@
 package io.festival.distance.infra.swagger;
 
+import com.google.common.base.Predicates;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -15,20 +16,41 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfig {
 
     @Bean
-    public Docket api() {
+    public Docket authApi() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(apiInfo())
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("io.festival.distance"))
-                .paths(PathSelectors.any())
-                .build();
+            .groupName("로그인이 필요한 API")
+            .apiInfo(apiInfo())
+            .select()
+            .apis(RequestHandlerSelectors.basePackage("io.festival.distance"))
+            .paths(Predicates.not(Predicates.or(
+                PathSelectors.ant("/api/login/**"),
+                PathSelectors.ant("/api/member/signup/**"),
+                PathSelectors.ant("/api/admin/signup/**")
+            )))
+
+            .build();
+    }
+
+    @Bean
+    public Docket nonAuthApi() {
+        return new Docket(DocumentationType.SWAGGER_2)
+            .groupName("로그인이 불필요한 API")
+            .apiInfo(apiInfo())
+            .select()
+            .apis(RequestHandlerSelectors.basePackage("io.festival.distance"))
+            .paths(Predicates.or(
+                PathSelectors.ant("/api/login/**"),
+                PathSelectors.ant("/api/member/signup/**"),
+                PathSelectors.ant("/api/admin/signup/**")
+            ))
+            .build();
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("9OORMTHON-UNIV-TEAM-05_DISTANCE")
-                .version("1.0.0")
-                .description("구름톤 유니브 5팀 distance API명세서입니다")
-                .build();
+            .title("9OORMTHON-UNIV-TEAM-05_DISTANCE")
+            .version("1.0.0")
+            .description("구름톤 유니브 5팀 distance API명세서입니다")
+            .build();
     }
 }

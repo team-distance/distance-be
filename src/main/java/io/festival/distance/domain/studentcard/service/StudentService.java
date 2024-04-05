@@ -1,5 +1,8 @@
 package io.festival.distance.domain.studentcard.service;
 
+
+import io.festival.distance.domain.firebase.dto.FcmDto;
+import io.festival.distance.domain.firebase.service.FCMService;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.entity.UnivCert;
 import io.festival.distance.domain.member.service.MemberService;
@@ -7,6 +10,8 @@ import io.festival.distance.domain.studentcard.dto.AdminRequest;
 import io.festival.distance.domain.studentcard.dto.ImageResponse;
 import io.festival.distance.domain.studentcard.entity.StudentCard;
 import io.festival.distance.domain.studentcard.repository.StudentCardRepository;
+import io.festival.distance.exception.DistanceException;
+import io.festival.distance.exception.ErrorCode;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +25,8 @@ public class StudentService {
 
     private final StudentCardRepository studentCardRepository;
     private final MemberService memberService;
+    private final FCMService fcmService;
+    private final static String HOST_NAME = "[Distance]";
 
     @Transactional
     public void sendImage(MultipartFile file, String telNum) throws IOException {
@@ -42,16 +49,30 @@ public class StudentService {
 
     @Transactional
     public void approve(Long studentCardId) {
-        StudentCard studentCard = studentCardRepository.findById(studentCardId)
-            .orElseThrow(() -> new IllegalStateException("존재하지 않는 학생증입니다"));
-        studentCard.getMember().updateAuthUniv(UnivCert.SUCCESS);;
+        StudentCard studentCard = getStudentCard(studentCardId);
+        studentCard.getMember().updateAuthUniv(UnivCert.SUCCESS);
+        sendFcm(studentCard, UnivCert.SUCCESS);
         studentCardRepository.delete(studentCard);
     }
 
     @Transactional
     public void reject(Long studentCardId, AdminRequest adminRequest) {
-        StudentCard studentCard = studentCardRepository.findById(studentCardId)
-            .orElseThrow(() -> new IllegalStateException("존재하지 않는 학생증입니다"));
+        StudentCard studentCard = getStudentCard(studentCardId);
         studentCard.getMember().updateAuthUniv(UnivCert.valueOf(adminRequest.type()));
+        sendFcm(studentCard, UnivCert.valueOf(adminRequest.type()));
+    }
+
+    private void sendFcm(StudentCard studentCard, UnivCert univCert) {
+        FcmDto fcmDto = FcmDto.builder()
+            .senderNickName(HOST_NAME)
+            .message(univCert.getMessage())
+            .clientToken(studentCard.getMember().getClientToken())
+            .build();
+        fcmService.sendNotification(fcmDto);
+    }
+
+    private StudentCard getStudentCard(Long studentCardId) {
+        return studentCardRepository.findById(studentCardId)
+            .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_STUDENT_CARD));
     }
 }
