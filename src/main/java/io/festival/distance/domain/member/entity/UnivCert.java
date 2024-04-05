@@ -1,5 +1,10 @@
 package io.festival.distance.domain.member.entity;
 
+import io.festival.distance.authuniversity.domain.University;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -13,4 +18,5 @@ public enum UnivCert {
     FAILED_3("FAILED_3","해당 학교 학생증이 아닙니다!");
     private final String type;
     private final String message;
+
 }

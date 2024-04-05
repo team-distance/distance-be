@@ -30,7 +30,7 @@ public class SmsUtil {
         Message message = new Message();
         message.setFrom(number);
         message.setTo(to);
-        message.setText("[Dis-tance] 아래의 인증번호를 입력해주세요\n" + verificationCode);
+        message.setText("[Distance] 아래의 인증번호를 입력해주세요\n" + verificationCode);
 
         this.messageService.sendOne(new SingleMessageSendingRequest(message));
     }
