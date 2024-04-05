@@ -2,19 +2,19 @@ package io.festival.distance.domain.member.entity;
 
 import io.festival.distance.domain.base.BaseTimeEntity;
 import io.festival.distance.domain.gps.dto.GpsDto;
-import io.festival.distance.domain.member.dto.AccountRequestDto;
 import io.festival.distance.domain.member.dto.MemberInfoDto;
-import io.swagger.models.auth.In;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
-import javax.persistence.*;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import java.util.Base64;
 
 @Entity
 @Table(name = "member")
@@ -71,11 +71,11 @@ public class Member extends BaseTimeEntity {
     @Column(name = "client_token")
     private String clientToken;
 
-    @Column(name = "declaration_count")
-    private Integer declarationCount;
+    @Column(name = "report_count")
+    private Integer reportCount;
 
-    @Column(name = "auth_univ")
-    private Boolean authUniv;
+    @Enumerated(EnumType.STRING)
+    private UnivCert authUniv;
 
     @Enumerated(EnumType.STRING)
     private Authority authority;
@@ -84,35 +84,25 @@ public class Member extends BaseTimeEntity {
         this.mbti = memberInfoDto.mbti();
         this.memberCharacter = memberInfoDto.memberCharacter();
     }
-
     public void memberGpsUpdate(GpsDto gpsDto) {
         this.latitude = gpsDto.latitude();
         this.longitude = gpsDto.longitude();
     }
-
-    public void updateAuthUniv(){
-        this.authUniv=true;
+    public void updateAuthUniv(UnivCert univCert){
+        this.authUniv= univCert;
     }
-
     public void memberNicknameUpdate(String nickName) {
         this.nickName = nickName;
     }
-
-    public void memberAccountModify(AccountRequestDto accountRequestDto,
-        String encrypted_password) {
+    public void memberAccountModify(String encrypted_password) {
         this.password = encrypted_password;
-        this.gender = accountRequestDto.gender();
-        this.telNum = accountRequestDto.telNum();
     }
-
     public void clientTokenUpdate(String clientToken) {
         this.clientToken = clientToken;
     }
-
-    public void updateDeclare() {
-        this.declarationCount += 1;
+    public void updateReport() {
+        this.reportCount += 1;
     }
-
     public void disableAccount() {
         this.activated = false;
     }

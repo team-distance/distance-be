@@ -13,11 +13,10 @@ import java.util.Objects;
 public class ValidTelNum {
     private final MemberRepository memberRepository;
 
-    public boolean duplicateCheckTelNum(String telNum){
+    public void duplicateCheckTelNum(String telNum){
         if(Objects.isNull(telNum))
             throw new DistanceException(ErrorCode.NOT_NULL_NICKNAME);
         if(memberRepository.existsByTelNum(telNum))
             throw new DistanceException(ErrorCode.EXIST_TEL_NUM);
-        return true;
     }
 }

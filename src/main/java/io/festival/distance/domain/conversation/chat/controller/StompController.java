@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @CrossOrigin
 public class StompController {
+
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
     private final ChatRoomSessionService chatRoomSessionService;
@@ -35,7 +37,7 @@ public class StompController {
     @MessageMapping("/chat/{roomId}") //app/chat/{roomId}로 요청이 들어왔을 때 -> 발신
     @SendTo("/topic/chatroom/{roomId}") // Subscription URL -> 수신
     public ResponseEntity<ChatMessageResponseDto> sendMessage(@DestinationVariable Long roomId,
-                                                              @RequestBody ChatMessageDto chatMessageDto) {
+        @RequestBody ChatMessageDto chatMessageDto) {
         ChatRoom chatRoom = chatRoomService.findRoom(roomId);
         Long chatMessageId = chatMessageService.createMessage(chatRoom, chatMessageDto);
 
@@ -43,15 +45,19 @@ public class StompController {
         String messageContent = chatMessageDto.getChatMessage();
         Long senderId = chatMessageDto.getSenderId();
         Long receiverId = chatMessageDto.getReceiverId();
-        chatMessageService.sendNotificationIfReceiverNotInChatRoom(senderId, receiverId, chatRoom, messageContent);
+        chatMessageService.sendNotificationIfReceiverNotInChatRoom(senderId, receiverId,
+            messageContent);
 
         // 채팅방 새션 조회
-        List<ChatRoomSession> sessionByChatRoom = chatRoomSessionService.findSessionByChatRoom(chatRoom); //2개가 나올 듯?
+        List<ChatRoomSession> sessionByChatRoom = chatRoomSessionService.findSessionByChatRoom(
+            chatRoom); //2개가 나올 듯?
         // 채팅 읽음 갱신
-        for(ChatRoomSession chatRoomSession :sessionByChatRoom){
+        for (ChatRoomSession chatRoomSession : sessionByChatRoom) {
             Long memberId = chatRoomSession.getMemberId();
-            roomMemberService.updateLastMessage(memberId,chatMessageId,roomId); //가장 최근에 읽은 메시지 수정
+            roomMemberService.updateLastMessage(memberId, chatMessageId, roomId); //가장 최근에 읽은 메시지 수정
         }
-        return ResponseEntity.ok(chatMessageService.generateMessage(chatMessageId,sessionByChatRoom.size(),chatRoom)); //이걸 전달 => 맞다면 새로운 dto사용해서 가공 값 전달
+        return ResponseEntity.ok(
+            chatMessageService.generateMessage(chatMessageId, sessionByChatRoom.size(),
+                chatRoom)); //이걸 전달 => 맞다면 새로운 dto사용해서 가공 값 전달
     }
 }

@@ -33,18 +33,11 @@ public class MailController {
     }
 
     /** NOTE
-     * 존재하는 이메일인지 중복 확인
-     */
-    @PostMapping("/check/email")
-    public ResponseEntity<Boolean> checkSchoolEmail(@RequestBody EmailDto emailDto){
-        return ResponseEntity.ok(universityMailValidService.checkMail(emailDto.schoolEmail()));
-    }
-
-    /** NOTE
      * 이메일 전송
      */
     @PostMapping("/send/email")
     public ResponseEntity<Void> sendEmail(@RequestBody EmailDto emailDto) throws MessagingException {
+        universityMailValidService.checkMail(emailDto.schoolEmail());
         certificationNumber = authenticateMail.sendNumber(emailDto.schoolEmail());
         return ResponseEntity.ok().build();
     }

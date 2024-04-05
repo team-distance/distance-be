@@ -116,6 +116,7 @@ public class GpsService {
 	public MatchResponseDto matchNonLoginUser() {
 		List<MatchUserDto> matcheList = memberRepository.findAll()
 			.stream()
+            .filter(user -> user.isActivated()&&user.getAuthority().equals(Authority.ROLE_USER))
 			.limit(4) // 최대 4명
 			.map(user -> MatchUserDto.builder()
 				.memberId(user.getMemberId())
