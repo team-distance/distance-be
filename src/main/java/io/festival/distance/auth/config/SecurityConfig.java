@@ -64,6 +64,7 @@ public class SecurityConfig {
             .antMatchers("/h2-console/**").permitAll()
             .antMatchers("/favicon.ico").permitAll()
             .antMatchers("/api/admin/signup").permitAll()
+            .antMatchers("https://api.dis-tance.com/swagger-ui.html").permitAll()
             .anyRequest().authenticated()
 
             .and()
