@@ -26,7 +26,6 @@ public class ChatWaitingService {
                 .loveReceiver(opponent) //상대방
                 .loveSender(me) //내가 좋아요
                 .myRoomName(me.getNickName())
-                .opponentRoomName(opponent.getNickName())
                 .build();
             Long waitingId = chatWaitingRepository.save(chatWaiting).getWaitingId();
             System.out.println(waitingId);

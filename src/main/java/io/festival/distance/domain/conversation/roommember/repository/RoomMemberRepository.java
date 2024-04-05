@@ -15,12 +15,8 @@ public interface RoomMemberRepository extends JpaRepository<RoomMember, Long> {
     RoomMember findByMemberAndChatRoom(Member member, ChatRoom chatRoom);
     List<RoomMember> findAllByMember(Member member);
     Long countByMember(Member member);
-    Long countByChatRoom(ChatRoom chatRoom);
-
+    Long countByChatRoomChatRoomId(Long chatRoom_chatRoomId);
     void deleteByChatRoomAndMember(ChatRoom chatRoom,Member member);
 
     boolean existsByMemberAndChatRoom(Member member,ChatRoom chatRoom);
-
-    Integer countByChatRoomAndLastReadMessageIdGreaterThan(ChatRoom chatRoom,
-                                                                    Long lastMessageId);
 }

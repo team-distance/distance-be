@@ -7,6 +7,8 @@ import io.festival.distance.domain.conversation.roommember.entity.RoomMember;
 import io.festival.distance.domain.conversation.roommember.repository.RoomMemberRepository;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.MemberService;
+import io.festival.distance.exception.DistanceException;
+import io.festival.distance.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +18,7 @@ import java.security.Principal;
 @Service
 @RequiredArgsConstructor
 public class RoomMemberService {
+
     private final RoomMemberRepository roomMemberRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final MemberService memberService;
@@ -37,17 +40,16 @@ public class RoomMemberService {
     public void goOutRoom(Long chatRoomId, Principal principal) {
         ChatRoom chatRoom = chatRoomService.findRoom(chatRoomId);
         Member member = memberService.findByTelNum(principal.getName());
+        if (!roomMemberRepository.existsByMemberAndChatRoom(member, chatRoom)) {
+            throw new DistanceException(ErrorCode.NOT_EXIST_CHATROOM);
+        }
 
-        System.out.println(">>>>> "+roomMemberRepository.countByChatRoom(chatRoom));
-
-
-        if (roomMemberRepository.countByChatRoom(chatRoom) == 1) {
+        if (roomMemberRepository.countByChatRoomChatRoomId(chatRoomId) == 1) {
             roomMemberRepository.deleteByChatRoomAndMember(chatRoom, member);
             chatRoomService.delete(chatRoomId);
             chatMessageRepository.deleteAllByChatRoom(chatRoom);
             return;
         }
-
         roomMemberRepository.deleteByChatRoomAndMember(chatRoom, member);
     }
 }
