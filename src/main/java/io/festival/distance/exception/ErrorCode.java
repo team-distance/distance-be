@@ -23,7 +23,8 @@ public enum ErrorCode {
     CONTAIN_BAD_WORD(HttpStatusCode.BAD_REQUEST.getStatus(), "욕설이 포함되어 있습니다!"),
     EXIST_DECLARE(HttpStatusCode.BAD_REQUEST.getStatus(),"이미 상대방을 신고하였습니다!"),
     EXIST_WAITING_ROOM(HttpStatusCode.BAD_REQUEST.getStatus(),"이미 존재하는 대기열입니다!"),
-    NOT_EXIST_AUTHENTICATION(HttpStatusCode.UNAUTHORIZED.getStatus(), "Security Context에 인증 정보가 없습니다!");
+    NOT_EXIST_AUTHENTICATION(HttpStatusCode.UNAUTHORIZED.getStatus(), "Security Context에 인증 정보가 없습니다!"),
+    THIRD_PARTY_AUTH_ERROR(HttpStatusCode.UNAUTHORIZED.getStatus(), "인증서가 유효하지 않습니다!");
 
     private final int status;
     private final String message;

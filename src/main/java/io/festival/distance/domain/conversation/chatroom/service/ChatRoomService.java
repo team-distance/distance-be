@@ -1,6 +1,5 @@
 package io.festival.distance.domain.conversation.chatroom.service;
 
-import io.festival.distance.domain.conversation.chat.dto.ChatMessageResponseDto;
 import io.festival.distance.domain.conversation.chat.entity.ChatMessage;
 import io.festival.distance.domain.conversation.chat.repository.ChatMessageRepository;
 import io.festival.distance.domain.conversation.chatroom.dto.ChatRoomInfoDto;
@@ -8,18 +7,16 @@ import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import io.festival.distance.domain.conversation.chatroom.repository.ChatRoomRepository;
 import io.festival.distance.domain.conversation.roommember.entity.RoomMember;
 import io.festival.distance.domain.conversation.roommember.repository.RoomMemberRepository;
-import io.festival.distance.domain.conversation.waiting.repository.ChatWaitingRepository;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.repository.MemberRepository;
 import io.festival.distance.exception.DistanceException;
 import io.festival.distance.exception.ErrorCode;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -86,14 +83,6 @@ public class ChatRoomService {
     public Long delete(Long roomId) {
         chatRoomRepository.deleteById(roomId);
         return roomId;
-    }
-
-    public List<ChatMessageResponseDto> getMessage(Long roomId) {
-        ChatRoom chatRoom = findRoom(roomId);
-        return chatMessageRepository.findByChatRoom(chatRoom)
-                .stream()
-                .map(ChatMessageResponseDto::new)
-                .collect(Collectors.toList());
     }
 
     public ChatRoom findRoom(Long roomId) {

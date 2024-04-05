@@ -1,4 +1,4 @@
-package io.festival.distance.domain.declare.entity;
+package io.festival.distance.domain.report.entity;
 
 import io.festival.distance.domain.base.BaseTimeEntity;
 import io.festival.distance.domain.member.entity.Member;
@@ -10,19 +10,19 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "declared")
+@Table(name = "report")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @SuperBuilder
-public class Declare extends BaseTimeEntity {
+public class Report extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "declared_id")
-    private Long declareId;
+    @Column(name = "report_id")
+    private Long reportId;
 
-    @Column(name = "declare_content")
-    private String declareContent;
+    @Column(name = "report_content")
+    private String reportContent;
 
     @JoinColumn(name = "my_id")
     @ManyToOne(fetch = FetchType.LAZY)

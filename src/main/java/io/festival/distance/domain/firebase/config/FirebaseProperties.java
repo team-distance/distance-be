@@ -2,6 +2,8 @@ package io.festival.distance.domain.firebase.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.festival.distance.exception.DistanceException;
+import io.festival.distance.exception.ErrorCode;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -47,8 +49,7 @@ public class FirebaseProperties {
         try {
             return objectMapper.writeValueAsString(this);
         } catch (JsonProcessingException e) {
-            // todo
-            throw new IllegalArgumentException("안좋은 예시");
+            throw new DistanceException(ErrorCode.THIRD_PARTY_AUTH_ERROR);
         }
     }
 }

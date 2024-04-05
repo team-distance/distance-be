@@ -13,6 +13,7 @@ import io.festival.distance.domain.member.dto.MemberTelNumDto;
 import io.festival.distance.domain.member.dto.TelNumRequest;
 import io.festival.distance.domain.member.entity.Authority;
 import io.festival.distance.domain.member.entity.Member;
+import io.festival.distance.domain.member.entity.UnivCert;
 import io.festival.distance.domain.member.repository.MemberRepository;
 import io.festival.distance.domain.member.validsignup.ValidInfoDto;
 import io.festival.distance.domain.member.validsignup.ValidTelNum;
@@ -39,7 +40,9 @@ public class MemberService {
     private final MemberHobbyService memberHobbyService;
     private final SmsUtil smsUtil;
     private static final String PREFIX = "#";
-    /** NOTE
+
+    /**
+     * NOTE
      * 회원가입
      * 중복된 이메일인지 확인
      * 중복된 아이디인지 확인
@@ -55,10 +58,11 @@ public class MemberService {
             .mbti(signDto.mbti())
             .memberCharacter(signDto.memberCharacter())
             .nickName(signDto.department())
-            .declarationCount(0)
-            .authUniv(false)
+            .reportCount(0)
+            .authUniv(UnivCert.FAILED_1)
             .activated(true)
             .build();
+
         validLoginId.duplicateCheckTelNum(signDto.telNum());
         validInfoDto.checkInfoDto(signDto); //hobby, tag NN 검사
         memberHobbyService.updateHobby(member, signDto.memberHobbyDto());
@@ -89,24 +93,11 @@ public class MemberService {
             .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_MEMBER));
     }
 
-    @Transactional(readOnly = true)
-    public AccountResponseDto memberAccount(String telNum) {
-        Member member = findByTelNum(telNum);
-        return AccountResponseDto.builder()
-            .password(member.getPassword())
-            .gender(member.getGender())
-            .telNum(member.getTelNum())
-            .build();
-    }
-
     @Transactional
     public Long modifyAccount(String telNum, AccountRequestDto accountRequestDto) {
         Member member = findByTelNum(telNum);
-        if (!validLoginId.duplicateCheckTelNum(accountRequestDto.telNum())) {
-            throw new IllegalStateException("입력이 유효하지 않습니다!");
-        }
         String encryptedPassword = encoder.encode(accountRequestDto.password());
-        member.memberAccountModify(accountRequestDto, encryptedPassword);
+        member.memberAccountModify(encryptedPassword);
         return member.getMemberId();
     }
 
@@ -143,7 +134,7 @@ public class MemberService {
     @Transactional
     public void increaseDeclare(Long memberId) {
         Member member = findMember(memberId);
-        member.updateDeclare();
+        member.updateReport();
     }
 
     @Transactional
@@ -156,7 +147,6 @@ public class MemberService {
     /**
      * NOTE
      * 인증메일 전송
-     *
      * @param telNumRequest 전화번호
      */
     public String sendSms(TelNumRequest telNumRequest) {
@@ -172,7 +162,7 @@ public class MemberService {
         }
     }
 
-    public Boolean verifyUniv(String name) {
-        return findByTelNum(name).getAuthUniv();
+    public String verifyUniv(String name) {
+        return findByTelNum(name).getAuthUniv().getType();
     }
 }

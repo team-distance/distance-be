@@ -1,16 +1,12 @@
 package io.festival.distance.domain.member.controller;
 
 import io.festival.distance.domain.member.dto.AccountRequestDto;
-import io.festival.distance.domain.member.dto.AccountResponseDto;
 import io.festival.distance.domain.member.dto.CheckAuthenticateNum;
-import io.festival.distance.domain.member.dto.CheckEmailDto;
-import io.festival.distance.domain.member.dto.CheckTelNumDto;
 import io.festival.distance.domain.member.dto.MemberInfoDto;
 import io.festival.distance.domain.member.dto.MemberSignDto;
 import io.festival.distance.domain.member.dto.MemberTelNumDto;
 import io.festival.distance.domain.member.dto.TelNumRequest;
 import io.festival.distance.domain.member.service.MemberService;
-import io.festival.distance.domain.member.validsignup.ValidEmail;
 import io.festival.distance.domain.member.validsignup.ValidSignup;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +29,6 @@ public class MemberController {
 
     private final MemberService memberService;
     private final ValidSignup validSignup;
-    private final ValidEmail validEmail;
     private String authenticateNum;
 
     /**
@@ -52,15 +47,6 @@ public class MemberController {
     @DeleteMapping
     public ResponseEntity<String> delete(Principal principal) {
         return ResponseEntity.ok(memberService.withDrawal(principal.getName()));
-    }
-
-    /**
-     * NOTE
-     * 멤버 계정 조회
-     */
-    @GetMapping("/account")
-    public ResponseEntity<AccountResponseDto> showAccount(Principal principal) {
-        return ResponseEntity.ok(memberService.memberAccount(principal.getName()));
     }
 
     /**
@@ -104,29 +90,11 @@ public class MemberController {
 
     /**
      * NOTE
-     * 사용자 전화번호 조회
+     * 사용자 전화번호 조회 (10번 티키타카 한 경우)
      */
     @GetMapping("/tel-num/{memberId}")
     public ResponseEntity<MemberTelNumDto> getTelNum(@PathVariable Long memberId) {
         return ResponseEntity.ok(memberService.findTelNum(memberId));
-    }
-
-    /**
-     * NOTE
-     * 아이디 중복 확인
-     */
-    @PostMapping("/check/id")
-    public ResponseEntity<Boolean> checkLoginId(@RequestBody CheckTelNumDto checkTelNumDto) {
-        return ResponseEntity.ok(validSignup.validationTelNum(checkTelNumDto.telNum()));
-    }
-
-    /**
-     * NOTE
-     * 이메일 형식 확인
-     */
-    @PostMapping("/check/email")
-    public ResponseEntity<Boolean> checkEmail(@RequestBody CheckEmailDto checkEmailDto) {
-        return ResponseEntity.ok(validEmail.checkValidEmail(checkEmailDto.schoolEmail()));
     }
 
     /** NOTE
@@ -135,6 +103,7 @@ public class MemberController {
      */
     @PostMapping("/send/sms")
     public ResponseEntity<Void> sendSms(@RequestBody TelNumRequest telNumRequest) {
+        validSignup.validationTelNum(telNumRequest.telNum());
         authenticateNum = memberService.sendSms(telNumRequest);
         return ResponseEntity.ok().build();
     }
@@ -153,10 +122,10 @@ public class MemberController {
     /** NOTE
      * 멤버가 대학인증을 했는지 안했는지 여부
      * @param principal 현재 로그인한 객체
-     * @return
+     * @return 인증되어있다면 true, 안되어있으면 false
      */
     @GetMapping("/check/university")
-    public ResponseEntity<Boolean> checkIdentity(Principal principal){
+    public ResponseEntity<String> checkIdentity(Principal principal){
         return ResponseEntity.ok(memberService.verifyUniv(principal.getName()));
     }
 }

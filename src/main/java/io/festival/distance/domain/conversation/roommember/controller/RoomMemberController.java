@@ -15,7 +15,6 @@ import java.security.Principal;
 @CrossOrigin
 public class RoomMemberController {
     private final RoomMemberService roomMemberService;
-    private final StompController stompController;
     @GetMapping("/leave/{chatRoomId}")
     public ResponseEntity<Void> leaveRoom(@PathVariable Long chatRoomId, Principal principal){
         roomMemberService.goOutRoom(chatRoomId,principal);

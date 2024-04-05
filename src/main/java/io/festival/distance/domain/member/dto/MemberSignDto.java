@@ -17,7 +17,6 @@ import java.util.Objects;
 public record MemberSignDto(
     String telNum,
     String password,
-    String checkPassword,
     String gender,
     String mbti,
     String department,

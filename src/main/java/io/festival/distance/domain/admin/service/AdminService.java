@@ -20,14 +20,12 @@ public class AdminService {
             .gender("관리자")
             .telNum(adminSignUpDto.telNum())
             .authority(Authority.ROLE_ADMIN)
-            .mbti("isfj")
+            .mbti("ISFJ")
             .nickName("관리자")
             .memberCharacter("운영자")
-            .declarationCount(0)
+            .reportCount(0)
             .activated(true)
             .build();
-        Long memberId = memberRepository.save(member).getMemberId();
-        member.memberNicknameUpdate(member.getNickName()+"#"+memberId);
-        return memberId;
+        return memberRepository.save(member).getMemberId();
     }
 }
