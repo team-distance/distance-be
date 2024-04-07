@@ -49,6 +49,8 @@ public class MemberService {
      */
     @Transactional
     public Long createMember(MemberSignDto signDto) {
+        validLoginId.duplicateCheckTelNum(signDto.telNum());
+        validInfoDto.checkInfoDto(signDto); //hobby, tag NN 검사
 
         Member member = Member.builder()
             .password(encoder.encode(signDto.password()))
@@ -63,8 +65,6 @@ public class MemberService {
             .activated(true)
             .build();
 
-        validLoginId.duplicateCheckTelNum(signDto.telNum());
-        validInfoDto.checkInfoDto(signDto); //hobby, tag NN 검사
         memberHobbyService.updateHobby(member, signDto.memberHobbyDto());
         memberTagService.updateTag(member, signDto.memberTagDto());
         Long memberId = memberRepository.save(member).getMemberId();
