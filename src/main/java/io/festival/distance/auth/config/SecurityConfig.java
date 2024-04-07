@@ -63,6 +63,8 @@ public class SecurityConfig {
             .antMatchers("/h2-console/**").permitAll()
             .antMatchers("/favicon.ico").permitAll()
             .antMatchers("/api/admin/signup").permitAll()
+            .antMatchers("/api/member/send/sms").permitAll()
+            .antMatchers("/api/member/authenticate").permitAll()
             .antMatchers("/swagger-resources/**",
                 "/swagger-ui.html",
                 "/v2/api-docs",
