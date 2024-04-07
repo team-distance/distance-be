@@ -3,7 +3,6 @@ package io.festival.distance.domain.member.service;
 import static io.festival.distance.authuniversity.config.mail.SendMailService.getAuthenticateNumber;
 
 import io.festival.distance.domain.member.dto.AccountRequestDto;
-import io.festival.distance.domain.member.dto.AccountResponseDto;
 import io.festival.distance.domain.member.dto.CheckAuthenticateNum;
 import io.festival.distance.domain.member.dto.MemberHobbyDto;
 import io.festival.distance.domain.member.dto.MemberInfoDto;
@@ -158,7 +157,7 @@ public class MemberService {
     public void verifyAuthenticateNum(CheckAuthenticateNum checkAuthenticateNum,
         String authenticateNum) {
         if (!authenticateNum.equals(checkAuthenticateNum.authenticateNum())) {
-            throw new IllegalStateException("인증번호가 일치하지 않습니다!");
+            throw new DistanceException(ErrorCode.NOT_CORRECT_AUTHENTICATION_NUMBER);
         }
     }
 
