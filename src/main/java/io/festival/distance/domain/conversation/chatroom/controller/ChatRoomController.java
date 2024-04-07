@@ -1,5 +1,6 @@
 package io.festival.distance.domain.conversation.chatroom.controller;
 
+import io.festival.distance.domain.conversation.chatroom.dto.PageRequestDto;
 import io.festival.distance.domain.conversation.chat.dto.ChatMessageResponseDto;
 import io.festival.distance.domain.conversation.chat.service.ChatMessageService;
 import io.festival.distance.domain.conversation.chatroom.dto.ChatRoomDto;
@@ -10,6 +11,7 @@ import io.festival.distance.domain.member.service.MemberService;
 import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,8 +46,23 @@ public class ChatRoomController {
     @GetMapping("/{chatRoomId}") //채팅방에 들어온 경우
     public ResponseEntity<List<ChatMessageResponseDto>> readMessage(@PathVariable Long chatRoomId,
         Principal principal) {
+
         return ResponseEntity.ok(
             chatMessageService.markAllMessagesAsRead(chatRoomService.findRoom(chatRoomId),
                 memberService.findByTelNum(principal.getName())));
+    }
+
+    @GetMapping("/{chatRoomId}/message")
+    public ResponseEntity<List<ChatMessageResponseDto>> getAllMessage(@PathVariable Long chatRoomId,
+        PageRequestDto pageRequestDto, Principal principal) {
+        return ResponseEntity.ok(
+            chatMessageService.findAllMessage(chatRoomService.findRoom(chatRoomId),
+                pageGenerate(pageRequestDto),principal));
+    }
+
+    public static PageRequest pageGenerate(PageRequestDto dto) {
+        int page = dto.page();
+        int size = dto.size();
+        return PageRequest.of(page, size);
     }
 }

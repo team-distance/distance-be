@@ -11,10 +11,12 @@ import io.festival.distance.domain.firebase.dto.FcmDto;
 import io.festival.distance.domain.firebase.service.FCMService;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.MemberService;
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +30,8 @@ public class ChatMessageService {
     private final MemberService memberService;
     private final FCMService fcmService;
 
+    private final static Integer INITIAL_COUNT = 2;
+
     @Transactional
     public Long createMessage(ChatRoom chatRoom, ChatMessageDto chatMessageDto) {
         Member member = memberService.findMember(chatMessageDto.getReceiverId()); //나
@@ -39,7 +43,7 @@ public class ChatMessageService {
             .senderId(chatMessageDto.getSenderId())
             .chatMessage(chatMessageDto.getChatMessage())
             .senderName(member.getNickName())
-            .unreadCount(2)
+            .unreadCount(INITIAL_COUNT)
             .chatRoom(chatRoom)
             .build();
 
@@ -95,6 +99,7 @@ public class ChatMessageService {
     @Transactional
     public List<ChatMessageResponseDto> markAllMessagesAsRead(ChatRoom chatRoom, Member member) {
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom); //방금 들어온 멤버가
+
         Long lastChatMessageId = roomMember.getLastReadMessageId(); //가장 나중에 읽은 메시지 PK값
 
         List<ChatMessage> messages = chatMessageRepository.findByChatRoomAndChatMessageIdGreaterThan(
@@ -115,5 +120,25 @@ public class ChatMessageService {
         }
 
         return responseDtoList;
+    }
+
+    /** NOTE
+     * 페이징 처리
+     * @param chatRoom
+     * @param pageRequest
+     * @param principal
+     * @return
+     */
+    @Transactional
+    public List<ChatMessageResponseDto> findAllMessage(ChatRoom chatRoom, PageRequest pageRequest,
+        Principal principal) {
+        Member member = memberService.findByTelNum(principal.getName());
+        RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom);
+        Long lastChatMessageId = roomMember.getLastReadMessageId();
+        return chatMessageRepository.findByChatRoomAndChatMessageIdLessThanOrderByCreateDtDesc(chatRoom, pageRequest,
+                lastChatMessageId)
+            .stream()
+            .map(ChatMessageResponseDto::new)
+            .toList();
     }
 }

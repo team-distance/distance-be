@@ -1,4 +1,4 @@
-package io.festival.distance.domain.admin.dto;
+package io.festival.distance.domain.conversation.chatroom.dto;
 
 public record PageRequestDto(
     int page,
