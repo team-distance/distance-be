@@ -57,6 +57,7 @@ public class MemberService {
             .telNum(signDto.telNum())
             .authority(Authority.ROLE_USER)
             .mbti(signDto.mbti())
+            .department(signDto.department())
             .memberCharacter(signDto.memberCharacter())
             .nickName(signDto.department())
             .reportCount(0)
