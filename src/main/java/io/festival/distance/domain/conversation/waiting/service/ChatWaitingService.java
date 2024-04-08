@@ -32,6 +32,7 @@ public class ChatWaitingService {
      */
     @Transactional
     public void saveWaitingRoom(Member opponent, Member me) {
+        System.out.println("sdsdsdsdsdsdsd");
         if(!chatWaitingRepository.existsByLoveSenderAndLoveReceiver(me,opponent)){
             ChatWaiting chatWaiting = ChatWaiting.builder()
                 .loveReceiver(opponent) //상대방
@@ -40,7 +41,7 @@ public class ChatWaitingService {
                 .build();
             Long waitingId = chatWaitingRepository.save(chatWaiting).getWaitingId();
             System.out.println("waitingId = " + waitingId);
-            //aep.publishEvent(new ChatWaitingAddedEvent(opponent.getMemberId()));
+            aep.publishEvent(new ChatWaitingAddedEvent(opponent.getMemberId()));
             aep.publishEvent(new ChatWaitingAddedEvent(me.getMemberId()));
         }
     }

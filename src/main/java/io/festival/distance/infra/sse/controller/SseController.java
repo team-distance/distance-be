@@ -1,6 +1,5 @@
 package io.festival.distance.infra.sse.controller;
 
-import io.festival.distance.domain.conversation.waiting.entity.ChatWaiting;
 import io.festival.distance.domain.conversation.waiting.service.ChatWaitingService;
 import io.festival.distance.infra.sse.service.SseService;
 import lombok.RequiredArgsConstructor;
