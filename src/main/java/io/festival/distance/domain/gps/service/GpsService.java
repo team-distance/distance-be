@@ -81,7 +81,7 @@ public class GpsService {
         Member centerUser = memberService.findByTelNum(telNum); //나
         double centerLongitude = centerUser.getLongitude();
         double centerLatitude = centerUser.getLatitude();
-        System.out.println("넌 왜 안되는 것일까");
+
         // activate, 거리 내에 있는 유저 필터링 -> 랜덤 4명 선택
         List<MatchUserDto> matchedUserList = memberRepository.findAll().stream()
             .filter(user -> user.isActivated()&&user.getAuthority().equals(Authority.ROLE_USER))
@@ -94,7 +94,7 @@ public class GpsService {
             })
             .map(users -> MatchUserDto.fromMember(users, memberService))
             .collect(Collectors.toList());
-        System.out.println("여기가 문제인 것인가");
+
         Collections.shuffle(matchedUserList); //랜덤
 
         List<MatchUserDto> matcheList = matchedUserList.stream()
@@ -106,7 +106,6 @@ public class GpsService {
                 .department(user.department())
                 .build())
             .toList();
-        System.out.println("아니면 혹시 요기가?");
         return MatchResponseDto.builder()
             .matchedUsers(matcheList)
             .build();

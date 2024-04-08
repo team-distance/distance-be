@@ -28,10 +28,10 @@ public class ChatWaitingController {
         return ResponseEntity.ok(chatFacadeService.approveRoom(waitingRoomId,principal));
     }
 
-    @GetMapping("/count")
+    /*@GetMapping("/count")
     public ResponseEntity<ChatWaitingCountDto> waitingRoomCount(Principal principal){
         return ResponseEntity.ok(chatWaitingService.countingWaitingRoom(principal.getName()));
-    }
+    }*/
 
     @DeleteMapping("/{waitingRoodId}")
     public ResponseEntity<Void> deleteWaitingRoom(@PathVariable Long waitingRoodId,Principal principal){
