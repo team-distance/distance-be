@@ -64,7 +64,7 @@ public class StompController {
                 chatRoom)); //이걸 전달 => 맞다면 새로운 dto사용해서 가공 값 전달
     }
 
-    @MessageMapping("/waiting/{memberId}") //app/chat/{roomId}로 요청이 들어왔을 때 -> 발신
+    @MessageMapping("/waiting/{memberId}")
     @SendTo("/topic/waiting/{memberId}") // Subscription URL -> 수신
     public ResponseEntity<ChatWaitingCountDto> getWaitingCount(@DestinationVariable Long memberId) {
         return ResponseEntity.ok(chatWaitingService.countingWaitingRoom(memberId));
