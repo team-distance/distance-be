@@ -1,10 +1,8 @@
 package io.festival.distance.domain.admin.controller;
 
 import io.festival.distance.domain.admin.dto.AdminSignUpDto;
-import io.festival.distance.domain.admin.dto.PageRequestDto;
 import io.festival.distance.domain.admin.service.AdminService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,11 +25,5 @@ public class AdminController {
     @PostMapping("/signup")
     public ResponseEntity<Long> signup(@RequestBody AdminSignUpDto adminSignUpDto){
         return ResponseEntity.ok(adminService.createAdmin(adminSignUpDto));
-    }
-
-    public static PageRequest pageGenerate(PageRequestDto dto) {
-        int page=dto.page();
-        int size=dto.size();
-        return PageRequest.of(page, size);
     }
 }

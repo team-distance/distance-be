@@ -25,11 +25,16 @@ public enum ErrorCode {
     NOT_NULL_HOBBY(HttpStatusCode.BAD_REQUEST.getStatus(), "Hobby를 입력하지 않았습니다!"),
     NOT_NULL_TAG(HttpStatusCode.BAD_REQUEST.getStatus(), "Tag를 입력하지 않았습니다!"),
 
-    //etc
-    INVALID_EMAIL_FORMAT(HttpStatusCode.BAD_REQUEST.getStatus(), "이메일 형식이 올바르지 않습니다!"),
+    // NOT_CORRECT_
     NOT_CORRECT_PASSWORD(HttpStatusCode.BAD_REQUEST.getStatus(),"비밀번호가 일치하지 않습니다!"),
+    NOT_CORRECT_AUTHENTICATION_NUMBER(HttpStatusCode.BAD_REQUEST.getStatus(), "인증번호가 일치하지 않습니다!"),
+
+    //TOO_MANY
     TOO_MANY_MY_CHATROOM(HttpStatusCode.BAD_REQUEST.getStatus(),"이미 나의 방이 3개입니다!"),
     TOO_MANY_OPPONENT_CHATROOM(HttpStatusCode.BAD_REQUEST.getStatus(),"이미 상대방의 방이 3개입니다!"),
+
+    //etc,
+    INVALID_EMAIL_FORMAT(HttpStatusCode.BAD_REQUEST.getStatus(), "이메일 형식이 올바르지 않습니다!"),
     THIRD_PARTY_AUTH_ERROR(HttpStatusCode.UNAUTHORIZED.getStatus(), "인증서가 유효하지 않습니다!");
 
     private final int status;
