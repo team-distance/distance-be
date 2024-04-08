@@ -8,6 +8,8 @@ import io.festival.distance.domain.conversation.chatroom.service.ChatRoomService
 import io.festival.distance.domain.conversation.chatroomsession.entity.ChatRoomSession;
 import io.festival.distance.domain.conversation.chatroomsession.service.ChatRoomSessionService;
 import io.festival.distance.domain.conversation.roommember.service.RoomMemberService;
+import io.festival.distance.domain.conversation.waiting.dto.ChatWaitingCountDto;
+import io.festival.distance.domain.conversation.waiting.service.ChatWaitingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -29,6 +31,7 @@ public class StompController {
     private final ChatMessageService chatMessageService;
     private final ChatRoomSessionService chatRoomSessionService;
     private final RoomMemberService roomMemberService;
+    private final ChatWaitingService chatWaitingService;
 
     // 채팅방에 사람이 들어오면, get을 호출하고 () 바로 @sendTo 호출해서 stomp 연결을 한다.
     // eventListenr 가 stmop 헤더에 roomid, memberid가 포함되어있다면 실행된다.
@@ -59,5 +62,11 @@ public class StompController {
         return ResponseEntity.ok(
             chatMessageService.generateMessage(chatMessageId, sessionByChatRoom.size(),
                 chatRoom)); //이걸 전달 => 맞다면 새로운 dto사용해서 가공 값 전달
+    }
+
+    @MessageMapping("/waiting/{memberId}") //app/chat/{roomId}로 요청이 들어왔을 때 -> 발신
+    @SendTo("/topic/waiting/{memberId}") // Subscription URL -> 수신
+    public ResponseEntity<ChatWaitingCountDto> getWaitingCount(@DestinationVariable Long memberId) {
+        return ResponseEntity.ok(chatWaitingService.countingWaitingRoom(memberId));
     }
 }
