@@ -16,7 +16,6 @@ public class ChatWaitingEventListener {
     public void onChatWaitingAdded(ChatWaitingAddedEvent event) {
         Long memberId = event.memberId();
         System.out.println("memberId = " + memberId);
-        // 대기 요청 수를 계산하는 로직을 여기에 구현하거나 호출
         sseService.notify(memberId, chatWaitingService.countingWaitingRoom(memberId));
     }
 }
