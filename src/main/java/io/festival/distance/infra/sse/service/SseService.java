@@ -23,7 +23,6 @@ public class SseService {
      */
     public SseEmitter subscribe(Long memberId) {
         SseEmitter emitter = createEmitter(memberId);
-
         sendToClient(memberId, "EventStream Created. [memberId=" + memberId + "]");
         return emitter;
     }
