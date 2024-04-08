@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 public class FCMService {
 
-    public void sendNotification(FcmDto fcmDto) {
+    public NotificationDto sendNotification(FcmDto fcmDto) {
         log.info("Client 토큰: " + fcmDto.clientToken());
         // 알림 내용
         Message firebaseMessage = createNotificationContent(fcmDto);
@@ -29,7 +29,7 @@ public class FCMService {
             e.printStackTrace();
             response = "알림 전송 실패";
         }
-        NotificationDto.builder()
+       return NotificationDto.builder()
             .FcmMessageId(response)
             .build();
     }
