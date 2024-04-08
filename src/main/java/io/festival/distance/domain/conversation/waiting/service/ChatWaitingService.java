@@ -42,7 +42,7 @@ public class ChatWaitingService {
             Long waitingId = chatWaitingRepository.save(chatWaiting).getWaitingId();
             System.out.println("waitingId = " + waitingId);
             aep.publishEvent(new ChatWaitingAddedEvent(opponent.getMemberId()));
-            aep.publishEvent(new ChatWaitingAddedEvent(me.getMemberId()));
+            //aep.publishEvent(new ChatWaitingAddedEvent(me.getMemberId()));
         }
     }
 

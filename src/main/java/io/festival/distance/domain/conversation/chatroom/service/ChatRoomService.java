@@ -80,9 +80,8 @@ public class ChatRoomService {
         }
     }
     @Transactional
-    public Long delete(Long roomId) {
+    public void delete(Long roomId) {
         chatRoomRepository.deleteById(roomId);
-        return roomId;
     }
 
     public ChatRoom findRoom(Long roomId) {
