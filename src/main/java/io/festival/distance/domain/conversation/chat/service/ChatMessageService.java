@@ -57,7 +57,7 @@ public class ChatMessageService {
 
     @Transactional
     public void sendNotificationIfReceiverNotInChatRoom(Long senderId, Long receiverId,
-        String chatMessage) {
+        String chatMessage,Long roomId) {
         // 알림을 보낼 떄 필요한 값들
         Member opponent = memberService.findMember(senderId); //받는 사람
         String myNickName = memberService.findMember(receiverId).getNickName(); // 발신자의 닉네임
@@ -68,6 +68,7 @@ public class ChatMessageService {
                 .clientToken(clientToken)
                 .senderNickName(myNickName)
                 .message(chatMessage)
+                .roomId(roomId)
                 .build();
             fcmService.sendNotification(fcmDto);
         } else {

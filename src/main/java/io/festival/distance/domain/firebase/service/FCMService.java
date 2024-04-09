@@ -40,6 +40,7 @@ public class FCMService {
                 .setTitle(fcmDto.senderNickName())
                 .setBody(fcmDto.message())
                 .build())
+            .putData("data", String.valueOf(fcmDto.roomId()))
             .build();
     }
 }

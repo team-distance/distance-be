@@ -49,7 +49,7 @@ public class StompController {
         Long senderId = chatMessageDto.getSenderId();
         Long receiverId = chatMessageDto.getReceiverId();
         chatMessageService.sendNotificationIfReceiverNotInChatRoom(senderId, receiverId,
-            messageContent);
+            messageContent,roomId);
 
         // 채팅방 새션 조회
         List<ChatRoomSession> sessionByChatRoom = chatRoomSessionService.findSessionByChatRoom(
