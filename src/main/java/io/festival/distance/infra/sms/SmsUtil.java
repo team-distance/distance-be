@@ -22,15 +22,17 @@ public class SmsUtil {
     private DefaultMessageService messageService;
 
     @PostConstruct
-    private void init(){
-        this.messageService = NurigoApp.INSTANCE.initialize(apiKey, apiSecretKey, "https://api.coolsms.co.kr");
+    private void init() {
+        this.messageService = NurigoApp.INSTANCE.initialize(apiKey, apiSecretKey,
+            "https://api.coolsms.co.kr");
     }
 
     public void sendOne(String to, String verificationCode) {
         Message message = new Message();
         message.setFrom(number);
         message.setTo(to);
-        message.setText("[Distance] 아래의 인증번호를 입력해주세요\n" + verificationCode);
+        message.setText("[Distance] \n"
+            + "인증번호 [" + verificationCode + "] 를 입력해주세요");
 
         this.messageService.sendOne(new SingleMessageSendingRequest(message));
     }
