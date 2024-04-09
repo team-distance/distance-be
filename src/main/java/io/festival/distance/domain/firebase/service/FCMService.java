@@ -1,16 +1,13 @@
 package io.festival.distance.domain.firebase.service;
 
-import io.festival.distance.domain.firebase.dto.FcmDto;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
-
+import io.festival.distance.domain.firebase.dto.FcmDto;
 import io.festival.distance.domain.firebase.dto.NotificationDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +40,7 @@ public class FCMService {
                 .setTitle(fcmDto.senderNickName())
                 .setBody(fcmDto.message())
                 .build())
+            .putData("data", String.valueOf(fcmDto.roomId()))
             .build();
     }
 }

@@ -5,6 +5,7 @@ import lombok.Builder;
 @Builder
 public record FcmDto(String clientToken,
                      String senderNickName,
-                     String message) {
+                     String message,
+                     Long roomId) {
 
 }
