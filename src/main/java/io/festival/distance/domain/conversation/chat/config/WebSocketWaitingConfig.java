@@ -6,7 +6,7 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
-/*
+
 @Configuration
 @EnableWebSocketMessageBroker
 @RequiredArgsConstructor
@@ -22,4 +22,3 @@ public class WebSocketWaitingConfig implements WebSocketMessageBrokerConfigurer 
         registry.setApplicationDestinationPrefixes("/app"); //메시지 보낼 때 사용 -> 발신
     }
 }
-*/
