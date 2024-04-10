@@ -2,18 +2,21 @@ package io.festival.distance.authuniversity.service.univmail;
 
 import io.festival.distance.authuniversity.config.mail.SendMailService;
 import io.festival.distance.authuniversity.config.mail.dto.UnivMailDto;
+import io.festival.distance.domain.member.entity.Member;
+import io.festival.distance.domain.member.entity.UnivCert;
+import io.festival.distance.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Component
 @RequiredArgsConstructor
 public class AuthenticateMail {
-    private final UniversityMailValidService mailValidService;
     private final SendMailService sendMailService;
-    private String certificationNumber;
+    private final MemberService memberService;
 
     public String sendNumber(String schoolEmail) throws MessagingException { //실 서비스
         //schoolEmail= MessageFormat.format("{0}@{1}.ac.kr", schoolEmail,getDomainByName(schoolEmail));
@@ -24,9 +27,12 @@ public class AuthenticateMail {
         return univMailDto.getTempPw();
     }
 
-    public boolean checkCertificationNumber(String number,String num2){
-        System.out.println("내가 입력한 번호>>"+ number);
-        System.out.println("발송된 번호>> "+num2);
+    @Transactional
+    public boolean checkCertificationNumber(String number,String num2, String telNum){
+        Member member = memberService.findByTelNum(telNum);
+        if(number.equals(num2)){
+            member.updateAuthUniv(UnivCert.SUCCESS);
+        }
         return number.equals(num2);
     }
 }
