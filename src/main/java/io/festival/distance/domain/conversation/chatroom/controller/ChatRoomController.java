@@ -7,7 +7,9 @@ import io.festival.distance.domain.conversation.chatroom.dto.ChatRoomDto;
 import io.festival.distance.domain.conversation.chatroom.dto.ChatRoomInfoDto;
 import io.festival.distance.domain.conversation.chatroom.service.ChatFacadeService;
 import io.festival.distance.domain.conversation.chatroom.service.ChatRoomService;
+import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.MemberService;
+import io.festival.distance.domain.member.validlogin.ValidUnivCert;
 import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,7 @@ public class ChatRoomController {
     private final MemberService memberService;
     private final ChatMessageService chatMessageService;
     private final ChatFacadeService chatFacadeService;
+    private final ValidUnivCert validUnivCert;
 
     @PostMapping("/create")
     public ResponseEntity<Long> createRoom(@RequestBody ChatRoomDto chatRoomDto,
@@ -46,10 +49,11 @@ public class ChatRoomController {
     @GetMapping("/{chatRoomId}") //채팅방에 들어온 경우
     public ResponseEntity<List<ChatMessageResponseDto>> readMessage(@PathVariable Long chatRoomId,
         Principal principal) {
-
+        Member member = memberService.findByTelNum(principal.getName());
+        validUnivCert.checkUnivCert(member);
         return ResponseEntity.ok(
             chatMessageService.markAllMessagesAsRead(chatRoomService.findRoom(chatRoomId),
-                memberService.findByTelNum(principal.getName())));
+                member));
     }
 
     @GetMapping("/{chatRoomId}/message")
@@ -57,7 +61,7 @@ public class ChatRoomController {
         PageRequestDto pageRequestDto, Principal principal) {
         return ResponseEntity.ok(
             chatMessageService.findAllMessage(chatRoomService.findRoom(chatRoomId),
-                pageGenerate(pageRequestDto),principal));
+                pageGenerate(pageRequestDto), principal));
     }
 
     public static PageRequest pageGenerate(PageRequestDto dto) {
