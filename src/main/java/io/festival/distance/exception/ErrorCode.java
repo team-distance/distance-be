@@ -35,7 +35,8 @@ public enum ErrorCode {
 
     //etc,
     INVALID_EMAIL_FORMAT(HttpStatusCode.BAD_REQUEST.getStatus(), "이메일 형식이 올바르지 않습니다!"),
-    THIRD_PARTY_AUTH_ERROR(HttpStatusCode.UNAUTHORIZED.getStatus(), "인증서가 유효하지 않습니다!");
+    THIRD_PARTY_AUTH_ERROR(HttpStatusCode.UNAUTHORIZED.getStatus(), "인증서가 유효하지 않습니다!"),
+    NOT_AUTHENTICATION_STUDENT(HttpStatusCode.UNAUTHORIZED.getStatus(),"학생 인증이 되지 않았습니다!");
 
     private final int status;
     private final String message;

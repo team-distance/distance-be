@@ -1,8 +1,10 @@
 package io.festival.distance.domain.gps.controller;
 
+import io.festival.distance.domain.gps.dto.DistanceResponse;
 import io.festival.distance.domain.gps.dto.GpsDto;
 import io.festival.distance.domain.gps.dto.GpsResponseDto;
 import io.festival.distance.domain.gps.dto.MatchResponseDto;
+import io.festival.distance.domain.gps.service.GpsProcessor;
 import io.festival.distance.domain.gps.service.GpsService;
 import java.security.Principal;
 import java.util.Objects;
@@ -10,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin //모든 외부 도메인의 요청을 허용한다.
 public class GpsController {
 	private final GpsService gpsService;
+	private final GpsProcessor gpsProcessor;
 
 	/** NOTE
 	 * 유저 현재 위치 정보 갱신 API
@@ -44,6 +48,11 @@ public class GpsController {
 
 	@GetMapping( "/distance")
 	public ResponseEntity<Double> distance(@RequestParam Long id1, @RequestParam Long id2) {
-		return ResponseEntity.ok(gpsService.getDistance(id1, id2));
+		return ResponseEntity.ok(gpsProcessor.getDistance(id1, id2));
+	}
+
+	@GetMapping( "/distance/{chatRoomId}")
+	public ResponseEntity<DistanceResponse> getDistance(@PathVariable Long chatRoomId) {
+		return ResponseEntity.ok(gpsService.callDistance(chatRoomId));
 	}
 }

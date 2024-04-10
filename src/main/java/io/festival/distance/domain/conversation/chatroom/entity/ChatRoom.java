@@ -27,6 +27,9 @@ public class ChatRoom extends BaseTimeEntity {  //채팅방
     @Column(name = "room_name")
     private String roomName;
 
+    @Column(name = "distance")
+    private Double distance;
+
     @OneToMany(mappedBy = "chatRoom",cascade = CascadeType.REMOVE)
     private List<RoomMember> member=new ArrayList<>();
 }

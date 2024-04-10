@@ -39,8 +39,9 @@ public class FCMService {
             .setNotification(Notification.builder()
                 .setTitle(fcmDto.senderNickName())
                 .setBody(fcmDto.message())
+                .setImage("https://s3.ap-northeast-2.amazonaws.com/9oorm.distance/icons/apple-touch-icon-72x72.png")
                 .build())
-            .putData("data", String.valueOf(fcmDto.roomId()))
+            .putData("chatRoomId", String.valueOf(fcmDto.roomId()))
             .build();
     }
 }

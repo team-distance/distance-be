@@ -1,5 +1,8 @@
 package io.festival.distance.domain.gps.service;
 
+import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
+import io.festival.distance.domain.conversation.chatroom.repository.ChatRoomRepository;
+import io.festival.distance.domain.gps.dto.DistanceResponse;
 import io.festival.distance.domain.gps.dto.GpsDto;
 import io.festival.distance.domain.gps.dto.GpsResponseDto;
 import io.festival.distance.domain.gps.dto.MatchResponseDto;
@@ -8,6 +11,8 @@ import io.festival.distance.domain.member.entity.Authority;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.repository.MemberRepository;
 import io.festival.distance.domain.member.service.MemberService;
+import io.festival.distance.exception.DistanceException;
+import io.festival.distance.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +29,7 @@ public class GpsService {
 
     private final MemberRepository memberRepository;
     private final MemberService memberService;
+    private final ChatRoomRepository chatRoomRepository;
     private static final double SEARCH_RANGE = 2000000000;
 
     /**
@@ -134,20 +140,20 @@ public class GpsService {
      * NOTE
      * 두 '유저' 사이의 거리를 계산하는 메서드
      */
-    public double getDistance(long id1, long id2) {
+    /*public double getDistance(long id1, long id2) {
         Member member1 = memberService.findMember(id1);
         Member member2 = memberService.findMember(id2);
         double distance = calculateDistance(member1.getLatitude(), member1.getLongitude(),
             member2.getLatitude(), member2.getLongitude());
         System.out.println(distance);
         return new BigDecimal(distance).setScale(2, RoundingMode.HALF_UP).doubleValue();
-    }
+    }*/
 
     /**
      * NOTE
      * 두 '점' 사이의 거리를 계산하는 메서드 (Haversine 공식 이용)
      */
-    private static double calculateDistance(double x1, double y1, double x2, double y2) {
+    public static double calculateDistance(double x1, double y1, double x2, double y2) {
         double radius = 6371; // 지구 반지름(km)
         double toRadian = Math.PI / 180;
 
@@ -172,5 +178,11 @@ public class GpsService {
         distance *= 1000; // m 단위로 변환
 
         return distance;
+    }
+
+    public DistanceResponse callDistance(Long chatRoomId) {
+        return chatRoomRepository.findById(chatRoomId)
+            .map(DistanceResponse::fromEntity)
+            .orElseThrow(()->new DistanceException(ErrorCode.NOT_EXIST_CHATROOM));
     }
 }

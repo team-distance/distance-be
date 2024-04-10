@@ -5,10 +5,12 @@ import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import io.festival.distance.domain.conversation.chatroom.repository.ChatRoomRepository;
 import io.festival.distance.domain.conversation.chatroom.validroomcount.ValidExistRoom;
 import io.festival.distance.domain.conversation.chatroom.validroomcount.ValidRoomCount;
+import io.festival.distance.domain.gps.service.GpsProcessor;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.repository.MemberRepository;
 import io.festival.distance.domain.conversation.waiting.entity.ChatWaiting;
 import io.festival.distance.domain.conversation.waiting.repository.ChatWaitingRepository;
+import io.festival.distance.domain.member.validlogin.ValidUnivCert;
 import io.festival.distance.exception.ChatRoomException;
 import io.festival.distance.exception.DistanceException;
 import io.festival.distance.exception.ErrorCode;
@@ -22,31 +24,35 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ChatFacadeService {
+
     private final ChatRoomService chatRoomService;
     private final ValidRoomCount validRoomCount;
     private final ValidExistRoom validExistRoom;
-
+    private final ValidUnivCert validUnivCert;
     private final MemberRepository memberRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatWaitingRepository chatWaitingRepository;
+    private final GpsProcessor gpsProcessor;
 
     @Transactional(noRollbackFor = ChatRoomException.class)
     public Long generateRoom(ChatRoomDto chatRoomDto, Principal principal, boolean flag) {
         Member opponent = memberRepository.findById(chatRoomDto.getMemberId())
-                .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_MEMBER)); //상대방 7
+            .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_MEMBER)); //상대방 7
 
         Member me = memberRepository.findByTelNum(principal.getName())
-                .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_MEMBER)); //나 2
+            .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_MEMBER)); //나 2
 
-        if(validExistRoom.ExistRoom(me,opponent).isPresent()){
-            return validExistRoom.ExistRoom(me,opponent).get();
+        if (validExistRoom.ExistRoom(me, opponent).isPresent()) {
+            return validExistRoom.ExistRoom(me, opponent).get();
         }
 
         validRoomCount.checkRoom(opponent, me, flag);
+        validUnivCert.checkUnivCert(me);
 
         ChatRoom chatRoom = ChatRoom.builder()
-                .roomName(opponent.getNickName())
-                .build();
+            .roomName(opponent.getNickName())
+            .distance(gpsProcessor.getDistance(me.getMemberId(), opponent.getMemberId()))
+            .build();
 
         Long chatRoomId = chatRoomRepository.save(chatRoom).getChatRoomId();
         chatRoomService.addRoomMember(chatRoomId, List.of(opponent, me));
@@ -56,13 +62,13 @@ public class ChatFacadeService {
     @Transactional
     public Long approveRoom(Long waitingRoomId, Principal principal) {
         ChatWaiting chatWaiting = chatWaitingRepository.findById(waitingRoomId)
-                .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_WAITING_ROOM));
+            .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_WAITING_ROOM));
 
         ChatRoomDto chatRoomDto = ChatRoomDto.builder()
-                .memberId(chatWaiting.getLoveSender().getMemberId())
-                .build();
+            .memberId(chatWaiting.getLoveSender().getMemberId())
+            .build();
 
-        Long generateRoomId = generateRoom(chatRoomDto, principal,false);
+        Long generateRoomId = generateRoom(chatRoomDto, principal, false);
         chatWaitingRepository.deleteById(waitingRoomId);
         return generateRoomId;
     }
