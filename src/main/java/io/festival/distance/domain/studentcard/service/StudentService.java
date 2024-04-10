@@ -37,6 +37,7 @@ public class StudentService {
             .imageData(imageData)
             .build();
         studentCardRepository.save(studentCard);
+        member.updateAuthUniv(UnivCert.SUCCESS);
     }
 
     @Transactional(readOnly = true)
@@ -50,7 +51,6 @@ public class StudentService {
     @Transactional
     public void approve(Long studentCardId) {
         StudentCard studentCard = getStudentCard(studentCardId);
-        studentCard.getMember().updateAuthUniv(UnivCert.SUCCESS);
         sendFcm(studentCard, UnivCert.SUCCESS);
         studentCardRepository.delete(studentCard);
     }
