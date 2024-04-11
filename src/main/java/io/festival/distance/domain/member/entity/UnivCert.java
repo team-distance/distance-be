@@ -1,10 +1,5 @@
 package io.festival.distance.domain.member.entity;
 
-import io.festival.distance.authuniversity.domain.University;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
