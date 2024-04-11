@@ -165,4 +165,10 @@ public class MemberService {
     public String verifyUniv(String name) {
         return findByTelNum(name).getAuthUniv().getType();
     }
+
+    @Transactional
+    public void memberLogout(String telNum) {
+        Member member = findByTelNum(telNum);
+        member.clearInfo();
+    }
 }
