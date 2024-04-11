@@ -128,4 +128,10 @@ public class MemberController {
     public ResponseEntity<String> checkIdentity(Principal principal){
         return ResponseEntity.ok(memberService.verifyUniv(principal.getName()));
     }
+
+    @GetMapping("/logout")
+    public ResponseEntity<Void> logout(Principal principal){
+        memberService.memberLogout(principal.getName());
+        return ResponseEntity.ok().build();
+    }
 }

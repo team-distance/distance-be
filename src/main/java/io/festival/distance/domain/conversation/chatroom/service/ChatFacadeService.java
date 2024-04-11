@@ -41,14 +41,12 @@ public class ChatFacadeService {
 
         Member me = memberRepository.findByTelNum(principal.getName())
             .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_MEMBER)); //나 2
+        validUnivCert.checkUnivCert(me);
 
         if (validExistRoom.ExistRoom(me, opponent).isPresent()) {
             return validExistRoom.ExistRoom(me, opponent).get();
         }
-
         validRoomCount.checkRoom(opponent, me, flag);
-        validUnivCert.checkUnivCert(me);
-
         ChatRoom chatRoom = ChatRoom.builder()
             .roomName(opponent.getNickName())
             .distance(gpsProcessor.getDistance(me.getMemberId(), opponent.getMemberId()))
