@@ -19,19 +19,23 @@ public class FCMService {
         // 알림 내용
         Message firebaseMessage = createNotificationContent(fcmDto);
         // 알림 전송
-        String response;
+        String response = null;
         try {
             response = FirebaseMessaging.getInstance().send(firebaseMessage);
+            log.info(response);
         } catch (Exception e) {
-            e.printStackTrace();
-            response = "알림 전송 실패";
+            e.getMessage();
+            log.error(response);
         }
-       return NotificationDto.builder()
+        return NotificationDto.builder()
             .FcmMessageId(response)
             .build();
     }
 
     // 다른 곳에서도 재사용 가능하도록 분리함!
+    /** TODO
+     * s3 링크 환경변수
+     */
     private Message createNotificationContent(FcmDto fcmDto) {
         // 알림 내용
         return Message.builder()
@@ -39,7 +43,8 @@ public class FCMService {
             .setNotification(Notification.builder()
                 .setTitle(fcmDto.senderNickName())
                 .setBody(fcmDto.message())
-                .setImage("https://s3.ap-northeast-2.amazonaws.com/9oorm.distance/icons/apple-touch-icon-72x72.png")
+                .setImage(
+                    "https://s3.ap-northeast-2.amazonaws.com/9oorm.distance/icons/apple-touch-icon-72x72.png")
                 .build())
             .putData("chatRoomId", String.valueOf(fcmDto.roomId()))
             .build();
