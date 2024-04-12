@@ -22,7 +22,8 @@ public class FCMService {
         String response = null;
         try {
             response = FirebaseMessaging.getInstance().send(firebaseMessage);
-            log.info(response);
+            log.info("fcm>>>> " + FirebaseMessaging.getInstance().send(firebaseMessage));
+            log.info("response>>>> " + response);
         } catch (Exception e) {
             e.getMessage();
             log.error(response);
