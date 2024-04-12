@@ -23,14 +23,17 @@ public class FCMService {
         try {
             response = FirebaseMessaging.getInstance().send(firebaseMessage);
             log.info("fcm>>>> " + FirebaseMessaging.getInstance().send(firebaseMessage));
+            //projects/distance-97455/messages/d10ae9f0-798d-4b0a-a02b-8188ed08b401
             log.info("response>>>> " + response);
+            //projects/distance-97455/messages/38d7c6f5-8009-45fe-9ad8-588e699585f2
         } catch (Exception e) {
-            e.getMessage();
-            log.error(response);
+            log.error("fcm error>> " + e.getMessage());
         }
-        return NotificationDto.builder()
+        NotificationDto build = NotificationDto.builder()
             .FcmMessageId(response)
             .build();
+        log.info("Build>>> " + build);
+        return build;
     }
 
     // 다른 곳에서도 재사용 가능하도록 분리함!
