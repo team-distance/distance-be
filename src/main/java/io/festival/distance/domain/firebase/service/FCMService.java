@@ -18,6 +18,7 @@ public class FCMService {
         log.info("Client 토큰: " + fcmDto.clientToken());
         // 알림 내용
         Message firebaseMessage = createNotificationContent(fcmDto);
+        log.info("fcm message>>>>" + firebaseMessage.toString());
         // 알림 전송
         String response = null;
         try {
@@ -27,7 +28,7 @@ public class FCMService {
             log.info("response>>>> " + response);
             //projects/distance-97455/messages/38d7c6f5-8009-45fe-9ad8-588e699585f2
         } catch (Exception e) {
-            log.error("fcm error>> " + e.getMessage());
+                log.error("fcm error>> " + e.getMessage());
         }
         NotificationDto build = NotificationDto.builder()
             .FcmMessageId(response)
