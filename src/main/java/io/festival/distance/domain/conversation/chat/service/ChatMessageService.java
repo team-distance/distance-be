@@ -63,6 +63,7 @@ public class ChatMessageService {
         String myNickName = memberService.findMember(receiverId).getNickName(); // 발신자의 닉네임
         // FCM 알림 전송 발송자 닉네임이, chatMessage를 특정 clietnToken에게
         String clientToken = opponent.getClientToken();
+        log.info("opponent token>> " + clientToken);
         if (clientToken != null) { // clientToken이 null이 아닐 때만 FCM 알림 전송
             FcmDto fcmDto = FcmDto.builder()
                 .clientToken(clientToken)
