@@ -1,5 +1,6 @@
 package io.festival.distance.auth.config;
 
+import io.festival.distance.auth.jwt.ExceptionHandlerFilter;
 import io.festival.distance.auth.jwt.JwtFilter;
 import io.festival.distance.auth.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;

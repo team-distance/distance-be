@@ -19,7 +19,8 @@ import static io.festival.distance.auth.utils.SecurityMessage.SUCCESS_AUTHENTICA
 
 @RequiredArgsConstructor
 @Slf4j
-public class JwtFilter extends GenericFilterBean{
+public class JwtFilter extends GenericFilterBean {
+
     public static final String AUTHORIZATION_HEADER = "Authorization";
     private final TokenProvider tokenProvider;
 
