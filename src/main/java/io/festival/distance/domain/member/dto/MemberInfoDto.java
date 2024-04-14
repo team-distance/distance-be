@@ -10,7 +10,6 @@ import java.util.List;
 @Builder
 public record MemberInfoDto(String mbti,
                             String memberCharacter,
-                            String department,
                             List<MemberTagDto> memberTagDto,
                             List<MemberHobbyDto> memberHobbyDto) {
 }
