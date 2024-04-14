@@ -1,9 +1,13 @@
 package io.festival.distance.auth.jwt;
 
+import io.festival.distance.exception.DistanceException;
+import io.festival.distance.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -16,7 +20,6 @@ import java.io.IOException;
 
 import static io.festival.distance.auth.utils.SecurityMessage.SUCCESS_AUTHENTICATION;
 
-
 @RequiredArgsConstructor
 @Slf4j
 public class JwtFilter extends GenericFilterBean {
@@ -27,7 +30,9 @@ public class JwtFilter extends GenericFilterBean {
     // 실제 필터릴 로직
     // 토큰의 인증정보를 SecurityContext에 저장하는 역할 수행
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+        throws IOException, ServletException {
+
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String jwt = resolveToken(httpServletRequest);
         if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
@@ -35,7 +40,9 @@ public class JwtFilter extends GenericFilterBean {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             log.info(SUCCESS_AUTHENTICATION);
         }
+
         chain.doFilter(request, response);
+
     }
 
     private String resolveToken(HttpServletRequest request) {

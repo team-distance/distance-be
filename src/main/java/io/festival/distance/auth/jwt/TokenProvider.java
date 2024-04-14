@@ -1,5 +1,7 @@
 package io.festival.distance.auth.jwt;
 
+import io.festival.distance.exception.DistanceException;
+import io.festival.distance.exception.ErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -122,6 +124,8 @@ public class TokenProvider implements InitializingBean {
             log.error(UNSUPPORTED_JWT);
         } catch (IllegalArgumentException e) {
             log.error(WRONG_JWT);
+        } catch (ExpiredJwtException e) {
+            throw new DistanceException(ErrorCode.EXPIRED_JWT);
         }
         return false;
     }
