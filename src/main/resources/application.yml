@@ -41,6 +41,7 @@ jwt:
   header: ${JWT_HEADER}
   secret: ${JWT_SECRET_KEY}
   token-validity-in-seconds: ${JWT_EXPIRATION}
+  refresh-token-validity-in-seconds: ${JWT_REFRESH}
 
 fcm:
   project-id: ${PROJECT_ID}
