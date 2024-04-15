@@ -41,9 +41,9 @@
 - 규제 및 법적 준수 : 위치 기반 서비스와 개인정보 처리에 관한 법적 규제를 준수해야 하므로 관련 법률과 규정을 확인하고, 필요한 경우 법적 자문을 받아 서비스 운영을 보장해야한다.
 
 ## 화면 구성 📺
-|  메인 페이지  |  응원 메시지 목록 페이지   |
+|  가입 페이지  |  응원 메시지 목록 페이지   |
 | :-------------------------------------------: | :------------: |
-|  <img width="500" src="https://github.com/project-GAZA/GAZA-server/assets/56196986/28f11e9d-d354-469f-8303-3d89b7731940"/> |  <img width="500" src="https://github.com/project-GAZA/GAZA-server/assets/56196986/6a7e6e5f-3c36-4dd3-ba6c-67a6ee7c051f">|  
+|  <img width="390" src="https://github.com/team-distance/distance-be/assets/56196986/177f716f-0eed-41eb-9ef7-b74f5e233570"/> |  <img width="390" src="https://github.com/project-GAZA/GAZA-server/assets/56196986/6a7e6e5f-3c36-4dd3-ba6c-67a6ee7c051f">|  
 | 응원메시지 카테고리 선택 페이지   |  응원 메시지 작성 페이지   |  
 | <img width="500" src="https://github.com/project-GAZA/GAZA-server/assets/56196986/2ba63dfa-553e-46d7-87b7-1813ed74aba5"/>   |  <img width="500" src="https://github.com/project-GAZA/GAZA-server/assets/56196986/0750b7d6-03d5-42bd-a074-c2a45b9d12f2"/>     |
 |  후원 페이지   |  
