@@ -41,13 +41,19 @@
 - 규제 및 법적 준수 : 위치 기반 서비스와 개인정보 처리에 관한 법적 규제를 준수해야 하므로 관련 법률과 규정을 확인하고, 필요한 경우 법적 자문을 받아 서비스 운영을 보장해야한다.
 
 ## 화면 구성 📺
-|  가입 페이지  |  응원 메시지 목록 페이지   |
+|  회원가입 페이지  |  학과 선택 페이지   |
 | :-------------------------------------------: | :------------: |
-|  <img width="390" src="https://github.com/team-distance/distance-be/assets/56196986/177f716f-0eed-41eb-9ef7-b74f5e233570"/> |  <img width="390" src="https://github.com/project-GAZA/GAZA-server/assets/56196986/6a7e6e5f-3c36-4dd3-ba6c-67a6ee7c051f">|  
-| 응원메시지 카테고리 선택 페이지   |  응원 메시지 작성 페이지   |  
-| <img width="500" src="https://github.com/project-GAZA/GAZA-server/assets/56196986/2ba63dfa-553e-46d7-87b7-1813ed74aba5"/>   |  <img width="500" src="https://github.com/project-GAZA/GAZA-server/assets/56196986/0750b7d6-03d5-42bd-a074-c2a45b9d12f2"/>     |
-|  후원 페이지   |  
-| <img width="500" src="https://github.com/project-GAZA/GAZA-server/assets/56196986/44176d77-21ea-4b69-ad82-750a4a864256"/>     |
+|  <img width="390" src="https://github.com/team-distance/distance-be/assets/56196986/177f716f-0eed-41eb-9ef7-b74f5e233570"/> |  <img width="390" src="https://github.com/team-distance/distance-be/assets/56196986/9575184b-3a58-4839-859c-6026989cb314">|  
+| 프로필 설정 페이지   |  대학생 인증 페이지   |  
+| <img width="390" src="https://github.com/team-distance/distance-be/assets/56196986/65311cdd-727c-4d7a-b7de-d4be5e0b67e1"/>   |  <img width="390" src="https://github.com/team-distance/distance-be/assets/56196986/ae3c1604-e66a-4947-963c-96b6bf24e608"/>     |
+| 학생증 인증 페이지   |  대학 메일 인증 페이지   |  
+| <img width="390" src="https://github.com/team-distance/distance-be/assets/56196986/bdaf6c8e-022f-435b-ae2a-b4b225ceffe7"/>   |  <img width="390" src="https://github.com/team-distance/distance-be/assets/56196986/56d24c7c-a463-4d65-9de9-2401337842ad"/>     |
+| 메인 페이지   |  채팅방 목록 페이지   |  
+| <img width="390" src="https://github.com/team-distance/distance-be/assets/56196986/6ee2a7ac-c24e-4a80-be69-d801a0be402a"/>   |  <img width="390" src="https://github.com/team-distance/distance-be/assets/56196986/0cef9007-539d-485d-b0de-4b13655ed25c"/>     |
+| 요청함 페이지   |  채팅방 페이지   |  
+| <img width="390" src="https://github.com/team-distance/distance-be/assets/56196986/fbcd68d0-c433-4575-a708-20a857421a6e"/>   |  <img width="390" src="https://github.com/team-distance/distance-be/assets/56196986/92d823ed-312b-42ae-a048-a270c7718b8c"/>     |
+| 신고하기 페이지   |  축제 정보 페이지   |  
+| <img width="390" src="https://github.com/team-distance/distance-be/assets/56196986/21ed1b57-6632-47f7-a7e2-f58b6f2ea0d3"/>   |  <img width="390" src="https://github.com/team-distance/distance-be/assets/56196986/7024bd8d-752b-4703-a705-66ca6aaa34c3"/>     |
 
 ---
 
@@ -57,7 +63,8 @@
 ---
 
 ## System Architecture
-![image](https://github.com/CafeCheckin/CafeCheckin/assets/56196986/9bca1262-770e-4f70-ac78-47b53a27997b)
+<img width="944" alt="image" src="https://github.com/team-distance/distance-be/assets/56196986/c108cf4e-ae09-476a-99c9-42bcf229168b">
+
 
 ---
 
