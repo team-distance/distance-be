@@ -1,6 +1,5 @@
 package io.festival.distance.domain.gps.service;
 
-import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import io.festival.distance.domain.conversation.chatroom.repository.ChatRoomRepository;
 import io.festival.distance.domain.gps.dto.DistanceResponse;
 import io.festival.distance.domain.gps.dto.GpsDto;
@@ -13,15 +12,12 @@ import io.festival.distance.domain.member.repository.MemberRepository;
 import io.festival.distance.domain.member.service.MemberService;
 import io.festival.distance.exception.DistanceException;
 import io.festival.distance.exception.ErrorCode;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -107,9 +103,8 @@ public class GpsService {
             .limit(4) // 최대 4명
             .map(user -> MatchUserDto.builder()
                 .memberId(user.memberId())
-                .memberInfoDto(memberService.memberProfile(user.telNum()))
+                .memberProfileDto(memberService.memberProfile(user.telNum()))
                 .nickName(user.nickName())
-                .department(user.department())
                 .build())
             .toList();
         return MatchResponseDto.builder()
@@ -125,9 +120,8 @@ public class GpsService {
 			.limit(4) // 최대 4명
 			.map(user -> MatchUserDto.builder()
 				.memberId(user.getMemberId())
-				.memberInfoDto(memberService.memberProfile(user.getTelNum()))
+				.memberProfileDto(memberService.memberProfile(user.getTelNum()))
 				.nickName(user.getNickName())
-				.department(user.getDepartment())
 				.build())
 			.toList();
 

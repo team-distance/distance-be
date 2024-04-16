@@ -6,6 +6,7 @@ import io.festival.distance.domain.member.dto.AccountRequestDto;
 import io.festival.distance.domain.member.dto.CheckAuthenticateNum;
 import io.festival.distance.domain.member.dto.MemberHobbyDto;
 import io.festival.distance.domain.member.dto.MemberInfoDto;
+import io.festival.distance.domain.member.dto.MemberProfileDto;
 import io.festival.distance.domain.member.dto.MemberSignDto;
 import io.festival.distance.domain.member.dto.MemberTagDto;
 import io.festival.distance.domain.member.dto.MemberTelNumDto;
@@ -102,11 +103,11 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public MemberInfoDto memberProfile(String telNum) { //멤버 프로필 조회
+    public MemberProfileDto memberProfile(String telNum) { //멤버 프로필 조회
         Member member = findByTelNum(telNum);
         List<MemberHobbyDto> hobbyDtoList = memberHobbyService.showHobby(member);
         List<MemberTagDto> tagDtoList = memberTagService.showTag(member);
-        return MemberInfoDto.builder()
+        return MemberProfileDto.builder()
             .memberCharacter(member.getMemberCharacter())
             .mbti(member.getMbti())
             .memberTagDto(tagDtoList)

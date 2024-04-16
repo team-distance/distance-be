@@ -4,6 +4,7 @@ import io.festival.distance.auth.dto.AccessTokenDto;
 import io.festival.distance.auth.dto.RefreshTokenDto;
 import io.festival.distance.auth.dto.TokenDto;
 import io.festival.distance.auth.jwt.TokenProvider;
+import io.festival.distance.auth.refresh.RefreshRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
@@ -19,21 +20,12 @@ public class RefreshTokenService {
     String secret;
 
     public AccessTokenDto recreateAccessToken(RefreshTokenDto tokenDto) {
-        if (tokenProvider.validateToken(tokenDto.refreshToken())) {//refresh 유효성 검증
+        if (tokenProvider.validateToken(tokenDto.refreshToken(), "REFRESH")) {//refresh 유효성 검증
             return AccessTokenDto.builder()
                 .accessToken(tokenProvider.createAccessToken(
                     tokenProvider.getAuthentication(tokenDto.refreshToken())))
                 .build();
         }
         return null;
-    }
-
-    private String tokenDecoder(String token) {
-        Claims claims = Jwts.parserBuilder()
-            .setSigningKey(secret)
-            .build()
-            .parseClaimsJws(token)
-            .getBody();
-        return claims.getSubject();
     }
 }
