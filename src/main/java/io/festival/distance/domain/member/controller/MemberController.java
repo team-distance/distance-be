@@ -7,6 +7,7 @@ import io.festival.distance.domain.member.dto.MemberSignDto;
 import io.festival.distance.domain.member.dto.MemberTelNumDto;
 import io.festival.distance.domain.member.dto.TelNumRequest;
 import io.festival.distance.domain.member.service.MemberService;
+import io.festival.distance.domain.member.validsignup.ValidPassword;
 import io.festival.distance.domain.member.validsignup.ValidSignup;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final ValidSignup validSignup;
+    private final ValidPassword validPassword;
     private String authenticateNum;
 
     /**
@@ -97,8 +99,10 @@ public class MemberController {
         return ResponseEntity.ok(memberService.findTelNum(memberId));
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 메시지 전송
+     *
      * @param telNumRequest 전화번호
      */
     @PostMapping("/send/sms")
@@ -108,30 +112,47 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 메시지 인증번호 인증
+     *
      * @param checkAuthenticateNum 사용자가 입력한 인증번호
      */
     @PostMapping("/authenticate")
     public ResponseEntity<Void> authenticateNum(
         @RequestBody CheckAuthenticateNum checkAuthenticateNum) {
-        memberService.verifyAuthenticateNum(checkAuthenticateNum,authenticateNum);
+        memberService.verifyAuthenticateNum(checkAuthenticateNum, authenticateNum);
         return ResponseEntity.ok().build();
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 멤버가 대학인증을 했는지 안했는지 여부
+     *
      * @param principal 현재 로그인한 객체
      * @return 인증되어있다면 true, 안되어있으면 false
      */
     @GetMapping("/check/university")
-    public ResponseEntity<String> checkIdentity(Principal principal){
+    public ResponseEntity<String> checkIdentity(Principal principal) {
         return ResponseEntity.ok(memberService.verifyUniv(principal.getName()));
     }
 
+    /**
+     * NOTE
+     * logout
+     *
+     * @param principal 현재 로그인한 객체
+     */
     @GetMapping("/logout")
-    public ResponseEntity<Void> logout(Principal principal){
+    public ResponseEntity<Void> logout(Principal principal) {
         memberService.memberLogout(principal.getName());
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/check/password")
+    public ResponseEntity<Void> checkPassword(@RequestBody AccountRequestDto accountRequestDto,
+        Principal principal) {
+        validPassword.duplicateCheckPassword(principal, accountRequestDto.password());
         return ResponseEntity.ok().build();
     }
 }
