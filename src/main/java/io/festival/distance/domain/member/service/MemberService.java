@@ -79,7 +79,7 @@ public class MemberService {
      */
     @Transactional
     public String withDrawal(String telNum) {
-        memberRepository.existsByTelNum(telNum);
+        memberRepository.deleteByTelNum(telNum);
         return telNum;
     }
 

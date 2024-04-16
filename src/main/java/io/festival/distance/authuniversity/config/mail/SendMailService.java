@@ -4,6 +4,7 @@ import io.festival.distance.authuniversity.config.mail.dto.UnivMailDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -54,6 +55,7 @@ public class SendMailService {
         return str.toString();
     }
 
+    @Async
     public void mailSend(UnivMailDto mailDto) throws MessagingException {
         System.out.println("이멜 전송 완료!");
         MimeMessage message = javaMailSender.createMimeMessage();
