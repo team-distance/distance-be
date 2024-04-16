@@ -1,11 +1,12 @@
 package io.festival.distance.domain.member.dto;
 
-public record MemberProfileDto(String schoolEmail,
-                               String password,
-                               String gender,
-                               String nickName,
-                               String telNum,
-                               String school,
-                               String college,
-                               String department) {
+import java.util.List;
+import lombok.Builder;
+
+@Builder
+public record MemberProfileDto(String mbti,
+                               String memberCharacter,
+                               String department,
+                               List<MemberTagDto> memberTagDto,
+                               List<MemberHobbyDto> memberHobbyDto) {
 }

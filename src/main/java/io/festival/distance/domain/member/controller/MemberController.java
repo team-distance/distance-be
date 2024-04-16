@@ -3,6 +3,7 @@ package io.festival.distance.domain.member.controller;
 import io.festival.distance.domain.member.dto.AccountRequestDto;
 import io.festival.distance.domain.member.dto.CheckAuthenticateNum;
 import io.festival.distance.domain.member.dto.MemberInfoDto;
+import io.festival.distance.domain.member.dto.MemberProfileDto;
 import io.festival.distance.domain.member.dto.MemberSignDto;
 import io.festival.distance.domain.member.dto.MemberTelNumDto;
 import io.festival.distance.domain.member.dto.TelNumRequest;
@@ -67,7 +68,7 @@ public class MemberController {
      * 멤버 프로필 조회
      */
     @GetMapping("/profile")
-    public ResponseEntity<MemberInfoDto> showProfile(Principal principal) {
+    public ResponseEntity<MemberProfileDto> showProfile(Principal principal) {
         return ResponseEntity.ok(memberService.memberProfile(principal.getName()));
     }
 
