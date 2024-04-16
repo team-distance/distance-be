@@ -11,6 +11,7 @@ public class ValidOpponentRoom {
     private final RoomMemberRepository roomMemberRepository;
 
     public Long checkOpponentRoom(Member member){
-        return roomMemberRepository.countByMember(member);
+        System.out.println(">>>>" + roomMemberRepository.checkRoomMemberCount(member));
+        return roomMemberRepository.checkRoomMemberCount(member);
     }
 }

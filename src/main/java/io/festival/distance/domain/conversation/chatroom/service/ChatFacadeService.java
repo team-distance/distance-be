@@ -47,8 +47,10 @@ public class ChatFacadeService {
             return validExistRoom.ExistRoom(me, opponent).get();
         }
         validRoomCount.checkRoom(opponent, me, flag);
+
         ChatRoom chatRoom = ChatRoom.builder()
             .roomName(opponent.getNickName())
+            .roomStatus("ACTIVE")
             .distance(gpsProcessor.getDistance(me.getMemberId(), opponent.getMemberId()))
             .build();
 

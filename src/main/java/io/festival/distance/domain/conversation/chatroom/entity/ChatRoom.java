@@ -27,9 +27,20 @@ public class ChatRoom extends BaseTimeEntity {  //채팅방
     @Column(name = "room_name")
     private String roomName;
 
+    @Column(name = "status")
+    private String roomStatus;
+
     @Column(name = "distance")
     private Double distance;
 
     @OneToMany(mappedBy = "chatRoom",cascade = CascadeType.REMOVE)
     private List<RoomMember> member=new ArrayList<>();
+
+    public void roomInActive(){
+        this.roomStatus="INACTIVE";
+    }
+
+    public void roomActive(){
+        this.roomStatus="ACTIVE";
+    }
 }
