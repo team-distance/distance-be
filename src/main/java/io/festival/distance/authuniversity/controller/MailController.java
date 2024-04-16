@@ -5,17 +5,16 @@ import io.festival.distance.authuniversity.dto.EmailDto;
 import io.festival.distance.authuniversity.dto.SchoolNameDto;
 import io.festival.distance.authuniversity.service.univmail.AuthenticateMail;
 import io.festival.distance.authuniversity.service.univmail.SendSchoolDomain;
-import io.festival.distance.authuniversity.service.univmail.UniversityMailValidService;
-import io.festival.distance.authuniversity.service.univmail.ValidSchoolEmail;
+import io.festival.distance.domain.member.validsignup.ValidEmail;
 import java.security.Principal;
-import javax.mail.Multipart;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import javax.mail.MessagingException;
-import org.springframework.web.multipart.MultipartFile;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,7 +24,7 @@ public class MailController {
 
     private final SendSchoolDomain sendSchoolDomain;
     private final AuthenticateMail authenticateMail;
-    private final UniversityMailValidService universityMailValidService;
+    private final ValidEmail validEmail;
     private String certificationNumber;
 
     /**
@@ -44,7 +43,7 @@ public class MailController {
     @PostMapping("/send/email")
     public ResponseEntity<Void> sendEmail(@RequestBody EmailDto emailDto)
         throws MessagingException {
-        universityMailValidService.checkMail(emailDto.schoolEmail());
+        validEmail.checkValidEmail(emailDto.schoolEmail());
         certificationNumber = authenticateMail.sendNumber(emailDto.schoolEmail());
         return ResponseEntity.ok().build();
     }
