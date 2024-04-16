@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class ChatRoomService {
+
     private final ChatRoomRepository chatRoomRepository;
     private final MemberRepository memberRepository;
     private final RoomMemberRepository roomMemberRepository;
@@ -29,56 +30,61 @@ public class ChatRoomService {
     @Transactional(readOnly = true)
     public List<ChatRoomInfoDto> findAllRoom(String telNum) {
         Member member = memberRepository.findByTelNum(telNum) //현재 로그인한 객체
-                .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_MEMBER));
+            .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_MEMBER));
 
         return roomMemberRepository.findAllByMember(member)
-                .stream()
-                .map(roomMember -> {
-                    ChatRoom chatRoom = roomMember.getChatRoom();
-                    Member opponent=memberRepository.findByNickName(roomMember.getMyRoomName());
+            .stream()
+            .map(roomMember -> {
+                ChatRoom chatRoom = roomMember.getChatRoom();
+                Member opponent = memberRepository.findByNickName(roomMember.getMyRoomName());
+                System.out.println(opponent);
+                System.out.println(">>>>>" + opponent.getMemberId());
 
-                    System.out.println(">>>>>"+ opponent.getMemberId());
+                ChatMessage message = chatMessageRepository.findTop1ByChatRoomOrderByCreateDtDesc(
+                    chatRoom); //가장 최근 메시지 불러옴
 
-                    ChatMessage message = chatMessageRepository.findTop1ByChatRoomOrderByCreateDtDesc(chatRoom);
+                String lastMessage =
+                    Objects.isNull(message) ? "새로운 채팅방이 생성되었습니다!" : message.getChatMessage();
 
-                    String lastMessage=Objects.isNull(message)?"새로운 채팅방이 생성되었습니다!": message.getChatMessage();
-                    System.out.println(roomMember.getLastReadMessageId());
-                    Integer count = chatMessageRepository.countByChatRoomAndChatMessageIdGreaterThan(chatRoom, roomMember.getLastReadMessageId());
-                    System.out.println(count);
-                    return ChatRoomInfoDto.builder()
-                            .chatRoomId(chatRoom.getChatRoomId())
-                            .roomName(roomMember.getMyRoomName())
-                            .createDt(roomMember.getCreateDt())
-                            .modifyDt(roomMember.getModifyDt())
-                            .opponentMemberId(opponent.getMemberId())
-                            .memberCharacter(opponent.getMemberCharacter())
-                            .lastMessage(lastMessage)
-                            .askedCount(count)
-                            .build();
-                })
-                .collect(Collectors.toList());
+                Integer count = chatMessageRepository.countByChatRoomAndChatMessageIdGreaterThan(
+                    chatRoom, roomMember.getLastReadMessageId());
+
+                return ChatRoomInfoDto.builder()
+                    .chatRoomId(chatRoom.getChatRoomId())
+                    .roomName(roomMember.getMyRoomName())
+                    .createDt(roomMember.getCreateDt())
+                    .modifyDt(message.getCreateDt())
+                    .opponentMemberId(opponent.getMemberId())
+                    .memberCharacter(opponent.getMemberCharacter())
+                    .lastMessage(lastMessage)
+                    .askedCount(count)
+                    .build();
+            })
+            .collect(Collectors.toList());
     }
+
     @Transactional
     public void addRoomMember(Long chatRoomId, List<Member> member) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 방"));
+            .orElseThrow(() -> new IllegalStateException("존재하지 않는 방"));
 
         for (Member m : member) {
             Member opponent = member //상대방 찾음
-                    .stream()
-                    .filter(o -> !o.getMemberId().equals(m.getMemberId()))
-                    .findFirst()
-                    .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_MEMBER));
+                .stream()
+                .filter(o -> !o.getMemberId().equals(m.getMemberId()))
+                .findFirst()
+                .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_MEMBER));
 
             RoomMember roomMember = RoomMember.builder()
-                    .chatRoom(chatRoom)
-                    .myRoomName(opponent.getNickName())
-                    .lastReadMessageId(0L)
-                    .member(m)
-                    .build();
+                .chatRoom(chatRoom)
+                .myRoomName(opponent.getNickName())
+                .lastReadMessageId(0L)
+                .member(m)
+                .build();
             roomMemberRepository.save(roomMember);
         }
     }
+
     @Transactional
     public void delete(Long roomId) {
         chatRoomRepository.deleteById(roomId);
@@ -86,6 +92,6 @@ public class ChatRoomService {
 
     public ChatRoom findRoom(Long roomId) {
         return chatRoomRepository.findById(roomId)
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 방"));
+            .orElseThrow(() -> new IllegalStateException("존재하지 않는 방"));
     }
 }
