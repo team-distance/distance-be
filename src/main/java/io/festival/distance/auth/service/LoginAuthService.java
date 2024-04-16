@@ -37,6 +37,10 @@ public class LoginAuthService {
         String accessToken = tokenProvider.createAccessToken(authentication);
         String refreshToken = tokenProvider.createRefreshToken(authentication);
 
+        if(refreshRepository.existsBySubject(loginDto.getTelNum())){
+            refreshRepository.deleteBySubject(loginDto.getTelNum());
+        }
+
         Refresh refresh = Refresh.builder()
             .refreshToken(refreshToken)
             .subject(loginDto.getTelNum())

@@ -1,10 +1,13 @@
 package io.festival.distance.auth.jwt;
 
+import io.festival.distance.auth.refresh.RefreshRepository;
+import io.festival.distance.exception.ChatRoomException;
 import io.festival.distance.exception.DistanceException;
 import io.festival.distance.exception.ErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,14 +40,17 @@ public class TokenProvider implements InitializingBean {
     private final long tokenValidityInMilliseconds;
     private final long refreshTokenExpireTime;
     private Key key;
+    private final RefreshRepository refreshRepository;
 
     public TokenProvider(
         @Value("${jwt.secret}") String secret,
         @Value("${jwt.token-validity-in-seconds}") long tokenValidityInSeconds,
-        @Value("${jwt.refresh-token-validity-in-seconds}") long refreshTokenExpireTime) {
+        @Value("${jwt.refresh-token-validity-in-seconds}") long refreshTokenExpireTime,
+        RefreshRepository refreshRepository) {
         this.secret = secret;
         this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000; //30분 60*30
         this.refreshTokenExpireTime = refreshTokenExpireTime * 1000; //1주일로 설정
+        this.refreshRepository=refreshRepository;
     }
 
     @Override
@@ -114,7 +120,7 @@ public class TokenProvider implements InitializingBean {
     }
 
     // 토큰의 유효성 검증을 수행
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token,String type) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
@@ -126,7 +132,9 @@ public class TokenProvider implements InitializingBean {
             log.error(WRONG_JWT);
         } catch (ExpiredJwtException e) {
             log.error(EXPIRED_JWT);
-            //return false;
+            if(type.equals("REFRESH")){
+                refreshRepository.deleteByRefreshToken(token);
+            }
             throw new DistanceException(ErrorCode.EXPIRED_JWT);
         }
         return false;
