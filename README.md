@@ -58,8 +58,7 @@
 ---
 
 ## DB구조도
-<img width="866" alt="image" src="https://github.com/project-GAZA/GAZA-server/assets/56196986/99048974-4315-4fd1-abf2-b8ee1ae6283f">
-
+추후 update
 ---
 
 ## System Architecture
