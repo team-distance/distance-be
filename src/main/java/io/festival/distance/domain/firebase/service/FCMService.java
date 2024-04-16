@@ -52,9 +52,9 @@ public class FCMService {
                 .setNotification(WebpushNotification.builder()
                     .setTitle(fcmDto.senderNickName())
                     .setBody(fcmDto.message())
-                    .setImage(
+                    /*.setImage(
                         "https://s3.ap-northeast-2.amazonaws.com/9oorm.distance/icons/apple-touch-icon-72x72.png")
-                    .putCustomData("chatRoomId", String.valueOf(fcmDto.roomId()))
+                    .putCustomData("chatRoomId", String.valueOf(fcmDto.roomId()))*/
                     .build())
                 .build())
             .setToken(fcmDto.clientToken())
