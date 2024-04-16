@@ -21,6 +21,7 @@ public class ChatMessageResponseDto {
     private Long messageId;
     private LocalDateTime sendDt;
     private boolean checkTiKiTaKa;
+    private boolean roomStatus;
 
     public ChatMessageResponseDto(ChatMessage message) {
         this.messageId=message.getChatMessageId();

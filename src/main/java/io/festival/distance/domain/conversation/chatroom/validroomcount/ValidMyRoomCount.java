@@ -11,6 +11,6 @@ public class ValidMyRoomCount {
     private final RoomMemberRepository roomMemberRepository;
 
     public Long checkMyRoom(Member member){
-        return roomMemberRepository.countByMember(member);
+        return roomMemberRepository.checkRoomMemberCount(member);
     }
 }

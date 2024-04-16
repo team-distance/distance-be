@@ -40,16 +40,18 @@ public class RoomMemberService {
     public void goOutRoom(Long chatRoomId, Principal principal) {
         ChatRoom chatRoom = chatRoomService.findRoom(chatRoomId);
         Member member = memberService.findByTelNum(principal.getName());
+
         if (!roomMemberRepository.existsByMemberAndChatRoom(member, chatRoom)) {
             throw new DistanceException(ErrorCode.NOT_EXIST_CHATROOM);
         }
 
-        if (roomMemberRepository.countByChatRoomChatRoomId(chatRoomId) == 1) {
+        if (chatRoom.getRoomStatus().equals("INACTIVE")) {
             roomMemberRepository.deleteByChatRoomAndMember(chatRoom, member);
             chatRoomService.delete(chatRoomId);
             chatMessageRepository.deleteAllByChatRoom(chatRoom);
             return;
         }
         roomMemberRepository.deleteByChatRoomAndMember(chatRoom, member);
+        chatRoom.roomInActive();
     }
 }
