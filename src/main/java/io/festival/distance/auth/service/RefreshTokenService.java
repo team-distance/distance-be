@@ -1,6 +1,7 @@
 package io.festival.distance.auth.service;
 
 import io.festival.distance.auth.dto.AccessTokenDto;
+import io.festival.distance.auth.dto.RefreshTokenDto;
 import io.festival.distance.auth.dto.TokenDto;
 import io.festival.distance.auth.jwt.TokenProvider;
 import io.jsonwebtoken.Claims;
@@ -17,16 +18,12 @@ public class RefreshTokenService {
     @Value("${jwt.secret}")
     String secret;
 
-    public AccessTokenDto recreateAccessToken(TokenDto tokenDto) {
-        String accessClaims = tokenDecoder(tokenDto.getAccessToken());
-        String refreshClaims = tokenDecoder(tokenDto.getRefreshToken());
-        if (accessClaims.equals(refreshClaims)) {
-            if (tokenProvider.validateToken(tokenDto.getRefreshToken())) {//refresh 유효성 검증
-                return AccessTokenDto.builder()
-                    .accessToken(tokenProvider.createAccessToken(
-                        tokenProvider.getAuthentication(tokenDto.getRefreshToken())))
-                    .build();
-            }
+    public AccessTokenDto recreateAccessToken(RefreshTokenDto tokenDto) {
+        if (tokenProvider.validateToken(tokenDto.refreshToken())) {//refresh 유효성 검증
+            return AccessTokenDto.builder()
+                .accessToken(tokenProvider.createAccessToken(
+                    tokenProvider.getAuthentication(tokenDto.refreshToken())))
+                .build();
         }
         return null;
     }
