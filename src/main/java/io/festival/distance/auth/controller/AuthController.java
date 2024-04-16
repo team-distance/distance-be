@@ -2,6 +2,7 @@ package io.festival.distance.auth.controller;
 
 import io.festival.distance.auth.dto.AccessTokenDto;
 import io.festival.distance.auth.dto.LoginDto;
+import io.festival.distance.auth.dto.RefreshTokenDto;
 import io.festival.distance.auth.dto.TokenDto;
 import io.festival.distance.auth.service.LoginAuthService;
 import io.festival.distance.auth.service.RefreshTokenService;
@@ -29,7 +30,7 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<AccessTokenDto> refresh(@RequestBody TokenDto tokenDto) {
+    public ResponseEntity<AccessTokenDto> refresh(@RequestBody RefreshTokenDto tokenDto) {
         return ResponseEntity.ok(refreshTokenService.recreateAccessToken(tokenDto));
     }
 }

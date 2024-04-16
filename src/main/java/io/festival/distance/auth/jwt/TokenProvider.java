@@ -125,6 +125,8 @@ public class TokenProvider implements InitializingBean {
         } catch (IllegalArgumentException e) {
             log.error(WRONG_JWT);
         } catch (ExpiredJwtException e) {
+            log.error(EXPIRED_JWT);
+            //return false;
             throw new DistanceException(ErrorCode.EXPIRED_JWT);
         }
         return false;
