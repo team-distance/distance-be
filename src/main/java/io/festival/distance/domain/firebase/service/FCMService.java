@@ -25,7 +25,8 @@ public class FCMService {
         String response = null;
         try {
             response = FirebaseMessaging.getInstance().send(firebaseMessage);
-            log.debug("fcm>>>> " + FirebaseMessaging.getInstance().sendAsync(firebaseMessage).get());
+            log.debug(
+                "fcm>>>> " + FirebaseMessaging.getInstance().sendAsync(firebaseMessage).get());
             //projects/distance-97455/messages/d10ae9f0-798d-4b0a-a02b-8188ed08b401
             log.debug("response>>>> " + response);
             //projects/distance-97455/messages/38d7c6f5-8009-45fe-9ad8-588e699585f2
@@ -60,15 +61,14 @@ public class FCMService {
             .setToken(fcmDto.clientToken())
             .build();*/
 
-            return Message.builder()
-                .setWebpushConfig(WebpushConfig.builder()
-                    .putData("nickName",fcmDto.senderNickName())
-                    .putData("message",fcmDto.message())
-                    .putData("chatRoomId", String.valueOf(fcmDto.roomId()))
-                    .putData("iconLink","https://s3.ap-northeast-2.amazonaws.com/9oorm.distance/icons/apple-touch-icon-72x72.png")
-                .build())
-                .setToken(fcmDto.clientToken())
-                .build();
+        return Message.builder()
+            .putData("nickName", fcmDto.senderNickName())
+            .putData("message", fcmDto.message())
+            .putData("chatRoomId", String.valueOf(fcmDto.roomId()))
+            .putData("iconLink",
+                "https://s3.ap-northeast-2.amazonaws.com/9oorm.distance/icons/apple-touch-icon-72x72.png")
+            .setToken(fcmDto.clientToken())
+            .build();
     }
 
     //닉네임, 메시지 내용, chatroomid, icon link
