@@ -29,7 +29,7 @@ public enum ErrorCode {
 
     // NOT_CORRECT_
     NOT_CORRECT_PASSWORD(HttpStatusCode.BAD_REQUEST.getStatus(), "비밀번호가 일치하지 않습니다!"),
-    NOT_CORRECT_AUTHENTICATION_NUMBER(HttpStatusCode.BAD_REQUEST.getStatus(), "인증번호가 일치하지 않습니다!"),
+    NOT_CORRECT_AUTHENTICATION_NUMBER(HttpStatusCode.FORBIDDEN.getStatus(), "인증번호가 일치하지 않습니다!"),
 
     //TOO_MANY
     TOO_MANY_MY_CHATROOM(HttpStatusCode.BAD_REQUEST.getStatus(), "이미 나의 방이 3개입니다!"),
