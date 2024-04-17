@@ -51,7 +51,7 @@
 | <img width="390" src="https://github.com/team-distance/distance-be/assets/56196986/bdaf6c8e-022f-435b-ae2a-b4b225ceffe7"/>   |  <img width="390" src="https://github.com/team-distance/distance-be/assets/56196986/56d24c7c-a463-4d65-9de9-2401337842ad"/>     |
 | 메인 페이지   |  채팅방 목록 페이지   |  
 | <img width="390" src="https://github.com/team-distance/distance-be/assets/56196986/6ee2a7ac-c24e-4a80-be69-d801a0be402a"/>   |  <img width="390" src="https://github.com/team-distance/distance-be/assets/56196986/0cef9007-539d-485d-b0de-4b13655ed25c"/>     |
-| 요청함 페이지   |  채팅방 페이지   |  
+| 요청함 페이지   |  채팅방 페이지   |  
 | <img width="390" src="https://github.com/team-distance/distance-be/assets/56196986/fbcd68d0-c433-4575-a708-20a857421a6e"/>   |  <img width="390" src="https://github.com/team-distance/distance-be/assets/56196986/92d823ed-312b-42ae-a048-a270c7718b8c"/>     |
 | 신고하기 페이지   |  축제 정보 페이지   |  
 | <img width="390" src="https://github.com/team-distance/distance-be/assets/56196986/21ed1b57-6632-47f7-a7e2-f58b6f2ea0d3"/>   |  <img width="390" src="https://github.com/team-distance/distance-be/assets/56196986/7024bd8d-752b-4703-a705-66ca6aaa34c3"/>     |
