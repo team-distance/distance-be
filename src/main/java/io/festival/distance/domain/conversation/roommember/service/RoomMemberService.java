@@ -23,7 +23,7 @@ public class RoomMemberService {
     private final ChatMessageRepository chatMessageRepository;
     private final MemberService memberService;
     private final ChatRoomService chatRoomService;
-
+    private static final String IN_ACTIVE="INACTIVE";
     @Transactional
     public void updateLastMessage(Long memberId, Long chatMessageId, Long roomId) {
         Member member = memberService.findMember(memberId);
@@ -45,7 +45,7 @@ public class RoomMemberService {
             throw new DistanceException(ErrorCode.NOT_EXIST_CHATROOM);
         }
 
-        if (chatRoom.getRoomStatus().equals("INACTIVE")) {
+        if (chatRoom.getRoomStatus().equals(IN_ACTIVE)) {
             roomMemberRepository.deleteByChatRoomAndMember(chatRoom, member);
             chatRoomService.delete(chatRoomId);
             chatMessageRepository.deleteAllByChatRoom(chatRoom);

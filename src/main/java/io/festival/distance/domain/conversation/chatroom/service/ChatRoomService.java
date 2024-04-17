@@ -68,21 +68,25 @@ public class ChatRoomService {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
             .orElseThrow(() -> new IllegalStateException("존재하지 않는 방"));
 
-        for (Member m : member) {
+        for (Member me : member) {
             Member opponent = member //상대방 찾음
                 .stream()
-                .filter(o -> !o.getMemberId().equals(m.getMemberId()))
+                .filter(o -> !o.getMemberId().equals(me.getMemberId()))
                 .findFirst()
                 .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_MEMBER));
 
-            RoomMember roomMember = RoomMember.builder()
-                .chatRoom(chatRoom)
-                .myRoomName(opponent.getNickName())
-                .lastReadMessageId(0L)
-                .member(m)
-                .build();
-            roomMemberRepository.save(roomMember);
+            saveRoomMember(me, chatRoom, opponent);
         }
+    }
+
+    public void saveRoomMember(Member me, ChatRoom chatRoom, Member opponent) {
+        RoomMember roomMember = RoomMember.builder()
+            .chatRoom(chatRoom)
+            .myRoomName(opponent.getNickName())
+            .lastReadMessageId(0L)
+            .member(me)
+            .build();
+        roomMemberRepository.save(roomMember);
     }
 
     @Transactional
