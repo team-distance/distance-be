@@ -53,9 +53,10 @@ public class MailController {
      * 인증번호가 일치하는지 확인
      */
     @PostMapping("/certificate/email")
-    public ResponseEntity<Boolean> certificationNumber(@RequestBody CertificateDto certificateDto,
+    public ResponseEntity<Void> certificationNumber(@RequestBody CertificateDto certificateDto,
         Principal principal) {
-        return ResponseEntity.ok(authenticateMail.checkCertificationNumber(certificateDto.number(),
-            certificationNumber,principal.getName()));
+        authenticateMail.checkCertificationNumber(certificateDto.number(),
+            certificationNumber, principal.getName());
+        return ResponseEntity.ok().build();
     }
 }

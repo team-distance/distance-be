@@ -5,6 +5,8 @@ import io.festival.distance.authuniversity.config.mail.dto.UnivMailDto;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.entity.UnivCert;
 import io.festival.distance.domain.member.service.MemberService;
+import io.festival.distance.exception.DistanceException;
+import io.festival.distance.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -28,11 +30,11 @@ public class AuthenticateMail {
     }
 
     @Transactional
-    public boolean checkCertificationNumber(String number,String num2, String telNum){
+    public void checkCertificationNumber(String number,String num2, String telNum){
         Member member = memberService.findByTelNum(telNum);
-        if(number.equals(num2)){
-            member.updateAuthUniv(UnivCert.SUCCESS);
+        if(!number.equals(num2)){
+            throw new DistanceException(ErrorCode.NOT_CORRECT_AUTHENTICATION_NUMBER);
         }
-        return number.equals(num2);
+        member.updateAuthUniv(UnivCert.SUCCESS);
     }
 }
