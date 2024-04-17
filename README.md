@@ -15,6 +15,7 @@
 
 ## 개발 환경
 - BACKEND : Spring Framework, Java17, Mysql, Spring Data Jpa, AWS ec2, Docker, Docker-compose, CI/CD, Nginx, STOMP   <br>
+- APIs : CoolSms API <br>
 - 버전 및 이슈관리 : Github, Github actions   <br>
 
 ## 주제
