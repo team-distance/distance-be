@@ -5,21 +5,22 @@ import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import io.festival.distance.domain.conversation.chatroom.repository.ChatRoomRepository;
 import io.festival.distance.domain.conversation.chatroom.validroomcount.ValidExistRoom;
 import io.festival.distance.domain.conversation.chatroom.validroomcount.ValidRoomCount;
-import io.festival.distance.domain.gps.service.GpsProcessor;
-import io.festival.distance.domain.member.entity.Member;
-import io.festival.distance.domain.member.repository.MemberRepository;
 import io.festival.distance.domain.conversation.waiting.entity.ChatWaiting;
 import io.festival.distance.domain.conversation.waiting.repository.ChatWaitingRepository;
+import io.festival.distance.domain.gps.service.GpsProcessor;
+import io.festival.distance.domain.gps.valid.ValidGps;
+import io.festival.distance.domain.member.entity.Member;
+import io.festival.distance.domain.member.repository.MemberRepository;
 import io.festival.distance.domain.member.validlogin.ValidUnivCert;
 import io.festival.distance.exception.ChatRoomException;
 import io.festival.distance.exception.DistanceException;
 import io.festival.distance.exception.ErrorCode;
+import java.security.Principal;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.security.Principal;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +34,9 @@ public class ChatFacadeService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatWaitingRepository chatWaitingRepository;
     private final GpsProcessor gpsProcessor;
+    private final ValidGps validGps;
+
+    private static final String ACTIVE="ACTIVE";
 
     @Transactional(noRollbackFor = ChatRoomException.class)
     public Long generateRoom(ChatRoomDto chatRoomDto, Principal principal, boolean flag) {
@@ -41,16 +45,31 @@ public class ChatFacadeService {
 
         Member me = memberRepository.findByTelNum(principal.getName())
             .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_MEMBER)); //나 2
+
         validUnivCert.checkUnivCert(me);
 
+        validGps.checkGps(me);
+
+        //기존에 대화 중인 방이 있는 경우 해당 방id 반환
         if (validExistRoom.ExistRoom(me, opponent).isPresent()) {
             return validExistRoom.ExistRoom(me, opponent).get();
         }
+
+        // A, B 대화 중 A가 나갔다가 다시 B랑 대화했던 방으로 들어오는 경우
+        Optional<Long> reEnterRoom = validExistRoom.ReEnterRoom(me, opponent);
+        if(reEnterRoom.isPresent()){
+            Long chatRoomId = reEnterRoom.get();
+            ChatRoom chatRoom = chatRoomService.findRoom(chatRoomId);
+            chatRoom.roomActive();
+            chatRoomService.saveRoomMember(me,chatRoom,opponent);
+            return chatRoomId;
+        }
+
         validRoomCount.checkRoom(opponent, me, flag);
 
         ChatRoom chatRoom = ChatRoom.builder()
             .roomName(opponent.getNickName())
-            .roomStatus("ACTIVE")
+            .roomStatus(ACTIVE)
             .distance(gpsProcessor.getDistance(me.getMemberId(), opponent.getMemberId()))
             .build();
 

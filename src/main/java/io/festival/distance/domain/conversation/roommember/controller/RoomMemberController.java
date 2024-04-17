@@ -1,13 +1,14 @@
 package io.festival.distance.domain.conversation.roommember.controller;
 
-import io.festival.distance.domain.conversation.chat.controller.StompController;
-import io.festival.distance.domain.conversation.chat.dto.ChatMessageDto;
 import io.festival.distance.domain.conversation.roommember.service.RoomMemberService;
+import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor

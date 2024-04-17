@@ -77,16 +77,21 @@ public class GpsService {
     // 		.matchedUsers(matchedUserList)
     // 		.build();
     // }
-    @Transactional
+    @Transactional(readOnly = true)
     public MatchResponseDto matchUser(String telNum) {
 
         Member centerUser = memberService.findByTelNum(telNum); //나
         double centerLongitude = centerUser.getLongitude();
         double centerLatitude = centerUser.getLatitude();
 
+        if(centerLatitude==0||centerLongitude==0){
+            return matchNonLoginUser();
+        }
+
         // activate, 거리 내에 있는 유저 필터링 -> 랜덤 4명 선택
         List<MatchUserDto> matchedUserList = memberRepository.findAll().stream()
             .filter(user -> user.isActivated()&&user.getAuthority().equals(Authority.ROLE_USER))
+            .filter(user -> user.getLongitude()!=0||user.getLatitude()!=0)
             .filter(user -> {
                 double userLongitude = user.getLongitude();
                 double userLatitude = user.getLatitude();
@@ -107,12 +112,13 @@ public class GpsService {
                 .nickName(user.nickName())
                 .build())
             .toList();
+
         return MatchResponseDto.builder()
             .matchedUsers(matcheList)
             .build();
     }
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public MatchResponseDto matchNonLoginUser() {
 		List<MatchUserDto> matcheList = memberRepository.findAll()
 			.stream()
@@ -124,24 +130,10 @@ public class GpsService {
 				.nickName(user.getNickName())
 				.build())
 			.toList();
-
 		return MatchResponseDto.builder()
 			.matchedUsers(matcheList)
 			.build();
 	}
-
-    /**
-     * NOTE
-     * 두 '유저' 사이의 거리를 계산하는 메서드
-     */
-    /*public double getDistance(long id1, long id2) {
-        Member member1 = memberService.findMember(id1);
-        Member member2 = memberService.findMember(id2);
-        double distance = calculateDistance(member1.getLatitude(), member1.getLongitude(),
-            member2.getLatitude(), member2.getLongitude());
-        System.out.println(distance);
-        return new BigDecimal(distance).setScale(2, RoundingMode.HALF_UP).doubleValue();
-    }*/
 
     /**
      * NOTE
