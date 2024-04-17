@@ -59,7 +59,8 @@
 ---
 
 ## DB구조도
-추후 update
+<img width="1243" alt="image" src="https://github.com/team-distance/distance-be/assets/56196986/f67b41aa-e0dc-4285-b2de-2fc22eeb837a">
+
 ---
 
 ## System Architecture
