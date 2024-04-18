@@ -48,27 +48,26 @@ public class FCMService {
      */
     private Message createNotificationContent(FcmDto fcmDto) {
         // 알림 내용
-       /* return Message.builder()
+       return Message.builder()
             .setWebpushConfig(WebpushConfig.builder()
                 .setNotification(WebpushNotification.builder()
                     .setTitle(fcmDto.senderNickName())
                     .setBody(fcmDto.message())
-                    *//*.setImage(
+                    .setImage(
                         "https://s3.ap-northeast-2.amazonaws.com/9oorm.distance/icons/apple-touch-icon-72x72.png")
-                    .putCustomData("chatRoomId", String.valueOf(fcmDto.roomId()))*//*
                     .build())
                 .build())
             .setToken(fcmDto.clientToken())
-            .build();*/
+            .build();
 
-        return Message.builder()
+        /*return Message.builder()
             .putData("nickName", fcmDto.senderNickName())
             .putData("message", fcmDto.message())
             .putData("chatRoomId", String.valueOf(fcmDto.roomId()))
             .putData("iconLink",
                 "https://s3.ap-northeast-2.amazonaws.com/9oorm.distance/icons/apple-touch-icon-72x72.png")
             .setToken(fcmDto.clientToken())
-            .build();
+            .build();*/
     }
 
     //닉네임, 메시지 내용, chatroomid, icon link
