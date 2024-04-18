@@ -37,9 +37,9 @@ public class RoomMemberService {
     }
 
     @Transactional
-    public void goOutRoom(Long chatRoomId, Principal principal) {
+    public Member goOutRoom(Long chatRoomId, Long memberId) {
         ChatRoom chatRoom = chatRoomService.findRoom(chatRoomId);
-        Member member = memberService.findByTelNum(principal.getName());
+        Member member = memberService.findMember(memberId);
 
         if (!roomMemberRepository.existsByMemberAndChatRoom(member, chatRoom)) {
             throw new DistanceException(ErrorCode.NOT_EXIST_CHATROOM);
@@ -49,9 +49,10 @@ public class RoomMemberService {
             roomMemberRepository.deleteByChatRoomAndMember(chatRoom, member);
             chatRoomService.delete(chatRoomId);
             chatMessageRepository.deleteAllByChatRoom(chatRoom);
-            return;
+            return member;
         }
         roomMemberRepository.deleteByChatRoomAndMember(chatRoom, member);
         chatRoom.roomInActive();
+        return member;
     }
 }

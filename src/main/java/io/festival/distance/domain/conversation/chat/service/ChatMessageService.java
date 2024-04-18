@@ -3,6 +3,7 @@ package io.festival.distance.domain.conversation.chat.service;
 import io.festival.distance.domain.conversation.chat.dto.ChatMessageDto;
 import io.festival.distance.domain.conversation.chat.dto.ChatMessageResponseDto;
 import io.festival.distance.domain.conversation.chat.entity.ChatMessage;
+import io.festival.distance.domain.conversation.chat.entity.SenderType;
 import io.festival.distance.domain.conversation.chat.repository.ChatMessageRepository;
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import io.festival.distance.domain.conversation.roommember.entity.RoomMember;
@@ -33,17 +34,18 @@ public class ChatMessageService {
     private final static Integer INITIAL_COUNT = 2;
 
     @Transactional
-    public Long createMessage(ChatRoom chatRoom, ChatMessageDto chatMessageDto) {
+    public Long createMessage(ChatRoom chatRoom, ChatMessageDto chatMessageDto,
+        SenderType senderType) {
         Member member = memberService.findMember(chatMessageDto.getReceiverId()); //나
         if (chatMessageDto.getChatMessage().isEmpty()) {
             return null;
         }
-
         ChatMessage message = ChatMessage.builder()
             .senderId(chatMessageDto.getSenderId())
             .chatMessage(chatMessageDto.getChatMessage())
             .senderName(member.getNickName())
             .unreadCount(INITIAL_COUNT)
+            .senderType(senderType)
             .chatRoom(chatRoom)
             .build();
 
@@ -56,11 +58,12 @@ public class ChatMessageService {
     }
 
     @Transactional
-    public void sendNotificationIfReceiverNotInChatRoom(Long senderId, Long receiverId,
-        String chatMessage,Long roomId) {
+    public void sendNotificationIfReceiverNotInChatRoom(ChatMessageDto chatMessageDto,
+        Long roomId) {
         // 알림을 보낼 떄 필요한 값들
-        Member opponent = memberService.findMember(senderId); //받는 사람
-        String myNickName = memberService.findMember(receiverId).getNickName(); // 발신자의 닉네임
+        Member opponent = memberService.findMember(chatMessageDto.getSenderId()); //받는 사람
+        String myNickName = memberService.findMember(chatMessageDto.getReceiverId())
+            .getNickName(); // 발신자의 닉네임
         // FCM 알림 전송 발송자 닉네임이, chatMessage를 특정 clietnToken에게
         String clientToken = opponent.getClientToken();
         log.info("opponent token>> " + clientToken);
@@ -68,7 +71,7 @@ public class ChatMessageService {
             FcmDto fcmDto = FcmDto.builder()
                 .clientToken(clientToken)
                 .senderNickName(myNickName)
-                .message(chatMessage)
+                .message(chatMessageDto.getChatMessage())
                 .roomId(roomId)
                 .build();
             fcmService.sendNotification(fcmDto);
@@ -95,6 +98,8 @@ public class ChatMessageService {
             .unreadCount(chatMessage.getUnreadCount())
             .sendDt(chatMessage.getCreateDt())
             .checkTiKiTaKa(checkTiKiTaKa(chatRoom))
+            .roomStatus(chatRoom.getRoomStatus())
+            .senderType(chatMessage.getSenderType().getSenderType())
             .build();
     }
 
@@ -120,12 +125,13 @@ public class ChatMessageService {
             roomMember.updateMessageId(
                 responseDtoList.get(responseDtoList.size() - 1).getMessageId());
         }
-
         return responseDtoList;
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 페이징 처리
+     *
      * @param chatRoom
      * @param pageRequest
      * @param principal
@@ -137,7 +143,8 @@ public class ChatMessageService {
         Member member = memberService.findByTelNum(principal.getName());
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom);
         Long lastChatMessageId = roomMember.getLastReadMessageId();
-        return chatMessageRepository.findByChatRoomAndChatMessageIdLessThanOrderByCreateDtDesc(chatRoom, pageRequest,
+        return chatMessageRepository.findByChatRoomAndChatMessageIdLessThanOrderByCreateDtDesc(
+                chatRoom, pageRequest,
                 lastChatMessageId)
             .stream()
             .map(ChatMessageResponseDto::new)

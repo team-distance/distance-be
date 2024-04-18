@@ -35,6 +35,9 @@ public class ChatMessage extends BaseTimeEntity { //채팅 메시지
     @Column(name = "unread_count")
     private int unreadCount;
 
+    @Enumerated(EnumType.STRING)
+    private SenderType senderType;
+
     @JoinColumn(name = "chatroom_id")
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     @JsonIgnore

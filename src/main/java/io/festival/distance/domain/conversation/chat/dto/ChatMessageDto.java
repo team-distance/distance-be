@@ -1,5 +1,6 @@
 package io.festival.distance.domain.conversation.chat.dto;
 
+import io.festival.distance.domain.conversation.chat.entity.SenderType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,4 +14,5 @@ public class ChatMessageDto {
     private String chatMessage;
     private Long senderId; //상대방
     private Long receiverId; //나
+    private String publishType; //MESSAGE, LEAVE
 }

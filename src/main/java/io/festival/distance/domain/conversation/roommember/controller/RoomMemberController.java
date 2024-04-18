@@ -18,7 +18,7 @@ public class RoomMemberController {
     private final RoomMemberService roomMemberService;
     @GetMapping("/leave/{chatRoomId}")
     public ResponseEntity<Void> leaveRoom(@PathVariable Long chatRoomId, Principal principal){
-        roomMemberService.goOutRoom(chatRoomId,principal);
+        //roomMemberService.goOutRoom(chatRoomId,principal);
         return ResponseEntity.ok().build();
     }
 }
