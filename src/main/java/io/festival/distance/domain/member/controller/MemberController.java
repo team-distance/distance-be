@@ -150,7 +150,7 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/check/password")
+    @PostMapping("/check/password")
     public ResponseEntity<Void> checkPassword(@RequestBody AccountRequestDto accountRequestDto,
         Principal principal) {
         validPassword.duplicateCheckPassword(principal, accountRequestDto.password());
