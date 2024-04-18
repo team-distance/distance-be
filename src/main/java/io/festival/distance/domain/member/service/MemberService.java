@@ -2,6 +2,7 @@ package io.festival.distance.domain.member.service;
 
 import static io.festival.distance.authuniversity.config.mail.SendMailService.getAuthenticateNumber;
 
+import io.festival.distance.auth.refresh.RefreshRepository;
 import io.festival.distance.domain.member.dto.AccountRequestDto;
 import io.festival.distance.domain.member.dto.CheckAuthenticateNum;
 import io.festival.distance.domain.member.dto.MemberHobbyDto;
@@ -34,6 +35,7 @@ public class MemberService {
 
     private final PasswordEncoder encoder;
     private final MemberRepository memberRepository;
+    private final RefreshRepository refreshRepository;
     private final ValidTelNum validLoginId;
     private final ValidInfoDto validInfoDto;
     private final MemberTagService memberTagService;
@@ -80,6 +82,7 @@ public class MemberService {
      */
     @Transactional
     public String withDrawal(String telNum) {
+        refreshRepository.deleteBySubject(telNum);
         memberRepository.deleteByTelNum(telNum);
         return telNum;
     }

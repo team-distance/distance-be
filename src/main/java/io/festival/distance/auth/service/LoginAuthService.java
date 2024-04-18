@@ -30,7 +30,7 @@ public class LoginAuthService {
     @Transactional
     public TokenDto login(LoginDto loginDto) {
         Member member = memberRepository.findByTelNum(loginDto.getTelNum())
-            .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_ADMIN));
+            .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_MEMBER));
 
         Authentication authentication = getAuthentication(loginDto);
         // authentication 객체를 createToken 메소드를 통해서 JWT Token을 생성

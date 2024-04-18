@@ -55,7 +55,7 @@ public class MailController {
     @PostMapping("/certificate/email")
     public ResponseEntity<Void> certificationNumber(@RequestBody CertificateDto certificateDto,
         Principal principal) {
-        authenticateMail.checkCertificationNumber(certificateDto.number(),
+        authenticateMail.checkCertificationNumber(certificateDto,
             certificationNumber, principal.getName());
         return ResponseEntity.ok().build();
     }
