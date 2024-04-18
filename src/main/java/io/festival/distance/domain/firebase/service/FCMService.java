@@ -24,9 +24,7 @@ public class FCMService {
         // 알림 전송
         String response = null;
         try {
-            response = FirebaseMessaging.getInstance().send(firebaseMessage);
-            log.info(
-                "fcm>>>> " + FirebaseMessaging.getInstance().sendAsync(firebaseMessage).get());
+            response = FirebaseMessaging.getInstance().sendAsync(firebaseMessage).get();
             //projects/distance-97455/messages/d10ae9f0-798d-4b0a-a02b-8188ed08b401
             log.info("response>>>> " + response);
             //projects/distance-97455/messages/38d7c6f5-8009-45fe-9ad8-588e699585f2
