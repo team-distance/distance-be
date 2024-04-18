@@ -1,6 +1,5 @@
 package io.festival.distance.exception;
 
-import com.google.api.Http;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

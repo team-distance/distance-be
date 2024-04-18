@@ -112,4 +112,8 @@ public class Member extends BaseTimeEntity {
         this.latitude=0;
         this.longitude=0;
     }
+
+    public void updateEmail(String schoolEmail) {
+        this.schoolEmail=schoolEmail;
+    }
 }
