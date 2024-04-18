@@ -17,18 +17,18 @@ import org.springframework.stereotype.Service;
 public class FCMService {
 
     public NotificationDto sendNotification(FcmDto fcmDto) {
-        log.debug("Client 토큰: " + fcmDto.clientToken());
+        log.info("Client 토큰: " + fcmDto.clientToken());
         // 알림 내용
         Message firebaseMessage = createNotificationContent(fcmDto);
-        log.debug("fcm message>>>>" + firebaseMessage.toString());
+        log.info("fcm message>>>>" + firebaseMessage.toString());
         // 알림 전송
         String response = null;
         try {
             response = FirebaseMessaging.getInstance().send(firebaseMessage);
-            log.debug(
+            log.info(
                 "fcm>>>> " + FirebaseMessaging.getInstance().sendAsync(firebaseMessage).get());
             //projects/distance-97455/messages/d10ae9f0-798d-4b0a-a02b-8188ed08b401
-            log.debug("response>>>> " + response);
+            log.info("response>>>> " + response);
             //projects/distance-97455/messages/38d7c6f5-8009-45fe-9ad8-588e699585f2
         } catch (Exception e) {
             log.error("fcm error>> " + e.getMessage());
@@ -36,7 +36,7 @@ public class FCMService {
         NotificationDto build = NotificationDto.builder()
             .FcmMessageId(response)
             .build();
-        log.debug("Build>>> " + build);
+        log.info("Build>>> " + build);
         return build;
     }
 
