@@ -21,7 +21,8 @@ public class ChatMessageResponseDto {
     private Long messageId;
     private LocalDateTime sendDt;
     private boolean checkTiKiTaKa;
-    private boolean roomStatus;
+    private String roomStatus;
+    private String senderType;
 
     public ChatMessageResponseDto(ChatMessage message) {
         this.messageId=message.getChatMessageId();
@@ -30,5 +31,7 @@ public class ChatMessageResponseDto {
         this.senderName = message.getSenderName();
         this.unreadCount = message.getUnreadCount();
         this.sendDt = message.getCreateDt();
+        this.roomStatus=message.getChatRoom().getRoomStatus();
+        this.senderType=message.getSenderType().getSenderType();
     }
 }
