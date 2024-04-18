@@ -92,6 +92,7 @@ public class ChatMessageService {
         chatMessage.readCountUpdate(currentMemberCount);
 
         return ChatMessageResponseDto.builder()
+            .messageId(chatMessageId)
             .chatMessage(chatMessage.getChatMessage())
             .senderName(chatMessage.getSenderName())
             .senderId(chatMessage.getSenderId())
