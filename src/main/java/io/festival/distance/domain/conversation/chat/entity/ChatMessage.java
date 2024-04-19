@@ -18,6 +18,7 @@ import javax.persistence.*;
 @Getter
 @SuperBuilder
 public class ChatMessage extends BaseTimeEntity { //채팅 메시지
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "chat_message_id")
@@ -39,15 +40,17 @@ public class ChatMessage extends BaseTimeEntity { //채팅 메시지
     private SenderType senderType;
 
     @JoinColumn(name = "chatroom_id")
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JsonIgnore
     private ChatRoom chatRoom;
 
-    public void readCountUpdate(int currentMemberCount){
-        this.unreadCount-=currentMemberCount;
+    public void readCountUpdate(int currentMemberCount) {
+        if (this.unreadCount != 0) {
+            this.unreadCount -= currentMemberCount;
+        }
     }
 
-    public void setMessage(String message){
-        this.chatMessage=message;
+    public void setMessage(String message) {
+        this.chatMessage = message;
     }
 }
