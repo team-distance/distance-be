@@ -14,24 +14,25 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 public class ChatMessageResponseDto {
+
     private String chatMessage;
-    private Long senderId;
-    private String senderName; //닉네임
-    private int unreadCount;
-    private Long messageId;
-    private LocalDateTime sendDt;
-    private boolean checkTiKiTaKa;
     private String roomStatus;
     private String senderType;
+    private String senderName; //닉네임
+    private Long senderId;
+    private Long messageId;
+    private int unreadCount;
+    private boolean checkTiKiTaKa;
+    private LocalDateTime sendDt;
 
     public ChatMessageResponseDto(ChatMessage message) {
-        this.messageId=message.getChatMessageId();
+        this.messageId = message.getChatMessageId();
         this.chatMessage = message.getChatMessage();
         this.senderId = message.getSenderId();
         this.senderName = message.getSenderName();
         this.unreadCount = message.getUnreadCount();
         this.sendDt = message.getCreateDt();
-        this.roomStatus=message.getChatRoom().getRoomStatus();
-        this.senderType=message.getSenderType().getSenderType();
+        this.roomStatus = message.getChatRoom().getRoomStatus();
+        this.senderType = message.getSenderType().getSenderType();
     }
 }
