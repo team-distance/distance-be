@@ -44,7 +44,7 @@ public class ChatRoomService {
                 ChatMessage message = chatMessageRepository.findTop1ByChatRoomOrderByCreateDtDesc(
                     chatRoom); //가장 최근 메시지 불러옴
 
-                System.out.println("message = " + message.getChatMessageId());
+                //System.out.println("message = " + message.getChatMessageId());
 
                 String lastMessage =
                     Objects.isNull(message) ? "새로운 채팅방이 생성되었습니다!" : message.getChatMessage();
