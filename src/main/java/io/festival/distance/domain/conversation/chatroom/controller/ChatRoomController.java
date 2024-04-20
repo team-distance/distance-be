@@ -51,6 +51,7 @@ public class ChatRoomController {
         Principal principal) {
         Member member = memberService.findByTelNum(principal.getName());
         validUnivCert.checkUnivCert(member);
+
         return ResponseEntity.ok(
             chatMessageService.markAllMessagesAsRead(chatRoomService.findRoom(chatRoomId),
                 member));

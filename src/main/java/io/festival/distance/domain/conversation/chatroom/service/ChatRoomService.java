@@ -13,6 +13,7 @@ import io.festival.distance.exception.DistanceException;
 import io.festival.distance.exception.ErrorCode;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,34 +37,42 @@ public class ChatRoomService {
             .stream()
             .map(roomMember -> {
                 ChatRoom chatRoom = roomMember.getChatRoom();
-                System.out.println("chatRoom.getChatRoomId() = " + chatRoom.getChatRoomId());
-                Member opponent = memberRepository.findByNickName(roomMember.getMyRoomName());
-                System.out.println(opponent);
-                System.out.println(">>>>>" + opponent.getMemberId());
 
-                ChatMessage message = chatMessageRepository.findTop1ByChatRoomOrderByCreateDtDesc(
-                    chatRoom); //가장 최근 메시지 불러옴
+                Optional<Member> opponent = memberRepository.findByNickName(
+                    roomMember.getMyRoomName());
+                return opponent.map(
+                    //멤버가 존재하는 경우
+                    opponentMember -> {
+                        ChatMessage message = chatMessageRepository.findTop1ByChatRoomOrderByCreateDtDesc(
+                            chatRoom); //가장 최근 메시지 불러옴
 
-                //System.out.println("message = " + message.getChatMessageId());
+                        String lastMessage =
+                            Objects.isNull(message) ? "새로운 채팅방이 생성되었습니다!"
+                                : message.getChatMessage();
 
-                String lastMessage =
-                    Objects.isNull(message) ? "새로운 채팅방이 생성되었습니다!" : message.getChatMessage();
+                        Integer count = chatMessageRepository.countByChatRoomAndChatMessageIdGreaterThan(
+                            chatRoom, roomMember.getLastReadMessageId());
 
-                Integer count = chatMessageRepository.countByChatRoomAndChatMessageIdGreaterThan(
-                    chatRoom, roomMember.getLastReadMessageId());
-
-                return ChatRoomInfoDto.builder()
-                    .chatRoomId(chatRoom.getChatRoomId())
-                    .roomName(roomMember.getMyRoomName())
-                    .createDt(roomMember.getCreateDt())
-                    .modifyDt(message.getCreateDt())
-                    .opponentMemberId(opponent.getMemberId())
-                    .memberCharacter(opponent.getMemberCharacter())
-                    .lastMessage(lastMessage)
-                    .askedCount(count)
-                    .build();
-            })
-            .collect(Collectors.toList());
+                        return ChatRoomInfoDto.builder()
+                            .chatRoomId(chatRoom.getChatRoomId())
+                            .roomName(roomMember.getMyRoomName())
+                            .createDt(roomMember.getCreateDt())
+                            .modifyDt(message.getCreateDt())
+                            .opponentMemberId(opponentMember.getMemberId())
+                            .memberCharacter(opponentMember.getMemberCharacter())
+                            .lastMessage(lastMessage)
+                            .askedCount(count)
+                            .build();
+                    }).orElseGet(() -> {
+                    String message = "상대방이 탈퇴했습니다.";
+                    return ChatRoomInfoDto.builder()
+                        .chatRoomId(chatRoom.getChatRoomId())
+                        .roomName(roomMember.getMyRoomName())
+                        .createDt(roomMember.getCreateDt())
+                        .lastMessage(message)
+                        .build();
+                });
+            }).collect(Collectors.toList());
     }
 
     @Transactional

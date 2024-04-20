@@ -3,6 +3,10 @@ package io.festival.distance.domain.member.service;
 import static io.festival.distance.authuniversity.config.mail.SendMailService.getAuthenticateNumber;
 
 import io.festival.distance.auth.refresh.RefreshRepository;
+import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
+import io.festival.distance.domain.conversation.chatroom.service.ChatRoomService;
+import io.festival.distance.domain.conversation.roommember.repository.RoomMemberRepository;
+import io.festival.distance.domain.conversation.roommember.service.RoomMemberService;
 import io.festival.distance.domain.member.dto.AccountRequestDto;
 import io.festival.distance.domain.member.dto.CheckAuthenticateNum;
 import io.festival.distance.domain.member.dto.MemberHobbyDto;
@@ -24,6 +28,7 @@ import io.festival.distance.exception.DistanceException;
 import io.festival.distance.exception.ErrorCode;
 import io.festival.distance.infra.sms.SmsUtil;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,6 +45,8 @@ public class MemberService {
     private final ValidInfoDto validInfoDto;
     private final MemberTagService memberTagService;
     private final MemberHobbyService memberHobbyService;
+    private final ChatRoomService chatRoomService;
+    private final RoomMemberRepository roomMemberRepository;
     private final SmsUtil smsUtil;
     private static final String PREFIX = "#";
 
@@ -82,9 +89,26 @@ public class MemberService {
      */
     @Transactional
     public String withDrawal(String telNum) {
-        refreshRepository.deleteBySubject(telNum);
+        Member member = findByTelNum(telNum);
+        withDrawalChatRoom(member);
         memberRepository.deleteByTelNum(telNum);
+        refreshRepository.deleteBySubject(telNum);
         return telNum;
+    }
+
+    private void withDrawalChatRoom(Member member) {
+        List<Long> chatRoomIdList = roomMemberRepository.findAllByMember(member)
+            .stream()
+            .map(chatRoomId -> chatRoomId.getChatRoom().getChatRoomId())
+            .toList();
+        for (Long chatRoomId : chatRoomIdList) {
+            ChatRoom chatRoom = chatRoomService.findRoom(chatRoomId);
+            if (chatRoom.getRoomStatus().equals("INACTIVE")) {
+                chatRoomService.delete(chatRoomId);
+                continue;
+            }
+            chatRoom.roomInActive();
+        }
     }
 
     public Member findMember(Long memberId) {
@@ -151,6 +175,7 @@ public class MemberService {
     /**
      * NOTE
      * 인증메일 전송
+     *
      * @param telNumRequest 전화번호
      */
     public String sendSms(TelNumRequest telNumRequest) {
