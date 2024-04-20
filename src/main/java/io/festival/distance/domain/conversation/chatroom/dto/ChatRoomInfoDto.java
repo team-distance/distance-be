@@ -15,13 +15,13 @@ import java.time.LocalDateTime;
 @Getter
 public class ChatRoomInfoDto {
     private Long chatRoomId;
-    private LocalDateTime createDt;
-    private LocalDateTime modifyDt;
-    private String roomName;
     private Long opponentMemberId;
+    private Integer askedCount;
     private String memberCharacter;
     private String lastMessage;
-    private Integer askedCount;
+    private String roomName;
+    private LocalDateTime createDt;
+    private LocalDateTime modifyDt;
     public ChatRoomInfoDto(ChatRoom chatRoom) {
         this.chatRoomId = chatRoom.getChatRoomId();
         this.createDt = chatRoom.getCreateDt();
