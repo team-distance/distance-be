@@ -48,7 +48,7 @@ public class ChatWaitingService {
             MemberFcmDto dto = MemberFcmDto.builder()
                 .senderNickName(SET_SENDER_NAME)
                 .message(ADD_WAITING_ROOM_MESSAGE)
-                .member(me)
+                .member(opponent)
                 .build();
 
             fcmService.saveFcm(dto);
