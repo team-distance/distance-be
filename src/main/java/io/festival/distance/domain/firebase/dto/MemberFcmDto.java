@@ -7,10 +7,12 @@ import lombok.Builder;
 @Builder
 public record MemberFcmDto(Member member,
                            String senderNickName,
-                           String message) {
+                           String message,
+                           Long fcmId) {
 
     public static MemberFcmDto fromEntity(Fcm fcm){
         return MemberFcmDto.builder()
+            .fcmId(fcm.getFcmId())
             .member(fcm.getMember())
             .message(fcm.getMessage())
             .senderNickName("[관리자]")
