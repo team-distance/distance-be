@@ -35,4 +35,8 @@ public class Fcm extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    public void updateFcm(){
+        this.isSend=true;
+    }
 }

@@ -4,13 +4,18 @@ import com.google.firebase.messaging.BatchResponse;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.MulticastMessage;
+import com.google.firebase.messaging.SendResponse;
 import com.google.firebase.messaging.WebpushConfig;
 import com.google.firebase.messaging.WebpushNotification;
 import io.festival.distance.domain.firebase.dto.FcmDto;
 import io.festival.distance.domain.firebase.dto.MemberFcmDto;
 import io.festival.distance.domain.firebase.entity.Fcm;
 import io.festival.distance.domain.firebase.repository.FcmRepository;
+import io.festival.distance.exception.DistanceException;
+import io.festival.distance.exception.ErrorCode;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,9 +28,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class FCMService {
 
     private final FcmRepository fcmRepository;
-    public static final String ADD_WAITING_ROOM_MESSAGE="새로운 채팅 요청이 들어왔습니다!";
-    public static final String REJECT_STUDENT_CARD="학생증 인증에 실패하였습니다!";
-    public static final String SET_SENDER_NAME="[관리자]";
+    public static final String ADD_WAITING_ROOM_MESSAGE = "새로운 채팅 요청이 들어왔습니다!";
+    public static final String REJECT_STUDENT_CARD = "학생증 인증에 실패하였습니다!";
+    public static final String SET_SENDER_NAME = "[관리자]";
+
     public void sendNotification(FcmDto fcmDto) {
         log.info("Client 토큰: " + fcmDto.clientToken());
         // 알림 내용
@@ -93,15 +99,28 @@ public class FCMService {
         if (!fcmDtoList.isEmpty()) {
             // 알림 내용
             MulticastMessage firebaseMessage = createSystemNotification(fcmDtoList);
-            // 알림 전송
-            BatchResponse response = null;
 
             try {
-                response = FirebaseMessaging.getInstance()
+                BatchResponse response = FirebaseMessaging.getInstance()
                     .sendEachForMulticastAsync(firebaseMessage)
                     .get();
-                log.info("response>>>> " + response);
+                List<SendResponse> responses = response.getResponses();
 
+                IntStream.range(0, responses.size()).forEach(i -> {
+                    SendResponse sendResponse = responses.get(i);
+                    MemberFcmDto memberFcmDto = fcmDtoList.get(i);
+                    if (sendResponse.isSuccessful()) {
+                        log.info("Message has been sent successfully to " + memberFcmDto.member()
+                            .getClientToken());
+                        Fcm fcm = fcmRepository.findById(memberFcmDto.fcmId())
+                            .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_FCM));
+                        fcm.updateFcm();
+                    } else {
+                        log.error(
+                            "Failed to send message to " + memberFcmDto.member().getClientToken()
+                                + ": " + sendResponse.getException().getMessage());
+                    }
+                });
             } catch (Exception e) {
                 log.error("fcm error>> " + e.getMessage());
             }
