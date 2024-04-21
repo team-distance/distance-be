@@ -77,7 +77,7 @@ public class FCMService {
      * 채팅 대기열 알림
      */
     @Transactional
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 60000)
     public void sendSystemNotification() {
         log.info("scheduled 실행!!");
         sendNotificationForMessage(ADD_WAITING_ROOM_MESSAGE);
