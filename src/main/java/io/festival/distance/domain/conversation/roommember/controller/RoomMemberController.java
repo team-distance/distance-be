@@ -1,6 +1,7 @@
 package io.festival.distance.domain.conversation.roommember.controller;
 
 import io.festival.distance.domain.conversation.roommember.service.RoomMemberService;
+import io.festival.distance.domain.member.service.MemberService;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class RoomMemberController {
     private final RoomMemberService roomMemberService;
+    private final MemberService memberService;
     @GetMapping("/leave/{chatRoomId}")
     public ResponseEntity<Void> leaveRoom(@PathVariable Long chatRoomId, Principal principal){
-        //roomMemberService.goOutRoom(chatRoomId,principal);
+        Long memberId = memberService.findByTelNum(principal.getName()).getMemberId();
+        roomMemberService.goOutRoom(chatRoomId,memberId);
         return ResponseEntity.ok().build();
     }
 }
