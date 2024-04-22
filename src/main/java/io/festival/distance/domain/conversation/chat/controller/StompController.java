@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,6 +42,7 @@ public class StompController {
 
     @MessageMapping("/chat/{roomId}") //app/chat/{roomId}로 요청이 들어왔을 때 -> 발신
     @SendTo("/topic/chatroom/{roomId}") // Subscription URL -> 수신
+    @Transactional
     public ResponseEntity<?> sendMessage(@DestinationVariable Long roomId,
         @RequestBody ChatMessageDto chatMessageDto) {
         try {
@@ -77,7 +79,7 @@ public class StompController {
                     sessionByChatRoom);
             }
             if (chatMessageDto.getPublishType().equals(SenderType.CALL_RESPONSE.getSenderType())) {
-                chatRoom.updateAgreed();
+                chatRoomService.setAgreed(chatRoom);
                 return getResponse(roomId, chatMessageDto, chatRoom,
                     sessionByChatRoom);
             }
