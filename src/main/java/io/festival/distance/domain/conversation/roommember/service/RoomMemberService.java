@@ -43,14 +43,14 @@ public class RoomMemberService {
             throw new DistanceException(ErrorCode.NOT_EXIST_CHATROOM);
         }
 
-        chatRoom.roomInActive();
-
         if (chatRoom.getRoomStatus().equals(IN_ACTIVE)) {
             roomMemberRepository.deleteByChatRoomAndMember(chatRoom, member);
             chatRoomService.delete(chatRoomId);
             chatMessageRepository.deleteAllByChatRoom(chatRoom);
             return member;
         }
+
+        chatRoom.roomInActive();
         roomMemberRepository.deleteByChatRoomAndMember(chatRoom, member);
         return member;
     }
