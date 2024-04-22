@@ -24,5 +24,8 @@ public interface RoomMemberRepository extends JpaRepository<RoomMember, Long> {
 
     boolean existsByMemberAndChatRoom(Member member, ChatRoom chatRoom);
 
-    Optional<RoomMember> findByMemberAndMyRoomName(Member member,String myRoomName);
+    boolean existsByChatRoomAndMemberAndMyRoomName(ChatRoom chatRoom, Member member,
+        String myRoomName);
+
+    Optional<RoomMember> findByMemberAndMyRoomName(Member member, String myRoomName);
 }

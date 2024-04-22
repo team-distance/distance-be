@@ -14,21 +14,17 @@ import io.festival.distance.domain.conversation.waiting.dto.ChatWaitingCountDto;
 import io.festival.distance.domain.conversation.waiting.service.ChatWaitingService;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.exception.DistanceException;
-import io.festival.distance.exception.ErrorCode;
-import io.festival.distance.exception.HttpStatusCode;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -72,10 +68,23 @@ public class StompController {
                     SenderType.SYSTEM);
 
                 return ResponseEntity.ok(
-                    chatMessageService.generateMessage(messageId, sessionByChatRoom.size(), chatRoom));
+                    chatMessageService.generateMessage(messageId, sessionByChatRoom.size(),
+                        chatRoom));
             }
 
-            Long chatMessageId = chatMessageService.createMessage(chatRoom,
+            if (chatMessageDto.getPublishType().equals(SenderType.CALL_REQUEST.getSenderType())) {
+                return getResponse(roomId, chatMessageDto, chatRoom,
+                    sessionByChatRoom);
+            }
+            if (chatMessageDto.getPublishType().equals(SenderType.CALL_RESPONSE.getSenderType())) {
+                chatRoom.updateAgreed();
+                return getResponse(roomId, chatMessageDto, chatRoom,
+                    sessionByChatRoom);
+            }
+
+            return getResponse(roomId, chatMessageDto, chatRoom,
+                sessionByChatRoom);
+            /*Long chatMessageId = chatMessageService.createMessage(chatRoom,
                 chatMessageDto, SenderType.USER); //메시지 생성
 
             // receiver 에게 PUSH 알림 전송
@@ -89,12 +98,35 @@ public class StompController {
             }
             return ResponseEntity.ok(
                 chatMessageService.generateMessage(chatMessageId, sessionByChatRoom.size(),
-                    chatRoom));
+                    chatRoom));*/
 
         } catch (DistanceException e) {
             return ResponseEntity.status(HttpStatus.LENGTH_REQUIRED)
                 .body(e.getErrorCode().getMessage());
         }
+    }
+
+    @NotNull
+    private ResponseEntity<ChatMessageResponseDto> getResponse(
+        Long roomId, ChatMessageDto chatMessageDto, ChatRoom chatRoom,
+        List<ChatRoomSession> sessionByChatRoom) {
+
+        Long chatMessageId = chatMessageService.createMessage(chatRoom,
+            chatMessageDto, SenderType.of(chatMessageDto.getPublishType())); //메시지 생성
+
+        // receiver 에게 PUSH 알림 전송
+        chatMessageService.sendNotificationIfReceiverNotInChatRoom(chatMessageDto, roomId);
+
+        // 채팅 읽음 갱신
+        for (ChatRoomSession chatRoomSession : sessionByChatRoom) {
+            Long memberId = chatRoomSession.getMemberId();
+            roomMemberService.updateLastMessage(memberId, chatMessageId,
+                roomId); //가장 최근에 읽은 메시지 수정
+        }
+
+        return ResponseEntity.ok(
+            chatMessageService.generateMessage(chatMessageId, sessionByChatRoom.size(),
+                chatRoom));
     }
 
     @MessageMapping("/waiting/{memberId}")

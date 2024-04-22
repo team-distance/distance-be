@@ -65,6 +65,11 @@ public class ChatRoomController {
                 pageGenerate(pageRequestDto), principal));
     }
 
+    @GetMapping("/both-agreed/{chatRoomId}")
+    public ResponseEntity<Boolean> isAgreed(@PathVariable Long chatRoomId) {
+        return ResponseEntity.ok(chatRoomService.getAgreedStatus(chatRoomId));
+    }
+
     public static PageRequest pageGenerate(PageRequestDto dto) {
         int page = dto.page();
         int size = dto.size();

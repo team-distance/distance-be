@@ -110,4 +110,14 @@ public class ChatRoomService {
         return chatRoomRepository.findById(roomId)
             .orElseThrow(() -> new IllegalStateException("존재하지 않는 방"));
     }
+
+    @Transactional(readOnly = true)
+    public Boolean getAgreedStatus(Long chatRoomId) {
+        return findRoom(chatRoomId).isBothAgreed();
+    }
+
+    public boolean checkRoomCondition(Member me, Member opponent, ChatRoom chatRoom) {
+        return (roomMemberRepository.existsByChatRoomAndMemberAndMyRoomName(chatRoom, opponent,
+            me.getNickName()) && chatRoom.isBothAgreed());
+    }
 }

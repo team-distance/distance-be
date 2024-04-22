@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -95,9 +95,12 @@ public class MemberController {
      * NOTE
      * 사용자 전화번호 조회 (10번 티키타카 한 경우)
      */
-    @GetMapping("/tel-num/{memberId}")
-    public ResponseEntity<MemberTelNumDto> getTelNum(@PathVariable Long memberId) {
-        return ResponseEntity.ok(memberService.findTelNum(memberId));
+    @GetMapping("/tel-num")
+    public ResponseEntity<MemberTelNumDto> getTelNum(
+        @RequestParam(name = "memberId") Long memberId,
+        @RequestParam(name = "chatRoomId") Long chatRoomId,
+        Principal principal) {
+        return ResponseEntity.ok(memberService.findTelNum(memberId, principal.getName(),chatRoomId));
     }
 
     /**
