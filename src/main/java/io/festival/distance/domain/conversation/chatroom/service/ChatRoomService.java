@@ -120,4 +120,9 @@ public class ChatRoomService {
         return (roomMemberRepository.existsByChatRoomAndMemberAndMyRoomName(chatRoom, opponent,
             me.getNickName()) && chatRoom.isBothAgreed());
     }
+
+    @Transactional
+    public void setAgreed(ChatRoom chatRoom) {
+        chatRoom.updateAgreed();
+    }
 }
