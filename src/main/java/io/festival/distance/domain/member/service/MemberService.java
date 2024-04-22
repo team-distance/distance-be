@@ -6,7 +6,6 @@ import io.festival.distance.auth.refresh.RefreshRepository;
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import io.festival.distance.domain.conversation.chatroom.service.ChatRoomService;
 import io.festival.distance.domain.conversation.roommember.repository.RoomMemberRepository;
-import io.festival.distance.domain.conversation.roommember.service.RoomMemberService;
 import io.festival.distance.domain.member.dto.AccountRequestDto;
 import io.festival.distance.domain.member.dto.CheckAuthenticateNum;
 import io.festival.distance.domain.member.dto.MemberHobbyDto;
@@ -28,7 +27,6 @@ import io.festival.distance.exception.DistanceException;
 import io.festival.distance.exception.ErrorCode;
 import io.festival.distance.infra.sms.SmsUtil;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -78,7 +76,7 @@ public class MemberService {
         memberHobbyService.updateHobby(member, signDto.memberHobbyDto());
         memberTagService.updateTag(member, signDto.memberTagDto());
         Long memberId = memberRepository.save(member).getMemberId();
-        member.memberNicknameUpdate(member.getNickName() + PREFIX + memberId);
+        member.memberNicknameUpdate(member.getNickName()+member.getMbti() + PREFIX + memberId);
         return member.getMemberId();
     }
 
@@ -152,11 +150,18 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public MemberTelNumDto findTelNum(Long memberId) {
-        Member member = findMember(memberId);
-        return MemberTelNumDto.builder()
-            .telNum(member.getTelNum())
-            .build();
+    public MemberTelNumDto findTelNum(Long memberId,String telNum,Long chatRoomId) {
+        Member opponent = findMember(memberId); //상대방
+        Member me = findByTelNum(telNum);
+        ChatRoom chatRoom = chatRoomService.findRoom(chatRoomId);
+        if(chatRoomService.checkRoomCondition(me, opponent,chatRoom)){
+            System.out.println("성공");
+            return MemberTelNumDto.builder()
+                .telNum(opponent.getTelNum())
+                .build();
+        }
+        System.out.println("실패?");
+        return null;
     }
 
     @Transactional

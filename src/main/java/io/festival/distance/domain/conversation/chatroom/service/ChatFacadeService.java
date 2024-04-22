@@ -71,6 +71,7 @@ public class ChatFacadeService {
             .roomName(opponent.getNickName())
             .roomStatus(ACTIVE)
             .distance(gpsProcessor.getDistance(me.getMemberId(), opponent.getMemberId()))
+            .bothAgreed(false)
             .build();
 
         Long chatRoomId = chatRoomRepository.save(chatRoom).getChatRoomId();
