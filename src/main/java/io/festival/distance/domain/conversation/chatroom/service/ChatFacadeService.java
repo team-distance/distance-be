@@ -8,7 +8,6 @@ import io.festival.distance.domain.conversation.chatroom.validroomcount.ValidRoo
 import io.festival.distance.domain.conversation.waiting.entity.ChatWaiting;
 import io.festival.distance.domain.conversation.waiting.repository.ChatWaitingRepository;
 import io.festival.distance.domain.gps.service.GpsProcessor;
-import io.festival.distance.domain.gps.valid.ValidGps;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.repository.MemberRepository;
 import io.festival.distance.domain.member.validlogin.ValidUnivCert;
@@ -34,7 +33,6 @@ public class ChatFacadeService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatWaitingRepository chatWaitingRepository;
     private final GpsProcessor gpsProcessor;
-    private final ValidGps validGps;
 
     private static final String ACTIVE="ACTIVE";
 
@@ -48,7 +46,7 @@ public class ChatFacadeService {
 
         validUnivCert.checkUnivCert(me);
 
-        validGps.checkGps(me);
+        //validGps.checkGps(me);
 
         //기존에 대화 중인 방이 있는 경우 해당 방id 반환
         if (validExistRoom.ExistRoom(me, opponent).isPresent()) {
