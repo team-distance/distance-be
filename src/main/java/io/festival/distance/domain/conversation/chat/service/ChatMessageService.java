@@ -12,8 +12,11 @@ import io.festival.distance.domain.firebase.dto.FcmDto;
 import io.festival.distance.domain.firebase.service.FCMService;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.MemberService;
+import io.festival.distance.exception.DistanceException;
+import io.festival.distance.exception.ErrorCode;
 import java.security.Principal;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -138,7 +141,7 @@ public class ChatMessageService {
      * @param principal
      * @return
      */
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ChatMessageResponseDto> findAllMessage(ChatRoom chatRoom, PageRequest pageRequest,
         Principal principal) {
         Member member = memberService.findByTelNum(principal.getName());
@@ -147,6 +150,23 @@ public class ChatMessageService {
         return chatMessageRepository.findByChatRoomAndChatMessageIdLessThanOrderByCreateDtDesc(
                 chatRoom, pageRequest,
                 lastChatMessageId)
+            .stream()
+            .map(ChatMessageResponseDto::new)
+            .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ChatMessageResponseDto> findAllChatRoomMessage(ChatRoom chatRoom,
+        Principal principal) {
+        Member member = memberService.findByTelNum(principal.getName());
+        RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom);
+
+        if (Objects.isNull(roomMember)) {
+            throw new DistanceException(ErrorCode.NOT_EXIST_CHATROOM);
+        }
+
+        return chatMessageRepository.findAllByChatRoomOrderByCreateDtDesc(
+                chatRoom)
             .stream()
             .map(ChatMessageResponseDto::new)
             .toList();
