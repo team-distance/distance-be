@@ -1,7 +1,9 @@
 package io.festival.distance.domain.studentcard.service;
 
 
-import io.festival.distance.domain.firebase.dto.FcmDto;
+import static io.festival.distance.domain.firebase.service.FCMService.REJECT_STUDENT_CARD;
+import static io.festival.distance.domain.firebase.service.FCMService.SET_SENDER_NAME;
+
 import io.festival.distance.domain.firebase.service.FCMService;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.entity.UnivCert;
@@ -26,8 +28,6 @@ public class StudentService {
     private final StudentCardRepository studentCardRepository;
     private final MemberService memberService;
     private final FCMService fcmService;
-    private final static String HOST_NAME = "[Distance]";
-
     @Transactional
     public void sendImage(MultipartFile file, String telNum) throws IOException {
         Member member = memberService.findByTelNum(telNum);
@@ -51,24 +51,15 @@ public class StudentService {
     @Transactional
     public void approve(Long studentCardId) {
         StudentCard studentCard = getStudentCard(studentCardId);
-        sendFcm(studentCard, UnivCert.SUCCESS);
         studentCardRepository.delete(studentCard);
     }
 
     @Transactional
     public void reject(Long studentCardId, AdminRequest adminRequest) {
         StudentCard studentCard = getStudentCard(studentCardId);
-        studentCard.getMember().updateAuthUniv(UnivCert.valueOf(adminRequest.type()));
-        sendFcm(studentCard, UnivCert.valueOf(adminRequest.type()));
-    }
-
-    private void sendFcm(StudentCard studentCard, UnivCert univCert) {
-        FcmDto fcmDto = FcmDto.builder()
-            .senderNickName(HOST_NAME)
-            .message(univCert.getMessage())
-            .clientToken(studentCard.getMember().getClientToken())
-            .build();
-        fcmService.sendNotification(fcmDto);
+        Member member = studentCard.getMember();
+        member.updateAuthUniv(UnivCert.valueOf(adminRequest.type()));
+        fcmService.createFcm(member,SET_SENDER_NAME,REJECT_STUDENT_CARD);
     }
 
     private StudentCard getStudentCard(Long studentCardId) {

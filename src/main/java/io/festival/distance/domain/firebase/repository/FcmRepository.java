@@ -8,5 +8,5 @@ import org.springframework.data.repository.query.Param;
 
 public interface FcmRepository extends JpaRepository<Fcm,Long> {
     @Query("select f from Fcm f where f.isSend = false and f.message =:message")
-    List<Fcm> findAllByIsSend(@Param("message") String message);
+    List<Fcm> SendByFcmMessage(@Param("message") String message);
 }
