@@ -36,40 +36,47 @@ public class StudentController {
         return ResponseEntity.ok().build();
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 사용자가 보낸 이미지들 관리자페이지에 보이기
+     *
      * @return
      */
     @GetMapping
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    public ResponseEntity<List<ImageResponse>> showImages(){
+    public ResponseEntity<List<ImageResponse>> showImages() {
         return ResponseEntity.ok(studentService.getImage());
     }
 
 
-    /** NOTE
+    /**
+     * NOTE
      * 사용자 학생증 수락
+     *
      * @param studentCardId 수락할 학생증 ID
      */
     @DeleteMapping("/{studentCardId}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> acceptUniv(@PathVariable Long studentCardId){
+    public ResponseEntity<Void> acceptUniv(@PathVariable Long studentCardId) {
         studentService.approve(studentCardId);
         return ResponseEntity.ok().build();
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 사용자 학생증 거절
+     *
      * @param studentCardId 거절하려는 학생증 Id
-     * @param adminRequest 실패 사유(FAILED_1, FAILED_2)
+     * @param adminRequest  실패 사유(FAILED_1, FAILED_2)
      * @return
      */
     @PostMapping("/{studentCardId}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> rejectUniv(@PathVariable Long studentCardId,@RequestBody
-        AdminRequest adminRequest){
-        studentService.reject(studentCardId,adminRequest);
+    public ResponseEntity<Void> rejectUniv(@PathVariable Long studentCardId, @RequestBody
+    AdminRequest adminRequest) {
+        studentService.reject(studentCardId, adminRequest);
         return ResponseEntity.ok().build();
+
     }
 }
 

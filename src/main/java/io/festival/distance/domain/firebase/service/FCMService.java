@@ -11,10 +11,10 @@ import io.festival.distance.domain.firebase.dto.FcmDto;
 import io.festival.distance.domain.firebase.dto.MemberFcmDto;
 import io.festival.distance.domain.firebase.entity.Fcm;
 import io.festival.distance.domain.firebase.repository.FcmRepository;
+import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.exception.DistanceException;
 import io.festival.distance.exception.ErrorCode;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,8 +67,6 @@ public class FCMService {
             .build();
     }
 
-
-    @Transactional
     public void saveFcm(MemberFcmDto memberFcmDto) {
         Fcm fcm = Fcm.builder()
             .message(memberFcmDto.message())
@@ -78,7 +76,16 @@ public class FCMService {
         fcmRepository.save(fcm);
     }
 
+    @Transactional
+    public void createFcm(Member opponent, String title, String message) {
+        MemberFcmDto dto = MemberFcmDto.builder()
+            .senderNickName(title)
+            .message(message)
+            .member(opponent)
+            .build();
 
+        saveFcm(dto);
+    }
     /**
      * 채팅 대기열 알림
      */
@@ -91,7 +98,7 @@ public class FCMService {
     }
 
     private void sendNotificationForMessage(String message) {
-        List<MemberFcmDto> fcmDtoList = fcmRepository.findAllByIsSend(message)
+        List<MemberFcmDto> fcmDtoList = fcmRepository.SendByFcmMessage(message)
             .stream()
             .map(MemberFcmDto::fromEntity)
             .toList();
