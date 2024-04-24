@@ -11,6 +11,7 @@ import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.repository.MemberRepository;
 import io.festival.distance.exception.DistanceException;
 import io.festival.distance.exception.ErrorCode;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -57,7 +58,7 @@ public class ChatRoomService {
                             .chatRoomId(chatRoom.getChatRoomId())
                             .roomName(roomMember.getMyRoomName())
                             .createDt(roomMember.getCreateDt())
-                            .modifyDt(message.getCreateDt())
+                            .modifyDt(LocalDateTime.now())
                             .opponentMemberId(opponentMember.getMemberId())
                             .memberCharacter(opponentMember.getMemberCharacter())
                             .lastMessage(lastMessage)
