@@ -84,7 +84,7 @@ public class GpsService {
         double centerLongitude = centerUser.getLongitude();
         double centerLatitude = centerUser.getLatitude();
 
-        if(centerLatitude==0||centerLongitude==0){
+        if (centerLatitude == 0 || centerLongitude == 0) {
             return matchNonLoginUser();
         }
 
@@ -118,22 +118,22 @@ public class GpsService {
             .build();
     }
 
-	@Transactional(readOnly = true)
-	public MatchResponseDto matchNonLoginUser() {
-		List<MatchUserDto> matcheList = memberRepository.findAll()
-			.stream()
-            .filter(user -> user.isActivated()&&user.getAuthority().equals(Authority.ROLE_USER))
-			.limit(4) // 최대 4명
-			.map(user -> MatchUserDto.builder()
-				.memberId(user.getMemberId())
-				.memberProfileDto(memberService.memberProfile(user.getTelNum()))
-				.nickName(user.getNickName())
-				.build())
-			.toList();
-		return MatchResponseDto.builder()
-			.matchedUsers(matcheList)
-			.build();
-	}
+    @Transactional(readOnly = true)
+    public MatchResponseDto matchNonLoginUser() {
+        List<MatchUserDto> matcheList = new java.util.ArrayList<>(
+            memberRepository.findAll().stream().filter(
+                user -> user.isActivated() && user.getAuthority().equals(Authority.ROLE_USER)).map(
+                user -> MatchUserDto.builder().memberId(user.getMemberId())
+                    .memberProfileDto(memberService.memberProfile(user.getTelNum()))
+                    .nickName(user.getNickName()).build()).toList());
+
+        Collections.shuffle(matcheList); //랜덤
+
+        matcheList = matcheList.stream().limit(4).collect(Collectors.toList());
+        return MatchResponseDto.builder()
+            .matchedUsers(matcheList)
+            .build();
+    }
 
     /**
      * NOTE
