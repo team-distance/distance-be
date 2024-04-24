@@ -2,6 +2,7 @@ package io.festival.distance.domain.conversation.chat.repository;
 
 import io.festival.distance.domain.conversation.chat.entity.ChatMessage;
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
+import java.util.Optional;
 import org.checkerframework.checker.units.qual.C;
 import org.hibernate.jpa.internal.ManagedFlushCheckerLegacyJpaImpl;
 import org.springframework.data.domain.Page;
@@ -18,7 +19,7 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
 
     List<ChatMessage> findByChatRoom(ChatRoom chatRoom);
 
-    ChatMessage findTop1ByChatRoomOrderByCreateDtDesc(ChatRoom chatRoom);
+    ChatMessage  findTop1ByChatRoomOrderByCreateDtDesc(ChatRoom chatRoom);
 
     Integer countByChatRoomAndChatMessageIdGreaterThan(ChatRoom chatRoom, Long lastMessageId);
 
@@ -34,5 +35,5 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
         Pageable pageable,
         Long lastMessageId);
 
-    List<ChatMessage> findAllByChatRoomOrderByCreateDtDesc(ChatRoom chatRoom);
+    List<ChatMessage> findAllByChatRoomOrderByCreateDtAsc(ChatRoom chatRoom);
 }
