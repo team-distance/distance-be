@@ -47,12 +47,12 @@ public class SmsUtil {
     public void sendOne(TelNumRequest telNumRequest, String verificationCode) {
         switch (telNumRequest.type()) {
             case "SIGNUP": {
-                Message message = getMessage(telNumRequest.telNum(), verificationCode,findNumber);
+                Message message = getMessage(telNumRequest.telNum(), verificationCode,signUpNumber);
                 this.signUpMessageService.sendOne(new SingleMessageSendingRequest(message));
                 break;
             }
             case "FIND": {
-                Message message = getMessage(telNumRequest.telNum(), verificationCode,signUpNumber);
+                Message message = getMessage(telNumRequest.telNum(), verificationCode,findNumber);
                 this.findMessageService.sendOne(new SingleMessageSendingRequest(message));
                 break;
             }
