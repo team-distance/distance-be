@@ -2,6 +2,7 @@ package io.festival.distance.domain.member.controller;
 
 import io.festival.distance.domain.member.dto.AccountRequestDto;
 import io.festival.distance.domain.member.dto.CheckAuthenticateNum;
+import io.festival.distance.domain.member.dto.CheckTelNumDto;
 import io.festival.distance.domain.member.dto.MemberInfoDto;
 import io.festival.distance.domain.member.dto.MemberProfileDto;
 import io.festival.distance.domain.member.dto.MemberSignDto;
@@ -13,6 +14,7 @@ import io.festival.distance.domain.member.validsignup.ValidSignup;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -111,7 +113,7 @@ public class MemberController {
      */
     @PostMapping("/send/sms")
     public ResponseEntity<Void> sendSms(@RequestBody TelNumRequest telNumRequest) {
-        validSignup.validationTelNum(telNumRequest.telNum());
+        validSignup.validationTelNum(telNumRequest);
         authenticateNum = memberService.sendSms(telNumRequest);
         return ResponseEntity.ok().build();
     }
@@ -153,6 +155,11 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
+    /** NOTE
+     * 비밀번호 확인
+     * @param accountRequestDto 사용자가 입력한 비밀번호
+     * @param principal 현재 로그인한 객체
+     */
     @PostMapping("/check/password")
     public ResponseEntity<Void> checkPassword(@RequestBody AccountRequestDto accountRequestDto,
         Principal principal) {

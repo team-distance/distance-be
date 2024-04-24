@@ -51,8 +51,12 @@ fcm:
   client-id: ${CLIENT_ID}
 
 coolsms:
-  api:
-    key: ${COOLSMS_API_KEY}
-    secret: ${COOLSMS_SECRET_KEY}
-    number: ${COOLSMS_PHONE_NUMBER}
+  find-api:
+    key: ${COOLSMS_FIND_API_KEY}
+    secret: ${COOLSMS_FIND_SECRET_KEY}
+    number: ${COOLSMS_FIND_PHONE_NUMBER}
+  sign-up-api:
+    key: ${COOLSMS_SIGN_UP_API_KEY}
+    secret: ${COOLSMS_SIGN_UP_SECRET_KEY}
+    number: ${COOLSMS_SIGN_UP_PHONE_NUMBER}
 

@@ -1,7 +1,7 @@
 package io.festival.distance.domain.member.dto;
 
 public record TelNumRequest(
-    String telNum
+    String telNum, String type
 ) {
 
 }

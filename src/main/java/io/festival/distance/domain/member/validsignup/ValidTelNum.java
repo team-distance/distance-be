@@ -14,9 +14,13 @@ public class ValidTelNum {
     private final MemberRepository memberRepository;
 
     public void duplicateCheckTelNum(String telNum){
-        if(Objects.isNull(telNum))
-            throw new DistanceException(ErrorCode.NOT_NULL_NICKNAME);
         if(memberRepository.existsByTelNum(telNum))
             throw new DistanceException(ErrorCode.EXIST_TEL_NUM);
+    }
+
+    public void notExistTelNum(String telNum){
+        if (!memberRepository.existsByTelNum(telNum)){
+            throw new DistanceException(ErrorCode.NOT_EXIST_MEMBER);
+        }
     }
 }
