@@ -165,7 +165,7 @@ public class ChatMessageService {
             throw new DistanceException(ErrorCode.NOT_EXIST_CHATROOM);
         }
 
-        return chatMessageRepository.findAllByChatRoomOrderByCreateDtDesc(
+        return chatMessageRepository.findAllByChatRoomOrderByCreateDtAsc(
                 chatRoom)
             .stream()
             .map(ChatMessageResponseDto::new)
