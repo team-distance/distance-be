@@ -65,8 +65,10 @@ public class ChatRoomController {
                 pageGenerate(pageRequestDto), principal));
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 로컬 스토리지 비어있을 때 한번만 호출)
+     *
      * @param chatRoomId
      * @param principal
      * @return
@@ -75,7 +77,8 @@ public class ChatRoomController {
     public ResponseEntity<List<ChatMessageResponseDto>> getMessage(@PathVariable Long chatRoomId,
         Principal principal) {
         return ResponseEntity.ok(
-            chatMessageService.findAllChatRoomMessage(chatRoomService.findRoom(chatRoomId), principal));
+            chatMessageService.findAllChatRoomMessage(chatRoomService.findRoom(chatRoomId),
+                principal));
     }
 
     @GetMapping("/both-agreed/{chatRoomId}")
