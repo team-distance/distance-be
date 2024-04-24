@@ -9,6 +9,7 @@ import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import io.festival.distance.domain.conversation.chatroom.service.ChatRoomService;
 import io.festival.distance.domain.conversation.roommember.repository.RoomMemberRepository;
 import io.festival.distance.domain.member.dto.AccountRequestDto;
+import io.festival.distance.domain.member.dto.ChangePasswordDto;
 import io.festival.distance.domain.member.dto.CheckAuthenticateNum;
 import io.festival.distance.domain.member.dto.MemberHobbyDto;
 import io.festival.distance.domain.member.dto.MemberInfoDto;
@@ -123,9 +124,9 @@ public class MemberService {
     }
 
     @Transactional
-    public Long modifyAccount(String telNum, AccountRequestDto accountRequestDto) {
+    public Long modifyAccount(String telNum, String password) {
         Member member = findByTelNum(telNum);
-        String encryptedPassword = encoder.encode(accountRequestDto.password());
+        String encryptedPassword = encoder.encode(password);
         member.memberAccountModify(encryptedPassword);
         return member.getMemberId();
     }
@@ -159,12 +160,10 @@ public class MemberService {
         Member me = findByTelNum(telNum);
         ChatRoom chatRoom = chatRoomService.findRoom(chatRoomId);
         if (chatRoomService.checkRoomCondition(me, opponent, chatRoom)) {
-            System.out.println("성공");
             return MemberTelNumDto.builder()
                 .telNum(opponent.getTelNum())
                 .build();
         }
-        System.out.println("실패?");
         return null;
     }
 
@@ -184,7 +183,6 @@ public class MemberService {
     /**
      * NOTE
      * 인증메일 전송
-     *
      * @param telNumRequest 전화번호
      */
     public String sendSms(TelNumRequest telNumRequest) {
