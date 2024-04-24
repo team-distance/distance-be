@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -111,14 +112,7 @@ public class ChatMessageService {
     public List<ChatMessageResponseDto> markAllMessagesAsRead(ChatRoom chatRoom, Member member) {
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom); //방금 들어온 멤버가
 
-        Long lastChatMessageId = roomMember.getLastReadMessageId(); //가장 나중에 읽은 메시지 PK값
-
-        List<ChatMessage> messages = chatMessageRepository.findByChatRoomAndChatMessageIdGreaterThan(
-            chatRoom, lastChatMessageId);
-        messages.forEach(message -> {
-            message.readCountUpdate(1);
-            chatMessageRepository.save(message);
-        });
+        List<ChatMessage> messages = getChatMessages(chatRoom, roomMember);
 
         List<ChatMessageResponseDto> responseDtoList = messages.stream()
             .map(ChatMessageResponseDto::new)
@@ -131,11 +125,21 @@ public class ChatMessageService {
         }
         return responseDtoList;
     }
+    private List<ChatMessage> getChatMessages(ChatRoom chatRoom, RoomMember roomMember) {
+        Long lastChatMessageId = roomMember.getLastReadMessageId(); //가장 나중에 읽은 메시지 PK값
+
+        List<ChatMessage> messages = chatMessageRepository.findByChatRoomAndChatMessageIdGreaterThan(
+            chatRoom, lastChatMessageId);
+        messages.forEach(message -> {
+            message.readCountUpdate(1);
+            chatMessageRepository.save(message);
+        });
+        return messages;
+    }
 
     /**
      * NOTE
      * 페이징 처리
-     *
      * @param chatRoom
      * @param pageRequest
      * @param principal
@@ -164,9 +168,8 @@ public class ChatMessageService {
         if (Objects.isNull(roomMember)) {
             throw new DistanceException(ErrorCode.NOT_EXIST_CHATROOM);
         }
-
-        return chatMessageRepository.findAllByChatRoomOrderByCreateDtAsc(
-                chatRoom)
+        getChatMessages(chatRoom, roomMember);
+        return chatMessageRepository.findAllByChatRoomOrderByCreateDtAsc(chatRoom)
             .stream()
             .map(ChatMessageResponseDto::new)
             .toList();

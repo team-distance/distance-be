@@ -1,6 +1,7 @@
 package io.festival.distance.domain.member.controller;
 
 import io.festival.distance.domain.member.dto.AccountRequestDto;
+import io.festival.distance.domain.member.dto.ChangePasswordDto;
 import io.festival.distance.domain.member.dto.CheckAuthenticateNum;
 import io.festival.distance.domain.member.dto.MemberInfoDto;
 import io.festival.distance.domain.member.dto.MemberProfileDto;
@@ -60,7 +61,7 @@ public class MemberController {
     public ResponseEntity<Long> updateAccount(Principal principal,
         @RequestBody AccountRequestDto accountRequestDto) {
         return ResponseEntity.ok(
-            memberService.modifyAccount(principal.getName(), accountRequestDto));
+            memberService.modifyAccount(principal.getName(), accountRequestDto.password()));
     }
 
     /**
@@ -106,12 +107,11 @@ public class MemberController {
     /**
      * NOTE
      * 메시지 전송
-     *
      * @param telNumRequest 전화번호
      */
     @PostMapping("/send/sms")
     public ResponseEntity<Void> sendSms(@RequestBody TelNumRequest telNumRequest) {
-        validSignup.validationTelNum(telNumRequest.telNum());
+        validSignup.validationTelNum(telNumRequest);
         authenticateNum = memberService.sendSms(telNumRequest);
         return ResponseEntity.ok().build();
     }
@@ -119,7 +119,6 @@ public class MemberController {
     /**
      * NOTE
      * 메시지 인증번호 인증
-     *
      * @param checkAuthenticateNum 사용자가 입력한 인증번호
      */
     @PostMapping("/authenticate")
@@ -132,7 +131,6 @@ public class MemberController {
     /**
      * NOTE
      * 멤버가 대학인증을 했는지 안했는지 여부
-     *
      * @param principal 현재 로그인한 객체
      * @return 인증되어있다면 true, 안되어있으면 false
      */
@@ -144,7 +142,6 @@ public class MemberController {
     /**
      * NOTE
      * logout
-     *
      * @param principal 현재 로그인한 객체
      */
     @GetMapping("/logout")
@@ -153,10 +150,24 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
+    /** NOTE
+     * 비밀번호 확인
+     * @param accountRequestDto 사용자가 입력한 비밀번호
+     * @param principal 현재 로그인한 객체
+     */
     @PostMapping("/check/password")
     public ResponseEntity<Void> checkPassword(@RequestBody AccountRequestDto accountRequestDto,
         Principal principal) {
         validPassword.duplicateCheckPassword(principal, accountRequestDto.password());
+        return ResponseEntity.ok().build();
+    }
+
+    /** NOTE
+     * 비밀번로 변경 API
+     */
+    @PostMapping("/change/password")
+    public ResponseEntity<Void> changePassword(@RequestBody ChangePasswordDto changePasswordDto){
+        memberService.modifyAccount(changePasswordDto.telNum(),changePasswordDto.password());
         return ResponseEntity.ok().build();
     }
 }

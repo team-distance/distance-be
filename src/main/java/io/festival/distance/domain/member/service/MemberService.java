@@ -1,12 +1,15 @@
 package io.festival.distance.domain.member.service;
 
 import static io.festival.distance.authuniversity.config.mail.SendMailService.getAuthenticateNumber;
+import static io.festival.distance.exception.ErrorCode.NOT_CORRECT_AUTHENTICATION_NUMBER;
+import static io.festival.distance.exception.ErrorCode.NOT_EXIST_MEMBER;
 
 import io.festival.distance.auth.refresh.RefreshRepository;
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import io.festival.distance.domain.conversation.chatroom.service.ChatRoomService;
 import io.festival.distance.domain.conversation.roommember.repository.RoomMemberRepository;
 import io.festival.distance.domain.member.dto.AccountRequestDto;
+import io.festival.distance.domain.member.dto.ChangePasswordDto;
 import io.festival.distance.domain.member.dto.CheckAuthenticateNum;
 import io.festival.distance.domain.member.dto.MemberHobbyDto;
 import io.festival.distance.domain.member.dto.MemberInfoDto;
@@ -24,8 +27,8 @@ import io.festival.distance.domain.member.validsignup.ValidTelNum;
 import io.festival.distance.domain.memberhobby.service.MemberHobbyService;
 import io.festival.distance.domain.membertag.service.MemberTagService;
 import io.festival.distance.exception.DistanceException;
-import io.festival.distance.exception.ErrorCode;
 import io.festival.distance.infra.sms.SmsUtil;
+import java.util.Base64.Decoder;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,6 +50,7 @@ public class MemberService {
     private final RoomMemberRepository roomMemberRepository;
     private final SmsUtil smsUtil;
     private static final String PREFIX = "#";
+    private static final String INACTIVE = "INACTIVE";
 
     /**
      * NOTE
@@ -76,7 +80,7 @@ public class MemberService {
         memberHobbyService.updateHobby(member, signDto.memberHobbyDto());
         memberTagService.updateTag(member, signDto.memberTagDto());
         Long memberId = memberRepository.save(member).getMemberId();
-        member.memberNicknameUpdate(member.getNickName()+member.getMbti() + PREFIX + memberId);
+        member.memberNicknameUpdate(member.getNickName() + member.getMbti() + PREFIX + memberId);
         return member.getMemberId();
     }
 
@@ -101,7 +105,7 @@ public class MemberService {
             .toList();
         for (Long chatRoomId : chatRoomIdList) {
             ChatRoom chatRoom = chatRoomService.findRoom(chatRoomId);
-            if (chatRoom.getRoomStatus().equals("INACTIVE")) {
+            if (chatRoom.getRoomStatus().equals(INACTIVE)) {
                 chatRoomService.delete(chatRoomId);
                 continue;
             }
@@ -111,18 +115,18 @@ public class MemberService {
 
     public Member findMember(Long memberId) {
         return memberRepository.findById(memberId)
-            .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_MEMBER));
+            .orElseThrow(() -> new DistanceException(NOT_EXIST_MEMBER));
     }
 
     public Member findByTelNum(String telNum) {
         return memberRepository.findByTelNum(telNum)
-            .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_MEMBER));
+            .orElseThrow(() -> new DistanceException(NOT_EXIST_MEMBER));
     }
 
     @Transactional
-    public Long modifyAccount(String telNum, AccountRequestDto accountRequestDto) {
+    public Long modifyAccount(String telNum, String password) {
         Member member = findByTelNum(telNum);
-        String encryptedPassword = encoder.encode(accountRequestDto.password());
+        String encryptedPassword = encoder.encode(password);
         member.memberAccountModify(encryptedPassword);
         return member.getMemberId();
     }
@@ -144,24 +148,22 @@ public class MemberService {
     public Long modifyProfile(String loginId, MemberInfoDto memberInfoDto) { // 사용자가 입력한 값이 들어있음
         Member member = findByTelNum(loginId);
         member.memberInfoUpdate(memberInfoDto); //mbti랑 멤버 캐릭터 이미지 수정
-        member.memberNicknameUpdate(member.getDepartment()+PREFIX+memberInfoDto.mbti());
+        member.memberNicknameUpdate(member.getDepartment() + PREFIX + memberInfoDto.mbti());
         memberTagService.modifyTag(member, memberInfoDto.memberTagDto());
         memberHobbyService.modifyHobby(member, memberInfoDto.memberHobbyDto());
         return member.getMemberId();
     }
 
     @Transactional(readOnly = true)
-    public MemberTelNumDto findTelNum(Long memberId,String telNum,Long chatRoomId) {
+    public MemberTelNumDto findTelNum(Long memberId, String telNum, Long chatRoomId) {
         Member opponent = findMember(memberId); //상대방
         Member me = findByTelNum(telNum);
         ChatRoom chatRoom = chatRoomService.findRoom(chatRoomId);
-        if(chatRoomService.checkRoomCondition(me, opponent,chatRoom)){
-            System.out.println("성공");
+        if (chatRoomService.checkRoomCondition(me, opponent, chatRoom)) {
             return MemberTelNumDto.builder()
                 .telNum(opponent.getTelNum())
                 .build();
         }
-        System.out.println("실패?");
         return null;
     }
 
@@ -181,19 +183,18 @@ public class MemberService {
     /**
      * NOTE
      * 인증메일 전송
-     *
      * @param telNumRequest 전화번호
      */
     public String sendSms(TelNumRequest telNumRequest) {
         String num = getAuthenticateNumber();
-        smsUtil.sendOne(telNumRequest.telNum(), num);
+        smsUtil.sendOne(telNumRequest,num);
         return num;
     }
 
     public void verifyAuthenticateNum(CheckAuthenticateNum checkAuthenticateNum,
         String authenticateNum) {
         if (!authenticateNum.equals(checkAuthenticateNum.authenticateNum())) {
-            throw new DistanceException(ErrorCode.NOT_CORRECT_AUTHENTICATION_NUMBER);
+            throw new DistanceException(NOT_CORRECT_AUTHENTICATION_NUMBER);
         }
     }
 
