@@ -5,7 +5,6 @@ import static io.festival.distance.domain.firebase.entity.FcmType.STUDENT_CARD;
 import static io.festival.distance.domain.firebase.service.FcmService.REJECT_STUDENT_CARD;
 import static io.festival.distance.domain.firebase.service.FcmService.SET_SENDER_NAME;
 
-import io.festival.distance.domain.firebase.entity.FcmType;
 import io.festival.distance.domain.firebase.service.FcmService;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.entity.UnivCert;
@@ -62,6 +61,7 @@ public class StudentService {
         Member member = studentCard.getMember();
         member.updateAuthUniv(UnivCert.valueOf(adminRequest.type()));
         fcmService.createFcm(member,SET_SENDER_NAME,REJECT_STUDENT_CARD, STUDENT_CARD);
+        studentCardRepository.delete(studentCard);
     }
 
     private StudentCard getStudentCard(Long studentCardId) {
