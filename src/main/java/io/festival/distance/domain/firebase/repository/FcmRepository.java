@@ -11,5 +11,6 @@ public interface FcmRepository extends JpaRepository<Fcm,Long> {
     @Query("select f from Fcm f where f.isSend = false and f.message like %:message")
     List<Fcm> SendByFcmMessage(@Param("message") String message);
 
-    boolean existsByMemberAndSenderName(Member member,String senderName);
+
+    boolean existsByMemberAndSenderNameAndSendIsFalse(Member member,String senderName);
 }
