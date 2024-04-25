@@ -9,7 +9,7 @@ import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import io.festival.distance.domain.conversation.roommember.entity.RoomMember;
 import io.festival.distance.domain.conversation.roommember.service.RoomMemberService;
 import io.festival.distance.domain.firebase.dto.FcmDto;
-import io.festival.distance.domain.firebase.service.FCMService;
+import io.festival.distance.domain.firebase.service.FcmService;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.MemberService;
 import io.festival.distance.exception.DistanceException;
@@ -20,7 +20,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +32,7 @@ public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
     private final RoomMemberService roomMemberService;
     private final MemberService memberService;
-    private final FCMService fcmService;
+    private final FcmService fcmService;
 
     private final static Integer INITIAL_COUNT = 2;
 
@@ -61,7 +60,7 @@ public class ChatMessageService {
         return chatMessageRepository.checkTiKiTaKa(chatRoom) >= 10;
     }
 
-    @Transactional
+    /*@Transactional
     public void sendNotificationIfReceiverNotInChatRoom(ChatMessageDto chatMessageDto,
         Long roomId) {
         // 알림을 보낼 떄 필요한 값들
@@ -82,7 +81,7 @@ public class ChatMessageService {
         } else {
             log.info("client 토큰이 없어서 알림을 안 보냈습니다.");
         }
-    }
+    }*/
 
     /**
      * TODO

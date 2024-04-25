@@ -51,7 +51,7 @@ public class MemberService {
     private final SmsUtil smsUtil;
     private static final String PREFIX = "#";
     private static final String INACTIVE = "INACTIVE";
-
+    private static final String SCHOOL = "순천향대학교";
     /**
      * NOTE
      * 회원가입
@@ -70,6 +70,8 @@ public class MemberService {
             .authority(Authority.ROLE_USER)
             .mbti(signDto.mbti())
             .department(signDto.department())
+            .college(signDto.college())
+            .school(SCHOOL)
             .memberCharacter(signDto.memberCharacter())
             .nickName(signDto.department())
             .reportCount(0)

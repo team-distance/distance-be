@@ -7,10 +7,11 @@ import com.google.firebase.messaging.MulticastMessage;
 import com.google.firebase.messaging.SendResponse;
 import com.google.firebase.messaging.WebpushConfig;
 import com.google.firebase.messaging.WebpushNotification;
-import io.festival.distance.domain.firebase.dto.FcmDto;
 import io.festival.distance.domain.firebase.dto.MemberFcmDto;
 import io.festival.distance.domain.firebase.entity.Fcm;
+import io.festival.distance.domain.firebase.entity.FcmType;
 import io.festival.distance.domain.firebase.repository.FcmRepository;
+import io.festival.distance.domain.firebase.valid.DuplicateFcm;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.exception.DistanceException;
 import io.festival.distance.exception.ErrorCode;
@@ -25,67 +26,60 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class FCMService {
+public class FcmService {
 
+    private final DuplicateFcm duplicateFcm;
     private final FcmRepository fcmRepository;
     public static final String ADD_WAITING_ROOM_MESSAGE = "새로운 채팅 요청이 들어왔습니다!";
     public static final String REJECT_STUDENT_CARD = "학생증 인증에 실패하였습니다!";
     public static final String SET_SENDER_NAME = "[관리자]";
 
-    public void sendNotification(FcmDto fcmDto) {
-        log.info("Client 토큰: " + fcmDto.clientToken());
-        // 알림 내용
-        Message firebaseMessage = createNotificationContent(fcmDto);
-        // 알림 전송
-        String response = null;
+    @Transactional
+    @Scheduled(fixedRate = 30000)
+    public void sendUserNotification() {
+        log.info("메시지 fcm scheduled 실행!!");
+        sendNotification("새로운 메시지가 도착했습니다!");
+    }
 
-        try {
-            response = FirebaseMessaging.getInstance().sendAsync(firebaseMessage).get();
-            log.info("response>>>> " + response);
+    @Transactional(readOnly = true)
+    public void sendNotification(String message) {
+        List<MemberFcmDto> fcmDtoList = fcmRepository.SendByFcmMessage(message)
+            .stream()
+            .map(MemberFcmDto::fromEntity)
+            .toList();
 
-        } catch (Exception e) {
-            log.error("fcm error>> " + e.getMessage());
+        if (!fcmDtoList.isEmpty()) {
+            for (MemberFcmDto memberFcmDto : fcmDtoList) {
+                WebpushNotification webpushNotification = WebpushNotification.builder()
+                    .setTitle(memberFcmDto.senderNickName())
+                    .setBody(memberFcmDto.message())
+                    .setImage(
+                        "https://s3.ap-northeast-2.amazonaws.com/9oorm.distance/icons/apple-touch-icon-72x72.png")
+                    .build();
+
+                Message fcmMessage = Message.builder()
+                    .setWebpushConfig(WebpushConfig.builder()
+                        .setNotification(webpushNotification)
+                        .build())
+                    .setToken(memberFcmDto.member().getClientToken())
+                    .build();
+
+                createNotificationContent(fcmMessage, memberFcmDto.fcmId());
+            }
         }
     }
 
-    /**
-     * TODO
-     * s3 링크 환경변수
-     */
-    private Message createNotificationContent(FcmDto fcmDto) {
-        // 알림 내용
-        return Message.builder()
-            .setWebpushConfig(WebpushConfig.builder()
-                .setNotification(WebpushNotification.builder()
-                    .setTitle(fcmDto.senderNickName())
-                    .setBody(fcmDto.message())
-                    .setImage(
-                        "https://s3.ap-northeast-2.amazonaws.com/9oorm.distance/icons/apple-touch-icon-72x72.png")
-                    .build())
-                .build())
-            .setToken(fcmDto.clientToken())
-            .build();
+    private void createNotificationContent(Message message, Long fcmId) {
+        try {
+            FirebaseMessaging.getInstance().sendAsync(message).get();
+            log.info("Success to send message");
+            getFcm(fcmId).updateFcm();
+        } catch (Exception e) {
+            log.error(
+                "Failed to send message");
+        }
     }
 
-    public void saveFcm(MemberFcmDto memberFcmDto) {
-        Fcm fcm = Fcm.builder()
-            .message(memberFcmDto.message())
-            .isSend(false)
-            .member(memberFcmDto.member())
-            .build();
-        fcmRepository.save(fcm);
-    }
-
-    @Transactional
-    public void createFcm(Member opponent, String title, String message) {
-        MemberFcmDto dto = MemberFcmDto.builder()
-            .senderNickName(title)
-            .message(message)
-            .member(opponent)
-            .build();
-
-        saveFcm(dto);
-    }
     /**
      * 채팅 대기열 알림
      */
@@ -117,11 +111,9 @@ public class FCMService {
                     SendResponse sendResponse = responses.get(i);
                     MemberFcmDto memberFcmDto = fcmDtoList.get(i);
                     if (sendResponse.isSuccessful()) {
-                        log.info("Message has been sent successfully to " + memberFcmDto.member()
+                        log.info("Success to send message to " + memberFcmDto.member()
                             .getClientToken());
-                        Fcm fcm = fcmRepository.findById(memberFcmDto.fcmId())
-                            .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_FCM));
-                        fcm.updateFcm();
+                        getFcm(memberFcmDto.fcmId()).updateFcm();
                     } else {
                         log.error(
                             "Failed to send message to " + memberFcmDto.member().getClientToken()
@@ -158,4 +150,34 @@ public class FCMService {
             .addAllTokens(tokens)
             .build();
     }
+
+    public void saveFcm(MemberFcmDto memberFcmDto) {
+        Fcm fcm = Fcm.builder()
+            .message(memberFcmDto.message())
+            .senderName(memberFcmDto.senderNickName())
+            .isSend(false)
+            .member(memberFcmDto.member())
+            .fcmType(memberFcmDto.type())
+            .build();
+        fcmRepository.save(fcm);
+    }
+
+    @Transactional
+    public void createFcm(Member opponent, String title, String message, FcmType fcmType) {
+        if (duplicateFcm.checkFcm(opponent, title)) {
+            MemberFcmDto dto = MemberFcmDto.builder()
+                .senderNickName(title)
+                .message(message)
+                .member(opponent)
+                .type(fcmType)
+                .build();
+            saveFcm(dto);
+        }
+    }
+
+    private Fcm getFcm(Long fcmId) {
+        return fcmRepository.findById(fcmId)
+            .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_FCM));
+    }
+
 }
