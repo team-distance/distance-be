@@ -50,7 +50,9 @@ public class ChatRoomService {
                         String lastMessage =
                             Objects.isNull(message) ? "새로운 채팅방이 생성되었습니다!"
                                 : message.getChatMessage();
-
+                        LocalDateTime createDt =
+                            Objects.isNull(message) ? LocalDateTime.now()
+                                : message.getCreateDt();
                         Integer count = chatMessageRepository.countByChatRoomAndChatMessageIdGreaterThan(
                             chatRoom, roomMember.getLastReadMessageId());
 
@@ -58,7 +60,7 @@ public class ChatRoomService {
                             .chatRoomId(chatRoom.getChatRoomId())
                             .roomName(roomMember.getMyRoomName())
                             .createDt(roomMember.getCreateDt())
-                            .modifyDt(LocalDateTime.now())
+                            .modifyDt(createDt)
                             .opponentMemberId(opponentMember.getMemberId())
                             .memberCharacter(opponentMember.getMemberCharacter())
                             .lastMessage(lastMessage)
