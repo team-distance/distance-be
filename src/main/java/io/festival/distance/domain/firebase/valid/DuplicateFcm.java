@@ -10,8 +10,7 @@ import org.springframework.stereotype.Component;
 public class DuplicateFcm {
     private final FcmRepository fcmRepository;
 
-
     public boolean checkFcm(Member opponent,String myNickName){
-        return !fcmRepository.existsByMemberAndSenderNameAndSendIsFalse(opponent, myNickName);
+        return !fcmRepository.existByFcmMessage(opponent, myNickName);
     }
 }
