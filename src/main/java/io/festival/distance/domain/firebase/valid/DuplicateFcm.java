@@ -12,6 +12,6 @@ public class DuplicateFcm {
 
 
     public boolean checkFcm(Member opponent,String myNickName){
-        return !fcmRepository.existsByMemberAndSenderName(opponent, myNickName);
+        return !fcmRepository.existsByMemberAndSenderNameAndSendIsFalse(opponent, myNickName);
     }
 }
