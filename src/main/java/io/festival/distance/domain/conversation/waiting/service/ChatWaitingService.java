@@ -1,14 +1,15 @@
 package io.festival.distance.domain.conversation.waiting.service;
 
-import static io.festival.distance.domain.firebase.service.FCMService.ADD_WAITING_ROOM_MESSAGE;
-import static io.festival.distance.domain.firebase.service.FCMService.SET_SENDER_NAME;
+import static io.festival.distance.domain.firebase.entity.FcmType.WAITING;
+import static io.festival.distance.domain.firebase.service.FcmService.ADD_WAITING_ROOM_MESSAGE;
+import static io.festival.distance.domain.firebase.service.FcmService.SET_SENDER_NAME;
 
 import io.festival.distance.domain.conversation.waiting.dto.ChatWaitingCountDto;
 import io.festival.distance.domain.conversation.waiting.dto.ChatWaitingDto;
 import io.festival.distance.domain.conversation.waiting.entity.ChatWaiting;
 import io.festival.distance.domain.conversation.waiting.repository.ChatWaitingRepository;
-import io.festival.distance.domain.firebase.dto.MemberFcmDto;
-import io.festival.distance.domain.firebase.service.FCMService;
+import io.festival.distance.domain.firebase.entity.FcmType;
+import io.festival.distance.domain.firebase.service.FcmService;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.repository.MemberRepository;
 import io.festival.distance.domain.member.service.MemberService;
@@ -27,7 +28,7 @@ public class ChatWaitingService {
 
     private final ChatWaitingRepository chatWaitingRepository;
     private final MemberService memberService;
-    private final FCMService fcmService;
+    private final FcmService fcmService;
     private final MemberRepository memberRepository;
     private final ApplicationEventPublisher aep;
 
@@ -48,7 +49,7 @@ public class ChatWaitingService {
             Long waitingId = chatWaitingRepository.save(chatWaiting).getWaitingId();
             System.out.println("waitingId = " + waitingId);
 
-           fcmService.createFcm(opponent, SET_SENDER_NAME, ADD_WAITING_ROOM_MESSAGE);
+           fcmService.createFcm(opponent, SET_SENDER_NAME, ADD_WAITING_ROOM_MESSAGE,WAITING);
             //aep.publishEvent(new ChatWaitingAddedEvent(opponent.getMemberId()));
             //aep.publishEvent(new ChatWaitingAddedEvent(me.getMemberId()));
         }

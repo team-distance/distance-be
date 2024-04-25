@@ -20,6 +20,7 @@ public record MemberSignDto(
     String gender,
     String mbti,
     String department,
+    String college,
     String memberCharacter,
     List<MemberTagDto> memberTagDto,
     List<MemberHobbyDto> memberHobbyDto

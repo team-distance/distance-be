@@ -1,6 +1,7 @@
 package io.festival.distance.domain.firebase.dto;
 
 import io.festival.distance.domain.firebase.entity.Fcm;
+import io.festival.distance.domain.firebase.entity.FcmType;
 import io.festival.distance.domain.member.entity.Member;
 import lombok.Builder;
 
@@ -8,6 +9,7 @@ import lombok.Builder;
 public record MemberFcmDto(Member member,
                            String senderNickName,
                            String message,
+                           FcmType type,
                            Long fcmId) {
 
     public static MemberFcmDto fromEntity(Fcm fcm){
@@ -15,7 +17,8 @@ public record MemberFcmDto(Member member,
             .fcmId(fcm.getFcmId())
             .member(fcm.getMember())
             .message(fcm.getMessage())
-            .senderNickName("[관리자]")
+            .senderNickName(fcm.getSenderName())
+            .type(fcm.getFcmType())
             .build();
     }
 }

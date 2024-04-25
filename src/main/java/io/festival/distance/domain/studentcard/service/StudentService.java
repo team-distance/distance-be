@@ -1,10 +1,12 @@
 package io.festival.distance.domain.studentcard.service;
 
 
-import static io.festival.distance.domain.firebase.service.FCMService.REJECT_STUDENT_CARD;
-import static io.festival.distance.domain.firebase.service.FCMService.SET_SENDER_NAME;
+import static io.festival.distance.domain.firebase.entity.FcmType.STUDENT_CARD;
+import static io.festival.distance.domain.firebase.service.FcmService.REJECT_STUDENT_CARD;
+import static io.festival.distance.domain.firebase.service.FcmService.SET_SENDER_NAME;
 
-import io.festival.distance.domain.firebase.service.FCMService;
+import io.festival.distance.domain.firebase.entity.FcmType;
+import io.festival.distance.domain.firebase.service.FcmService;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.entity.UnivCert;
 import io.festival.distance.domain.member.service.MemberService;
@@ -27,7 +29,7 @@ public class StudentService {
 
     private final StudentCardRepository studentCardRepository;
     private final MemberService memberService;
-    private final FCMService fcmService;
+    private final FcmService fcmService;
     @Transactional
     public void sendImage(MultipartFile file, String telNum) throws IOException {
         Member member = memberService.findByTelNum(telNum);
@@ -59,7 +61,7 @@ public class StudentService {
         StudentCard studentCard = getStudentCard(studentCardId);
         Member member = studentCard.getMember();
         member.updateAuthUniv(UnivCert.valueOf(adminRequest.type()));
-        fcmService.createFcm(member,SET_SENDER_NAME,REJECT_STUDENT_CARD);
+        fcmService.createFcm(member,SET_SENDER_NAME,REJECT_STUDENT_CARD, STUDENT_CARD);
     }
 
     private StudentCard getStudentCard(Long studentCardId) {
