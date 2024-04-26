@@ -65,7 +65,7 @@
 ---
 
 ## System Architecture
-<img width="944" alt="image" src="https://github.com/team-distance/distance-be/assets/56196986/c108cf4e-ae09-476a-99c9-42bcf229168b">
+<img width="726" alt="image" src="https://github.com/team-distance/distance-be/assets/56196986/dd8ac2f4-a22e-4353-8e3c-9088fbb4174a">
 
 
 ---
