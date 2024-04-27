@@ -50,6 +50,12 @@ public class FcmService {
 
         if (!fcmDtoList.isEmpty()) {
             for (MemberFcmDto memberFcmDto : fcmDtoList) {
+                if (memberFcmDto.member().getClientToken() == null || memberFcmDto.member()
+                    .getClientToken().isEmpty()) {
+                    log.error(
+                        "No token available for member: " + memberFcmDto.member().getMemberId());
+                    continue;
+                }
                 WebpushNotification webpushNotification = WebpushNotification.builder()
                     .setTitle(memberFcmDto.senderNickName())
                     .setBody(memberFcmDto.message())
