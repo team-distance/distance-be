@@ -12,6 +12,7 @@ on:
         options:
           - ''
           - dev
+          - prod
       release_message:
         description: 릴리즈 메시지
         type: string
