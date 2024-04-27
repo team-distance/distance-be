@@ -90,8 +90,9 @@ public class GpsService {
 
         // activate, 거리 내에 있는 유저 필터링 -> 랜덤 4명 선택
         List<MatchUserDto> matchedUserList = memberRepository.findAll().stream()
-            .filter(user -> user.isActivated()&&user.getAuthority().equals(Authority.ROLE_USER))
-            .filter(user -> user.getLongitude()!=0||user.getLatitude()!=0)
+            .filter(user -> user.isActivated() && user.getAuthority().equals(Authority.ROLE_USER)
+                && user.getGender().equals(centerUser.getGender()))
+            .filter(user -> user.getLongitude() != 0 || user.getLatitude() != 0)
             .filter(user -> {
                 double userLongitude = user.getLongitude();
                 double userLatitude = user.getLatitude();
@@ -122,10 +123,11 @@ public class GpsService {
     public MatchResponseDto matchNonLoginUser() {
         List<MatchUserDto> matcheList = new java.util.ArrayList<>(
             memberRepository.findAll().stream().filter(
-                user -> user.isActivated() && user.getAuthority().equals(Authority.ROLE_USER)).map(
-                user -> MatchUserDto.builder().memberId(user.getMemberId())
-                    .memberProfileDto(memberService.memberProfile(user.getTelNum()))
-                    .nickName(user.getNickName()).build()).toList());
+                    user -> user.isActivated() && user.getAuthority().equals(Authority.ROLE_USER))
+                .map(
+                    user -> MatchUserDto.builder().memberId(user.getMemberId())
+                        .memberProfileDto(memberService.memberProfile(user.getTelNum()))
+                        .nickName(user.getNickName()).build()).toList());
 
         Collections.shuffle(matcheList); //랜덤
 
@@ -169,6 +171,6 @@ public class GpsService {
     public DistanceResponse callDistance(Long chatRoomId) {
         return chatRoomRepository.findById(chatRoomId)
             .map(DistanceResponse::fromEntity)
-            .orElseThrow(()->new DistanceException(ErrorCode.NOT_EXIST_CHATROOM));
+            .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_CHATROOM));
     }
 }
