@@ -91,7 +91,7 @@ public class GpsService {
         // activate, 거리 내에 있는 유저 필터링 -> 랜덤 4명 선택
         List<MatchUserDto> matchedUserList = memberRepository.findAll().stream()
             .filter(user -> user.isActivated() && user.getAuthority().equals(Authority.ROLE_USER)
-                && user.getGender().equals(centerUser.getGender()))
+                && !user.getGender().equals(centerUser.getGender()))
             .filter(user -> user.getLongitude() != 0 || user.getLatitude() != 0)
             .filter(user -> {
                 double userLongitude = user.getLongitude();
