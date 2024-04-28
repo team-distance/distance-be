@@ -8,7 +8,6 @@ import io.festival.distance.domain.conversation.waiting.dto.ChatWaitingCountDto;
 import io.festival.distance.domain.conversation.waiting.dto.ChatWaitingDto;
 import io.festival.distance.domain.conversation.waiting.entity.ChatWaiting;
 import io.festival.distance.domain.conversation.waiting.repository.ChatWaitingRepository;
-import io.festival.distance.domain.firebase.entity.FcmType;
 import io.festival.distance.domain.firebase.service.FcmService;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.repository.MemberRepository;
@@ -65,7 +64,9 @@ public class ChatWaitingService {
             ChatWaitingDto dto = ChatWaitingDto.builder()
                 .loveReceiverId(chatWaiting.getLoveReceiver().getMemberId()) //나
                 .loveSenderId(chatWaiting.getLoveSender().getMemberId()) //상대방
-                .myRoomName(chatWaiting.getMyRoomName())
+                .department(opponent.getDepartment())
+                .mbti(opponent.getMbti())
+                //.myRoomName(chatWaiting.getMyRoomName())
                 .waitingRoomId(chatWaiting.getWaitingId())
                 .memberCharacter(opponent.getMemberCharacter())
                 .build();
