@@ -90,4 +90,4 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/distance-0.0.1-snapshot
             cd distance-be
             sudo git pull origin ${{ needs.env.outputs.branch }}
-            sudo docker-compose -f ${{secrets.DEV_DOCKER_COMPOSE_PATH}} up -d
+            sudo docker-compose -f ${{ secrets.DEV_DOCKER_COMPOSE_PATH }} up -d
