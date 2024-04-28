@@ -1,4 +1,4 @@
-name: Dev build & deploy
+name: Prod build & deploy
 on:
   workflow_dispatch:
     inputs:
@@ -11,7 +11,7 @@ on:
         type: choice
         options:
           - ''
-          - dev
+          - prod
       release_message:
         description: 릴리즈 메시지
         type: string
@@ -88,6 +88,4 @@ jobs:
             sudo docker rm ${{ secrets.DOCKER_APP_CONTAINER }}
             sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/distance-0.0.1-snapshot
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/distance-0.0.1-snapshot
-            cd distance-be
-            sudo git pull origin ${{ needs.env.outputs.branch }}
-            sudo docker-compose up -d
+            sudo docker-compose -f ${{ secrets.PROD_DOCKER_COMPOSE_PATH }} up -d
