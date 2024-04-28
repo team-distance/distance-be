@@ -113,7 +113,6 @@ public class ChatMessageService {
 
         List<ChatMessage> messages = getChatMessages(chatRoom, roomMember);
 
-
         System.out.println("messages.size() = " + messages.size());
         for (ChatMessage message : messages) {
             System.out.println(
@@ -131,7 +130,7 @@ public class ChatMessageService {
         }
         return responseDtoList;
     }
-    public List<ChatMessage> getChatMessages(ChatRoom chatRoom, RoomMember roomMember) {
+    private List<ChatMessage> getChatMessages(ChatRoom chatRoom, RoomMember roomMember) {
         Long lastChatMessageId = roomMember.getLastReadMessageId(); //가장 나중에 읽은 메시지 PK값
 
         List<ChatMessage> messages = chatMessageRepository.findByChatRoomAndChatMessageIdGreaterThan(
@@ -142,7 +141,7 @@ public class ChatMessageService {
             System.out.println("unreadcount==> "+message.getUnreadCount());
             message.readCountUpdate(1);
             System.out.println("message.getUnreadCount() = " + message.getUnreadCount());
-            //chatMessageRepository.save(message);
+            chatMessageRepository.save(message);
         });
         System.out.println("너 잘 나오니??");
         return messages;
