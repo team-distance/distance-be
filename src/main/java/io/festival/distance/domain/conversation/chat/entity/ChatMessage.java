@@ -45,7 +45,6 @@ public class ChatMessage extends BaseTimeEntity { //채팅 메시지
     @JsonIgnore
     private ChatRoom chatRoom;
 
-    @Transactional
     public void readCountUpdate(int currentMemberCount) {
         this.unreadCount -= currentMemberCount;
         if (this.unreadCount < 0) {
