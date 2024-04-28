@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import org.springframework.transaction.annotation.Transactional;
 
 @Entity
 @Table(name = "chatmessage")
@@ -44,6 +45,7 @@ public class ChatMessage extends BaseTimeEntity { //채팅 메시지
     @JsonIgnore
     private ChatRoom chatRoom;
 
+    @Transactional
     public void readCountUpdate(int currentMemberCount) {
         if (this.unreadCount != 0) {
             this.unreadCount -= currentMemberCount;

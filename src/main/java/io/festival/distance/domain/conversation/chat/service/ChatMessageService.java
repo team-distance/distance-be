@@ -130,9 +130,13 @@ public class ChatMessageService {
         Long lastChatMessageId = roomMember.getLastReadMessageId(); //가장 나중에 읽은 메시지 PK값
 
         List<ChatMessage> messages = chatMessageRepository.findByChatRoomAndChatMessageIdGreaterThan(
-            chatRoom, lastChatMessageId);
+            chatRoom, lastChatMessageId
+            );
+
         messages.forEach(message -> {
+            System.out.println("unreadcount==> "+message.getUnreadCount());
             message.readCountUpdate(1);
+            System.out.println("message.getUnreadCount() = " + message.getUnreadCount());
             chatMessageRepository.save(message);
         });
         return messages;
