@@ -124,7 +124,9 @@ public class ChatMessageService {
         }
         return responseDtoList;
     }
-    private List<ChatMessage> getChatMessages(ChatRoom chatRoom, RoomMember roomMember) {
+
+    @Transactional
+    public List<ChatMessage> getChatMessages(ChatRoom chatRoom, RoomMember roomMember) {
         Long lastChatMessageId = roomMember.getLastReadMessageId(); //가장 나중에 읽은 메시지 PK값
 
         List<ChatMessage> messages = chatMessageRepository.findByChatRoomAndChatMessageIdGreaterThan(

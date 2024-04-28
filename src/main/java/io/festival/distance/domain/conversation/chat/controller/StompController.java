@@ -50,16 +50,18 @@ public class StompController {
     @MessageMapping("/chat/{roomId}") //app/chat/{roomId}로 요청이 들어왔을 때 -> 발신
     @SendTo("/topic/chatroom/{roomId}") // Subscription URL -> 수신
     @Transactional
-    public ResponseEntity<?> sendMessage(@DestinationVariable Long roomId,
-        @RequestBody ChatMessageDto chatMessageDto) {
+    public ResponseEntity<?> sendMessage(
+        @DestinationVariable Long roomId,
+        @RequestBody ChatMessageDto chatMessageDto
+    ) {
         try {
             checkMessageLength.validMessageLength(chatMessageDto.getChatMessage());
             ChatRoom chatRoom = chatRoomService.findRoom(roomId);
 
             // 채팅방 새션 조회
-            List<ChatRoomSession> sessionByChatRoom = chatRoomSessionService.findSessionByChatRoom(
-                chatRoom); //2개가 나올 듯?
-
+            List<ChatRoomSession> sessionByChatRoom = chatRoomSessionService
+                .findSessionByChatRoom(chatRoom); //2개가 나올 듯?
+            System.out.println("sessionByChatRoom = " + sessionByChatRoom.size());
             /**
              *  채팅방을 나가는 경우
              */
@@ -77,7 +79,8 @@ public class StompController {
                     SenderType.SYSTEM);
 
                 return ResponseEntity.ok(
-                    chatMessageService.generateMessage(messageId, 2, chatRoom));
+                    chatMessageService.generateMessage(messageId, 2, chatRoom)
+                );
             }
 
             // 전화 요청
@@ -89,8 +92,7 @@ public class StompController {
             //전화 요청 수락
             if (chatMessageDto.getPublishType().equals(SenderType.CALL_RESPONSE.getSenderType())) {
                 chatRoomService.setAgreed(chatRoom);
-                return getResponse(roomId, chatMessageDto, chatRoom,
-                    sessionByChatRoom);
+                return getResponse(roomId, chatMessageDto, chatRoom, sessionByChatRoom);
             }
 
             // 나머지 일반적인 경우
