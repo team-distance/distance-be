@@ -112,6 +112,8 @@ public class ChatMessageService {
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom); //방금 들어온 멤버가
 
         List<ChatMessage> messages = getChatMessages(chatRoom, roomMember);
+
+
         System.out.println("messages.size() = " + messages.size());
         for (ChatMessage message : messages) {
             System.out.println(
@@ -135,13 +137,14 @@ public class ChatMessageService {
         List<ChatMessage> messages = chatMessageRepository.findByChatRoomAndChatMessageIdGreaterThan(
             chatRoom, lastChatMessageId
             );
-
+        System.out.println("messages.size() = " + messages.size());
         messages.forEach(message -> {
             System.out.println("unreadcount==> "+message.getUnreadCount());
             message.readCountUpdate(1);
             System.out.println("message.getUnreadCount() = " + message.getUnreadCount());
             //chatMessageRepository.save(message);
         });
+        System.out.println("너 잘 나오니??");
         return messages;
     }
 
