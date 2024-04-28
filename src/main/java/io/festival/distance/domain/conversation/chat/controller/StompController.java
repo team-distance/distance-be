@@ -77,8 +77,7 @@ public class StompController {
                     SenderType.SYSTEM);
 
                 return ResponseEntity.ok(
-                    chatMessageService.generateMessage(messageId, sessionByChatRoom.size(),
-                        chatRoom));
+                    chatMessageService.generateMessage(messageId, 2, chatRoom));
             }
 
             // 전화 요청
@@ -115,7 +114,7 @@ public class StompController {
         // receiver 에게 PUSH 알림 전송
         Member opponent = memberService.findMember(chatMessageDto.getSenderId());
         Member member = memberService.findMember(chatMessageDto.getReceiverId());
-        fcmService.createFcm(opponent, member.getNickName(), "새로운 메시지가 도착했습니다!",MESSAGE);
+        fcmService.createFcm(opponent, member.getNickName(), "새로운 메시지가 도착했습니다!", MESSAGE);
         //chatMessageService.sendNotificationIfReceiverNotInChatRoom(chatMessageDto, roomId);
 
         // 채팅 읽음 갱신
