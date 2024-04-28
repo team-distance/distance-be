@@ -1,11 +1,12 @@
 package io.festival.distance.domain.member.entity;
 
+import static javax.persistence.EnumType.STRING;
+
 import io.festival.distance.domain.base.BaseTimeEntity;
 import io.festival.distance.domain.gps.dto.GpsDto;
 import io.festival.distance.domain.member.dto.MemberInfoDto;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -74,10 +75,10 @@ public class Member extends BaseTimeEntity {
     @Column(name = "report_count")
     private Integer reportCount;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(STRING)
     private UnivCert authUniv;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(STRING)
     private Authority authority;
 
     public void memberInfoUpdate(MemberInfoDto memberInfoDto) {

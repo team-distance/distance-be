@@ -1,10 +1,8 @@
 package io.festival.distance.domain.studentcard.dto;
 
-import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.studentcard.entity.StudentCard;
 import java.util.Base64;
 import lombok.Builder;
-import lombok.Builder.ObtainVia;
 
 @Builder
 public record ImageResponse(

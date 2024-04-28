@@ -1,13 +1,11 @@
 package io.festival.distance.domain.member.validsignup;
 
-import io.festival.distance.authuniversity.service.univmail.ValidMailLength;
 import io.festival.distance.domain.member.repository.MemberRepository;
 import io.festival.distance.exception.DistanceException;
 import io.festival.distance.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 @Component
