@@ -58,9 +58,9 @@ public class ChatRoomService {
 
                         return ChatRoomInfoDto.builder()
                             .chatRoomId(chatRoom.getChatRoomId())
-                            .department(opponentMember.getDepartment())
-                            .mbti(opponentMember.getMbti())
-                            //.roomName(roomMember.getMyRoomName())
+                            //.department(opponentMember.getDepartment())
+                            //.mbti(opponentMember.getMbti())
+                            .roomName(roomMember.getMyRoomName())
                             .createDt(roomMember.getCreateDt())
                             .modifyDt(createDt)
                             .opponentMemberId(opponentMember.getMemberId())
@@ -72,8 +72,7 @@ public class ChatRoomService {
                     String message = "상대방이 탈퇴했습니다.";
                     return ChatRoomInfoDto.builder()
                         .chatRoomId(chatRoom.getChatRoomId())
-                        .department("탈퇴한 사용자")
-                        .mbti("")
+                        .roomName(roomMember.getMyRoomName())
                         .createDt(roomMember.getCreateDt())
                         .lastMessage(message)
                         .build();
