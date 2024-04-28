@@ -133,7 +133,7 @@ public class ChatMessageService {
     private List<ChatMessage> getChatMessages(ChatRoom chatRoom, RoomMember roomMember) {
         Long lastChatMessageId = roomMember.getLastReadMessageId(); //가장 나중에 읽은 메시지 PK값
 
-        List<ChatMessage> messages = chatMessageRepository.findByChatRoomAndChatMessageIdGreaterThan(
+        List<ChatMessage> messages = chatMessageRepository.findByChatRoomAndChatMessageIdGreaterThanEqual(
             chatRoom, lastChatMessageId
             );
         System.out.println("messages.size() = " + messages.size());
