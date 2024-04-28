@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 public class ExceptionHandlerFilter extends OncePerRequestFilter {
-
+    private static final String IN_CODING_TYPE = "UTF-8";
     @Override
     protected void doFilterInternal(
         HttpServletRequest request,
@@ -34,7 +34,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         ObjectMapper objectMapper = new ObjectMapper();
         response.setStatus(errorCode.getStatus());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding(IN_CODING_TYPE);
         ErrorResponse errorResponse = new ErrorResponse(errorCode.getStatus(),
             errorCode.getMessage());
         try {
