@@ -100,7 +100,7 @@ public class ChatRoomService {
         RoomMember roomMember = RoomMember.builder()
             .chatRoom(chatRoom)
             .myRoomName(opponent.getNickName())
-            .lastReadMessageId(0L)
+            .lastReadMessageId(1L)
             .member(me)
             .build();
         roomMemberRepository.save(roomMember);
