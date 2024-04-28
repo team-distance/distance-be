@@ -112,7 +112,10 @@ public class ChatMessageService {
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom); //방금 들어온 멤버가
 
         List<ChatMessage> messages = getChatMessages(chatRoom, roomMember);
-
+        for (ChatMessage message : messages) {
+            System.out.println(
+                "messages.get(i).getUnreadCount() = " + message.getUnreadCount());
+        }
         List<ChatMessageResponseDto> responseDtoList = messages.stream()
             .map(ChatMessageResponseDto::new)
             .collect(Collectors.toList());
@@ -137,7 +140,7 @@ public class ChatMessageService {
             System.out.println("unreadcount==> "+message.getUnreadCount());
             message.readCountUpdate(1);
             System.out.println("message.getUnreadCount() = " + message.getUnreadCount());
-            chatMessageRepository.save(message);
+            //chatMessageRepository.save(message);
         });
         return messages;
     }
