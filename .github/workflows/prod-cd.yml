@@ -64,8 +64,6 @@ jobs:
 
     - name: docker build
       run: |
-        git pull origin ${{ needs.env.outputs.branch }}
-        git checkout ${{ needs.env.outputs.branch }}
         chmod +x gradlew
         ./gradlew clean build --parallel
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
