@@ -61,7 +61,6 @@ public class StompController {
             // 채팅방 새션 조회
             List<ChatRoomSession> sessionByChatRoom = chatRoomSessionService
                 .findSessionByChatRoom(chatRoom); //2개가 나올 듯?
-            System.out.println("sessionByChatRoom = " + sessionByChatRoom.size());
             /**
              *  채팅방을 나가는 경우
              */
@@ -77,7 +76,11 @@ public class StompController {
 
                 Long messageId = chatMessageService.createMessage(chatRoom, messageDto,
                     SenderType.SYSTEM);
-
+                for (ChatRoomSession chatRoomSession : sessionByChatRoom) {
+                    Long memberId = chatRoomSession.getMemberId();
+                    roomMemberService.updateLastMessage(memberId, messageId,
+                        roomId); //가장 최근에 읽은 메시지 수정
+                }
                 return ResponseEntity.ok(
                     chatMessageService.generateMessage(messageId, 2, chatRoom)
                 );
