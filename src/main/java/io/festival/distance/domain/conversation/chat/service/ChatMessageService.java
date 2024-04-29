@@ -57,29 +57,6 @@ public class ChatMessageService {
         return chatMessageRepository.checkTiKiTaKa(chatRoom) >= 10;
     }
 
-    /*@Transactional
-    public void sendNotificationIfReceiverNotInChatRoom(ChatMessageDto chatMessageDto,
-        Long roomId) {
-        // 알림을 보낼 떄 필요한 값들
-        Member opponent = memberService.findMember(chatMessageDto.getSenderId()); //받는 사람
-        String myNickName = memberService.findMember(chatMessageDto.getReceiverId())
-            .getNickName(); // 발신자의 닉네임
-        // FCM 알림 전송 발송자 닉네임이, chatMessage를 특정 clietnToken에게
-        String clientToken = opponent.getClientToken();
-        log.info("opponent token>> " + clientToken);
-        if (clientToken != null) { // clientToken이 null이 아닐 때만 FCM 알림 전송
-            FcmDto fcmDto = FcmDto.builder()
-                .clientToken(clientToken)
-                .senderNickName(myNickName)
-                .message(chatMessageDto.getChatMessage())
-                .roomId(roomId)
-                .build();
-            fcmService.sendNotification(fcmDto);
-        } else {
-            log.info("client 토큰이 없어서 알림을 안 보냈습니다.");
-        }
-    }*/
-
     /**
      * TODO
      * 메소드 네이밍 변경 필요!
@@ -107,22 +84,7 @@ public class ChatMessageService {
     @Transactional
     public List<ChatMessageResponseDto> markAllMessagesAsRead(ChatRoom chatRoom, Member member) {
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom); //방금 들어온 멤버가
-        /*if (roomMember.getLastReadMessageId() == 1) {
-            List<ChatMessage> list = chatMessageRepository.findAllByChatRoomOrderByCreateDtAsc(
-                chatRoom);
-            list.forEach(message -> {
-                message.readCountUpdate(2);
-                chatMessageRepository.save(message);
-            });
-            List<ChatMessageResponseDto> responseDtoList = list.stream()
-                .map(ChatMessageResponseDto::new)
-                .toList();
-            if (!responseDtoList.isEmpty()) { //최신 메시지가 있다면
-                roomMember.updateMessageId(
-                    responseDtoList.get(responseDtoList.size() - 1).getMessageId());
-            }
-            return responseDtoList;
-        }*/
+
         List<ChatMessage> messages = getChatMessages(chatRoom, roomMember);
 
         List<ChatMessageResponseDto> responseDtoList = messages.stream()
