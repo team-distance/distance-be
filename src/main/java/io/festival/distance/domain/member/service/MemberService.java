@@ -121,6 +121,7 @@ public class MemberService {
     }
 
     public Member findByTelNum(String telNum) {
+        System.out.println("this is findMember Method");
         return memberRepository.findByTelNum(telNum)
             .orElseThrow(() -> new DistanceException(NOT_EXIST_MEMBER));
     }
