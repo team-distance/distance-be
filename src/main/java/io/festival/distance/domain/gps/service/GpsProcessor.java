@@ -66,24 +66,27 @@ public class GpsProcessor {
                             && user.getLongitude() != 0 || user.getLatitude() != 0
                 )
                 .map(
-                    user -> MatchUserDto.builder().memberId(user.getMemberId())
+                    user -> MatchUserDto.builder()
+                        .memberId(user.getMemberId())
                         .memberProfileDto(memberService.memberProfile(user.getTelNum()))
-                        .nickName(user.getNickName()).build())
+                        .nickName(user.getNickName())
+                        .build()
+                )
                 .toList());
-
+        System.out.println("system error?");
         return getMatchResponseDto(dtoList);
     }
 
     private MatchResponseDto getMatchResponseDto(List<MatchUserDto> dtoList) {
         Collections.shuffle(dtoList);
-
+        System.out.println("this is matchResponseDto Method");
         List<MatchUserDto> userDtoList = dtoList.stream()
-            .limit(4)
             .map(user -> MatchUserDto.builder()
                 .memberId(user.memberId())
                 .memberProfileDto(memberService.memberProfile(user.telNum()))
                 .nickName(user.nickName())
                 .build())
+            .limit(4)
             .toList();
 
         return MatchResponseDto.builder()
