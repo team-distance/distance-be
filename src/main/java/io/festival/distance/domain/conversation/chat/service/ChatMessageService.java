@@ -110,7 +110,23 @@ public class ChatMessageService {
     @Transactional
     public List<ChatMessageResponseDto> markAllMessagesAsRead(ChatRoom chatRoom, Member member) {
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom); //방금 들어온 멤버가
-
+        if (roomMember.getLastReadMessageId() == 1L) {
+            System.out.println("요기로 들어오자?");
+            List<ChatMessage> list = chatMessageRepository.findAllByChatRoomOrderByCreateDtAsc(
+                chatRoom);
+            list.forEach(message -> {
+                message.readCountUpdate(2);
+                chatMessageRepository.save(message);
+            });
+            List<ChatMessageResponseDto> responseDtoList = list.stream()
+                .map(ChatMessageResponseDto::new)
+                .toList();
+            if (!responseDtoList.isEmpty()) { //최신 메시지가 있다면
+                roomMember.updateMessageId(
+                    responseDtoList.get(responseDtoList.size() - 1).getMessageId());
+            }
+            return responseDtoList;
+        }
         List<ChatMessage> messages = getChatMessages(chatRoom, roomMember);
 
         System.out.println("messages.size() = " + messages.size());
@@ -130,15 +146,16 @@ public class ChatMessageService {
         }
         return responseDtoList;
     }
+
     private List<ChatMessage> getChatMessages(ChatRoom chatRoom, RoomMember roomMember) {
         Long lastChatMessageId = roomMember.getLastReadMessageId(); //가장 나중에 읽은 메시지 PK값
 
         List<ChatMessage> messages = chatMessageRepository.findByChatRoomAndChatMessageIdGreaterThanEqual(
             chatRoom, lastChatMessageId
-            );
+        );
         System.out.println("messages.size() = " + messages.size());
         messages.forEach(message -> {
-            System.out.println("unreadcount==> "+message.getUnreadCount());
+            System.out.println("unreadcount==> " + message.getUnreadCount());
             message.readCountUpdate(1);
             System.out.println("message.getUnreadCount() = " + message.getUnreadCount());
             chatMessageRepository.save(message);
@@ -150,6 +167,7 @@ public class ChatMessageService {
     /**
      * NOTE
      * 페이징 처리
+     *
      * @param chatRoom
      * @param pageRequest
      * @param principal
