@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -80,12 +81,15 @@ public class GpsProcessor {
     private MatchResponseDto getMatchResponseDto(List<MatchUserDto> dtoList) {
         Collections.shuffle(dtoList);
         System.out.println("this is matchResponseDto Method");
+        System.out.println("dtoList = " + dtoList.size());
+
         List<MatchUserDto> userDtoList = dtoList.stream()
             .map(user -> MatchUserDto.builder()
                 .memberId(user.memberId())
                 .memberProfileDto(memberService.memberProfile(user.telNum()))
                 .nickName(user.nickName())
                 .build())
+            .filter(Objects::nonNull)
             .limit(4)
             .toList();
 
