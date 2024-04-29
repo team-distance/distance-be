@@ -40,7 +40,8 @@ public class GpsProcessor {
 
     public MatchResponseDto getMatchingUser(Member centerUser, double centerLatitude,
         double centerLongitude) {
-        List<MatchUserDto> matchedUserList = memberRepository.findAll().stream()
+        List<MatchUserDto> matchedUserList = memberRepository.findAll()
+            .stream()
             .filter(user -> user.isActivated() && user.getAuthority().equals(Authority.ROLE_USER)
                 && !user.getGender().equals(centerUser.getGender()))
             .filter(user -> user.getLongitude() != 0 || user.getLatitude() != 0)
@@ -58,13 +59,17 @@ public class GpsProcessor {
     }
 
     public MatchResponseDto notFoundUserPosition(Member centerUser) {
+        System.out.println("centerUser = " + centerUser.getGender());
         List<MatchUserDto> dtoList = new java.util.ArrayList<>(
             memberRepository.findAll().stream()
                 .filter(
-                    user ->
-                        user.isActivated() && user.getAuthority().equals(Authority.ROLE_USER)
-                            && !user.getGender().equals(centerUser.getGender())
-                            && user.getLongitude() != 0 || user.getLatitude() != 0
+                    user -> user.isActivated() && user.getAuthority().equals(Authority.ROLE_USER)
+                )
+                .filter(
+                    user -> user.getLongitude() != 0 || user.getLatitude() != 0
+                )
+                .filter(
+                    user -> !user.getGender().equals(centerUser.getGender())
                 )
                 .map(
                     user -> MatchUserDto.builder()
