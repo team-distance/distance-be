@@ -18,6 +18,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,6 +86,13 @@ public class ChatMessageService {
     public List<ChatMessageResponseDto> markAllMessagesAsRead(ChatRoom chatRoom, Member member) {
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom); //방금 들어온 멤버가
 
+        return getChatMessageResponseDto(
+            chatRoom, roomMember);
+    }
+
+    @NotNull
+    private List<ChatMessageResponseDto> getChatMessageResponseDto(ChatRoom chatRoom,
+        RoomMember roomMember) {
         List<ChatMessage> messages = getChatMessages(chatRoom, roomMember);
 
         List<ChatMessageResponseDto> responseDtoList = messages.stream()
@@ -96,6 +104,24 @@ public class ChatMessageService {
                 responseDtoList.get(responseDtoList.size() - 1).getMessageId());
         }
         return responseDtoList;
+    }
+
+    @Transactional
+    public List<ChatMessageResponseDto> findAllChatRoomMessage(ChatRoom chatRoom,
+        Principal principal) {
+        Member member = memberService.findByTelNum(principal.getName());
+        RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom);
+
+        if (Objects.isNull(roomMember)) {
+            throw new DistanceException(ErrorCode.NOT_EXIST_CHATROOM);
+        }
+
+        getChatMessageResponseDto(chatRoom, roomMember);
+
+        return chatMessageRepository.findAllByChatRoomOrderByCreateDtAsc(chatRoom)
+            .stream()
+            .map(ChatMessageResponseDto::new)
+            .toList();
     }
 
     private List<ChatMessage> getChatMessages(ChatRoom chatRoom, RoomMember roomMember) {
@@ -132,19 +158,5 @@ public class ChatMessageService {
             .toList();
     }
 
-    @Transactional
-    public List<ChatMessageResponseDto> findAllChatRoomMessage(ChatRoom chatRoom,
-        Principal principal) {
-        Member member = memberService.findByTelNum(principal.getName());
-        RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom);
 
-        if (Objects.isNull(roomMember)) {
-            throw new DistanceException(ErrorCode.NOT_EXIST_CHATROOM);
-        }
-        getChatMessages(chatRoom, roomMember);
-        return chatMessageRepository.findAllByChatRoomOrderByCreateDtAsc(chatRoom)
-            .stream()
-            .map(ChatMessageResponseDto::new)
-            .toList();
-    }
 }
