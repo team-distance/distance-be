@@ -71,18 +71,15 @@ public class GpsProcessor {
                         .memberId(user.getMemberId())
                         .memberProfileDto(memberService.memberProfile(user.getTelNum()))
                         .nickName(user.getNickName())
+                        .telNum(user.getTelNum())
                         .build()
                 )
                 .toList());
-        System.out.println("system error?");
         return getMatchResponseDto(dtoList);
     }
 
     private MatchResponseDto getMatchResponseDto(List<MatchUserDto> dtoList) {
         Collections.shuffle(dtoList);
-        System.out.println("this is matchResponseDto Method");
-        System.out.println("dtoList = " + dtoList.size());
-
         List<MatchUserDto> userDtoList = dtoList.stream()
             .map(user ->
                 MatchUserDto.builder()
@@ -90,7 +87,6 @@ public class GpsProcessor {
                 .memberProfileDto(memberService.memberProfile(user.telNum()))
                 .nickName(user.nickName())
                 .build())
-            .filter(Objects::nonNull)
             .limit(4)
             .toList();
 
