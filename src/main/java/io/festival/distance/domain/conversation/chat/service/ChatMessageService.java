@@ -110,7 +110,9 @@ public class ChatMessageService {
     @Transactional
     public List<ChatMessageResponseDto> markAllMessagesAsRead(ChatRoom chatRoom, Member member) {
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom); //방금 들어온 멤버가
-        if (roomMember.getLastReadMessageId() == 1L) {
+        System.out.println("roomMember.getLastReadMessageId() = " + roomMember.getLastReadMessageId());
+
+        if (roomMember.getLastReadMessageId() == 1) {
             System.out.println("요기로 들어오자?");
             List<ChatMessage> list = chatMessageRepository.findAllByChatRoomOrderByCreateDtAsc(
                 chatRoom);
