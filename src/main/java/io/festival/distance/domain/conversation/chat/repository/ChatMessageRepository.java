@@ -15,7 +15,7 @@ import java.util.List;
 
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
 
-    List<ChatMessage> findByChatRoomAndChatMessageIdGreaterThanEqual(ChatRoom chatRoom, Long messageId);
+    List<ChatMessage> findByChatRoomAndChatMessageIdGreaterThan(ChatRoom chatRoom, Long messageId);
 
     List<ChatMessage> findByChatRoom(ChatRoom chatRoom);
 

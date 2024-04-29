@@ -8,8 +8,6 @@ import io.festival.distance.domain.conversation.chat.repository.ChatMessageRepos
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import io.festival.distance.domain.conversation.roommember.entity.RoomMember;
 import io.festival.distance.domain.conversation.roommember.service.RoomMemberService;
-import io.festival.distance.domain.firebase.dto.FcmDto;
-import io.festival.distance.domain.firebase.service.FcmService;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.MemberService;
 import io.festival.distance.exception.DistanceException;
@@ -32,7 +30,6 @@ public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
     private final RoomMemberService roomMemberService;
     private final MemberService memberService;
-    private final FcmService fcmService;
 
     private final static Integer INITIAL_COUNT = 2;
 
@@ -110,9 +107,7 @@ public class ChatMessageService {
     @Transactional
     public List<ChatMessageResponseDto> markAllMessagesAsRead(ChatRoom chatRoom, Member member) {
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom); //방금 들어온 멤버가
-        System.out.println("roomMember.getLastReadMessageId() = " + roomMember.getLastReadMessageId());
-        if (roomMember.getLastReadMessageId() == 1) {
-            System.out.println("요기로 들어오자?");
+        /*if (roomMember.getLastReadMessageId() == 1) {
             List<ChatMessage> list = chatMessageRepository.findAllByChatRoomOrderByCreateDtAsc(
                 chatRoom);
             list.forEach(message -> {
@@ -127,19 +122,12 @@ public class ChatMessageService {
                     responseDtoList.get(responseDtoList.size() - 1).getMessageId());
             }
             return responseDtoList;
-        }
+        }*/
         List<ChatMessage> messages = getChatMessages(chatRoom, roomMember);
-
-        System.out.println("messages.size() = " + messages.size());
-        for (ChatMessage message : messages) {
-            System.out.println(
-                "messages.get(i).getUnreadCount() = " + message.getUnreadCount());
-        }
 
         List<ChatMessageResponseDto> responseDtoList = messages.stream()
             .map(ChatMessageResponseDto::new)
             .collect(Collectors.toList());
-        System.out.println("responseDtoList = " + responseDtoList.size());
         // 현재 채팅방에 들어온 사람의 가장 최근에 읽은 곳까지 unReadCount 갱신 (다시 접속했는데 새로운 메세지가 없는 경우)
         if (!responseDtoList.isEmpty()) { //최신 메시지가 있다면
             roomMember.updateMessageId(
@@ -150,25 +138,19 @@ public class ChatMessageService {
 
     private List<ChatMessage> getChatMessages(ChatRoom chatRoom, RoomMember roomMember) {
         Long lastChatMessageId = roomMember.getLastReadMessageId(); //가장 나중에 읽은 메시지 PK값
-
-        List<ChatMessage> messages = chatMessageRepository.findByChatRoomAndChatMessageIdGreaterThanEqual(
+        List<ChatMessage> messages = chatMessageRepository.findByChatRoomAndChatMessageIdGreaterThan(
             chatRoom, lastChatMessageId
         );
-        System.out.println("messages.size() = " + messages.size());
         messages.forEach(message -> {
-            System.out.println("unreadcount==> " + message.getUnreadCount());
             message.readCountUpdate(1);
-            System.out.println("message.getUnreadCount() = " + message.getUnreadCount());
             chatMessageRepository.save(message);
         });
-        System.out.println("너 잘 나오니??");
         return messages;
     }
 
     /**
      * NOTE
      * 페이징 처리
-     *
      * @param chatRoom
      * @param pageRequest
      * @param principal
@@ -197,7 +179,6 @@ public class ChatMessageService {
         if (Objects.isNull(roomMember)) {
             throw new DistanceException(ErrorCode.NOT_EXIST_CHATROOM);
         }
-        System.out.println("혹시 너 여기서 튀어나오는거니?");
         getChatMessages(chatRoom, roomMember);
         return chatMessageRepository.findAllByChatRoomOrderByCreateDtAsc(chatRoom)
             .stream()
