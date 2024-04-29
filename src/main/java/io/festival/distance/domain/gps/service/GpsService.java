@@ -47,7 +47,6 @@ public class GpsService {
     public MatchResponseDto matchUser(String telNum) {
 
         Member centerUser = memberService.findByTelNum(telNum); //나
-        System.out.println("centerUser.getMemberId() = " + centerUser.getMemberId());
         double centerLongitude = centerUser.getLongitude();
         double centerLatitude = centerUser.getLatitude();
 

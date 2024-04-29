@@ -21,7 +21,7 @@ public class RoomMemberService {
     private final ChatMessageRepository chatMessageRepository;
     private final MemberService memberService;
     private final ChatRoomService chatRoomService;
-    private static final String IN_ACTIVE="INACTIVE";
+    public static final String IN_ACTIVE="INACTIVE";
     @Transactional
     public void updateLastMessage(Long memberId, Long chatMessageId, Long roomId) {
         Member member = memberService.findMember(memberId);

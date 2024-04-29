@@ -1,5 +1,6 @@
 package io.festival.distance.domain.conversation.chat.controller;
 
+import static io.festival.distance.domain.conversation.roommember.service.RoomMemberService.IN_ACTIVE;
 import static io.festival.distance.domain.firebase.entity.FcmType.MESSAGE;
 
 import io.festival.distance.domain.conversation.chat.dto.ChatMessageDto;
@@ -65,6 +66,11 @@ public class StompController {
              *  채팅방을 나가는 경우
              */
             if (chatMessageDto.getPublishType().equals(LEAVE)) {
+                if(chatRoom.getRoomStatus().equals(IN_ACTIVE)){
+                    roomMemberService.goOutRoom(roomId, chatMessageDto.getReceiverId());
+                    return null;
+                }
+
                 Member member = roomMemberService.goOutRoom(roomId, chatMessageDto.getReceiverId());
 
                 ChatMessageDto messageDto = ChatMessageDto.builder()
@@ -77,12 +83,8 @@ public class StompController {
                 Long messageId = chatMessageService.createMessage(chatRoom, messageDto,
                     SenderType.SYSTEM);
 
-                /*for (ChatRoomSession chatRoomSession : sessionByChatRoom) {
-                    Long memberId = chatRoomSession.getMemberId();
-                    roomMemberService.updateLastMessage(memberId, messageId,
-                        roomId); //가장 최근에 읽은 메시지 수정
-                }*/
                 roomMemberService.updateLastMessage(chatMessageDto.getSenderId(),messageId,roomId);
+
                 return ResponseEntity.ok(
                     chatMessageService.generateMessage(messageId, 2, chatRoom)
                 );
