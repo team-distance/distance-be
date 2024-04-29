@@ -111,7 +111,6 @@ public class ChatMessageService {
     public List<ChatMessageResponseDto> markAllMessagesAsRead(ChatRoom chatRoom, Member member) {
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom); //방금 들어온 멤버가
         System.out.println("roomMember.getLastReadMessageId() = " + roomMember.getLastReadMessageId());
-
         if (roomMember.getLastReadMessageId() == 1) {
             System.out.println("요기로 들어오자?");
             List<ChatMessage> list = chatMessageRepository.findAllByChatRoomOrderByCreateDtAsc(
@@ -189,7 +188,7 @@ public class ChatMessageService {
             .toList();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public List<ChatMessageResponseDto> findAllChatRoomMessage(ChatRoom chatRoom,
         Principal principal) {
         Member member = memberService.findByTelNum(principal.getName());
@@ -198,6 +197,7 @@ public class ChatMessageService {
         if (Objects.isNull(roomMember)) {
             throw new DistanceException(ErrorCode.NOT_EXIST_CHATROOM);
         }
+        System.out.println("혹시 너 여기서 튀어나오는거니?");
         getChatMessages(chatRoom, roomMember);
         return chatMessageRepository.findAllByChatRoomOrderByCreateDtAsc(chatRoom)
             .stream()
