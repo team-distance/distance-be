@@ -26,7 +26,7 @@ public class GpsService {
     private final MemberRepository memberRepository;
     private final MemberService memberService;
     private final ChatRoomRepository chatRoomRepository;
-    private static final double SEARCH_RANGE = 2000000000;
+    private final GpsProcessor gpsProcessor;
 
     /**
      * NOTE
@@ -43,40 +43,6 @@ public class GpsService {
             .build();
     }
 
-    /**
-     * NOTE
-     * member 테이블에서 특정 유저의 latitude, longitude 가져오기
-     */
-    // @Transactional
-    // public MatchResponseDto matchUserGender(String loginId) {
-    // 	final double searchRange = 2000000000; // 200m 이내 반경
-    //
-    // 	Member centerUser =memberService.findByLoginId(loginId);
-    // 	double centerLongitude = centerUser.getLongitude();
-    // 	double centerLatitude = centerUser.getLatitude();
-    //
-    // 	// 멤버를 필터링하고, 필터링된 결과를 List<Member>로 변환
-    // 	List<MatchUserDto> matchedUserList = memberRepository.findAll().stream()
-    // 		.filter(user -> user.isActivated() && !user.getGender().equals(centerUser.getGender())) // activate=true, 다른 성별만 추출
-    // 		.filter(user -> {
-    // 			double userLongitude = user.getLongitude();
-    // 			double userLatitude = user.getLatitude();
-    // 			double distance = calculateDistance(centerLatitude, centerLongitude, userLatitude, userLongitude);
-    // 			System.out.println(user.getMemberId() + ": " + String.format("%.3f", distance) + " (m)");
-    // 			return 0 < distance && distance <= searchRange; // 반경 내 user 필터링 (본인 제외)
-    // 		})
-    // 		.limit(4) // 최대 4명
-    // 		.map(user -> MatchUserDto.builder() // 필요한 정보만 넘기기 위함
-    // 			.memberId(user.getMemberId())
-    // 			.memberInfoDto(memberService.memberProfile(user.getMemberId()))
-    // 			.nickName(user.getNickName())
-    // 			.department(user.getDepartment())
-    // 			.build())
-    // 		.toList();
-    // 	return MatchResponseDto.builder()
-    // 		.matchedUsers(matchedUserList)
-    // 		.build();
-    // }
     @Transactional(readOnly = true)
     public MatchResponseDto matchUser(String telNum) {
 
@@ -84,39 +50,13 @@ public class GpsService {
         double centerLongitude = centerUser.getLongitude();
         double centerLatitude = centerUser.getLatitude();
 
+        //유저의 위치정보가 0 일때
         if (centerLatitude == 0 || centerLongitude == 0) {
-            return matchNonLoginUser();
+            return gpsProcessor.notFoundUserPosition(centerUser);
         }
 
         // activate, 거리 내에 있는 유저 필터링 -> 랜덤 4명 선택
-        List<MatchUserDto> matchedUserList = memberRepository.findAll().stream()
-            .filter(user -> user.isActivated() && user.getAuthority().equals(Authority.ROLE_USER)
-                && !user.getGender().equals(centerUser.getGender()))
-            .filter(user -> user.getLongitude() != 0 || user.getLatitude() != 0)
-            .filter(user -> {
-                double userLongitude = user.getLongitude();
-                double userLatitude = user.getLatitude();
-                double distance = calculateDistance(centerLatitude, centerLongitude, userLatitude,
-                    userLongitude);
-                return 0 < distance && distance <= SEARCH_RANGE; // 반경 내 user 필터링 (본인 제외)
-            })
-            .map(users -> MatchUserDto.fromMember(users, memberService))
-            .collect(Collectors.toList());
-
-        Collections.shuffle(matchedUserList); //랜덤
-
-        List<MatchUserDto> matcheList = matchedUserList.stream()
-            .limit(4) // 최대 4명
-            .map(user -> MatchUserDto.builder()
-                .memberId(user.memberId())
-                .memberProfileDto(memberService.memberProfile(user.telNum()))
-                .nickName(user.nickName())
-                .build())
-            .toList();
-
-        return MatchResponseDto.builder()
-            .matchedUsers(matcheList)
-            .build();
+        return gpsProcessor.getMatchingUser(centerUser, centerLatitude, centerLongitude);
     }
 
     @Transactional(readOnly = true)
