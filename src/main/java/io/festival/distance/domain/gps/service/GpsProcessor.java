@@ -30,7 +30,7 @@ public class GpsProcessor {
         Member member1 = memberService.findMember(id1);
         Member member2 = memberService.findMember(id2);
         if (member1.getLatitude() == 0 || member1.getLongitude() == 0 || member2.getLongitude() == 0
-            || member2.getLatitude() == 0){
+            || member2.getLatitude() == 0) {
             return -1;
         }
         double distance = calculateDistance(member1.getLatitude(), member1.getLongitude(),
@@ -38,7 +38,7 @@ public class GpsProcessor {
         return new BigDecimal(distance).setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 
-        public MatchResponseDto getMatchingUser(Member centerUser, double centerLatitude,
+    public MatchResponseDto getMatchingUser(Member centerUser, double centerLatitude,
         double centerLongitude) {
         List<MatchUserDto> matchedUserList = memberRepository.findAll().stream()
             .filter(user -> user.isActivated() && user.getAuthority().equals(Authority.ROLE_USER)
@@ -54,8 +54,8 @@ public class GpsProcessor {
             .map(users -> MatchUserDto.fromMember(users, memberService))
             .collect(Collectors.toList());
 
-            return getMatchResponseDto(matchedUserList);
-        }
+        return getMatchResponseDto(matchedUserList);
+    }
 
     public MatchResponseDto notFoundUserPosition(Member centerUser) {
         List<MatchUserDto> dtoList = new java.util.ArrayList<>(
@@ -84,7 +84,8 @@ public class GpsProcessor {
         System.out.println("dtoList = " + dtoList.size());
 
         List<MatchUserDto> userDtoList = dtoList.stream()
-            .map(user -> MatchUserDto.builder()
+            .map(user ->
+                MatchUserDto.builder()
                 .memberId(user.memberId())
                 .memberProfileDto(memberService.memberProfile(user.telNum()))
                 .nickName(user.nickName())
