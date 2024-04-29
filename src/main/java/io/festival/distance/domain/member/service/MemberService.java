@@ -136,6 +136,7 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public MemberProfileDto memberProfile(String telNum) { //멤버 프로필 조회
+        System.out.println("telNum = " + telNum);
         Member member = findByTelNum(telNum);
         List<MemberHobbyDto> hobbyDtoList = memberHobbyService.showHobby(member);
         List<MemberTagDto> tagDtoList = memberTagService.showTag(member);
