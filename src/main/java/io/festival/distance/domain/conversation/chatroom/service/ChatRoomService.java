@@ -9,6 +9,7 @@ import io.festival.distance.domain.conversation.roommember.entity.RoomMember;
 import io.festival.distance.domain.conversation.roommember.repository.RoomMemberRepository;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.repository.MemberRepository;
+import io.festival.distance.domain.member.validlogin.ValidUnivCert;
 import io.festival.distance.exception.DistanceException;
 import io.festival.distance.exception.ErrorCode;
 import java.time.LocalDateTime;
@@ -42,41 +43,47 @@ public class ChatRoomService {
                 Optional<Member> opponent = memberRepository.findByNickName(
                     roomMember.getMyRoomName());
                 return opponent.map(
-                    //멤버가 존재하는 경우
-                    opponentMember -> {
-                        ChatMessage message = chatMessageRepository.findTop1ByChatRoomOrderByCreateDtDesc(
-                            chatRoom); //가장 최근 메시지 불러옴
+                        //멤버가 존재하는 경우
+                        opponentMember -> {
+                            ChatMessage message = chatMessageRepository
+                                .findTop1ByChatRoomOrderByCreateDtDesc(chatRoom); //가장 최근 메시지 불러옴
 
-                        String lastMessage =
-                            Objects.isNull(message) ? "새로운 채팅방이 생성되었습니다!"
-                                : message.getChatMessage();
-                        LocalDateTime createDt =
-                            Objects.isNull(message) ? LocalDateTime.now()
-                                : message.getCreateDt();
-                        Integer count = chatMessageRepository.countByChatRoomAndChatMessageIdGreaterThan(
-                            chatRoom, roomMember.getLastReadMessageId());
+                            String lastMessage =
+                                Objects.isNull(message) ? "새로운 채팅방이 생성되었습니다!"
+                                    : message.getChatMessage();
 
+                            LocalDateTime createDt =
+                                Objects.isNull(message) ? LocalDateTime.now()
+                                    : message.getCreateDt();
+
+                            Integer count = chatMessageRepository
+                                .countByChatRoomAndChatMessageIdGreaterThan(
+                                    chatRoom,
+                                    roomMember.getLastReadMessageId()
+                                );
+
+                            return ChatRoomInfoDto.builder()
+                                .chatRoomId(chatRoom.getChatRoomId())
+                                .department(opponentMember.getDepartment())
+                                .mbti(opponentMember.getMbti())
+                                //.roomName(roomMember.getMyRoomName())
+                                .createDt(roomMember.getCreateDt())
+                                .modifyDt(createDt)
+                                .opponentMemberId(opponentMember.getMemberId())
+                                .memberCharacter(opponentMember.getMemberCharacter())
+                                .lastMessage(lastMessage)
+                                .askedCount(count)
+                                .build();
+                        })
+                    .orElseGet(() -> {
+                        String message = "상대방이 탈퇴했습니다.";
                         return ChatRoomInfoDto.builder()
                             .chatRoomId(chatRoom.getChatRoomId())
-                            .department(opponentMember.getDepartment())
-                            .mbti(opponentMember.getMbti())
-                            //.roomName(roomMember.getMyRoomName())
+                            .department("탈퇴한 사용자")
                             .createDt(roomMember.getCreateDt())
-                            .modifyDt(createDt)
-                            .opponentMemberId(opponentMember.getMemberId())
-                            .memberCharacter(opponentMember.getMemberCharacter())
-                            .lastMessage(lastMessage)
-                            .askedCount(count)
+                            .lastMessage(message)
                             .build();
-                    }).orElseGet(() -> {
-                    String message = "상대방이 탈퇴했습니다.";
-                    return ChatRoomInfoDto.builder()
-                        .chatRoomId(chatRoom.getChatRoomId())
-                        .department("탈퇴한 사용자")
-                        .createDt(roomMember.getCreateDt())
-                        .lastMessage(message)
-                        .build();
-                });
+                    });
             }).collect(Collectors.toList());
     }
 
@@ -96,11 +103,12 @@ public class ChatRoomService {
         }
     }
 
+    @Transactional
     public void saveRoomMember(Member me, ChatRoom chatRoom, Member opponent) {
         RoomMember roomMember = RoomMember.builder()
             .chatRoom(chatRoom)
             .myRoomName(opponent.getNickName())
-            .lastReadMessageId(1L)
+            .lastReadMessageId(0L)
             .member(me)
             .build();
         roomMemberRepository.save(roomMember);
