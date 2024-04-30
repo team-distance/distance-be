@@ -1,6 +1,7 @@
 package io.festival.distance.domain.conversation.chatroom.dto;
 
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
+import io.festival.distance.domain.member.entity.UnivCert;
 import io.swagger.models.auth.In;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

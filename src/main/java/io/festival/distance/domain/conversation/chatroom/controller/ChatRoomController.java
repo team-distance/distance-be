@@ -76,6 +76,8 @@ public class ChatRoomController {
     @GetMapping("/{chatRoomId}/allmessage")
     public ResponseEntity<List<ChatMessageResponseDto>> getMessage(@PathVariable Long chatRoomId,
         Principal principal) {
+        Member member = memberService.findByTelNum(principal.getName());
+        validUnivCert.checkUnivCert(member);
         return ResponseEntity.ok(
             chatMessageService.findAllChatRoomMessage(chatRoomService.findRoom(chatRoomId),
                 principal));
