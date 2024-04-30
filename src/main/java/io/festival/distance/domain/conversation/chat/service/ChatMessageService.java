@@ -55,7 +55,7 @@ public class ChatMessageService {
 
     @Transactional(readOnly = true)
     public boolean checkTiKiTaKa(ChatRoom chatRoom) {
-        return chatMessageRepository.checkTiKiTaKa(chatRoom) >= 10;
+        return chatMessageRepository.checkTiKiTaKa(chatRoom) >= 20;
     }
 
     /**
