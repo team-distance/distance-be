@@ -62,6 +62,10 @@ public class StompController {
             // 채팅방 새션 조회
             List<ChatRoomSession> sessionByChatRoom = chatRoomSessionService
                 .findSessionByChatRoom(chatRoom); //2개가 나올 듯?
+            System.out.println("처음 세션 개수 :"+ sessionByChatRoom.size());
+            for (int i = 0; i < sessionByChatRoom.size(); i++) {
+                System.out.println("세션 아이디: "+sessionByChatRoom.get(i).getSessionId());
+            }
             /**
              *  채팅방을 나가는 경우
              */
@@ -83,17 +87,16 @@ public class StompController {
                 Long messageId = chatMessageService.createMessage(chatRoom, messageDto,
                     SenderType.SYSTEM);
 
-                 /*sessionByChatRoom = chatRoomSessionService
+                 sessionByChatRoom = chatRoomSessionService
                      .findSessionByChatRoom(chatRoom); //2개가 나올 듯?
                 System.out.println("sessionSize = "+ sessionByChatRoom.size());
-
                 if (!sessionByChatRoom.isEmpty()) {
                     for (ChatRoomSession chatRoomSession : sessionByChatRoom) {
                         Long memberId = chatRoomSession.getMemberId();
                         System.out.println("반복");
                         roomMemberService.updateLastMessage(memberId, messageId, roomId); //가장 최근에 읽은 메시지 수정
                     }
-                }*/
+                }
 
                 return ResponseEntity.ok(
                     chatMessageService.generateMessage(messageId, 2, chatRoom)
