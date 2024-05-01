@@ -83,6 +83,9 @@ public class StompController {
                 Long messageId = chatMessageService.createMessage(chatRoom, messageDto,
                     SenderType.SYSTEM);
 
+                 sessionByChatRoom = chatRoomSessionService
+                    .findSessionByChatRoom(chatRoom); //2개가 나올 듯?
+
                 for (ChatRoomSession chatRoomSession : sessionByChatRoom) {
                     Long memberId = chatRoomSession.getMemberId();
                     roomMemberService.updateLastMessage(memberId, messageId,
