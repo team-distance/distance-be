@@ -31,7 +31,7 @@ public class FcmService {
     private final DuplicateFcm duplicateFcm;
     private final FcmRepository fcmRepository;
     public static final String ADD_WAITING_ROOM_MESSAGE = "새로운 채팅 요청이 들어왔습니다!";
-    public static final String REJECT_STUDENT_CARD = "학생증 인증에 실패하였습니다!";
+    public static final String REJECT_STUDENT_CARD = "학생증 인증에 실패하였습니다! 마이페이지에서 다시 인증해주세요!";
     public static final String SET_SENDER_NAME = "[관리자]";
 
     @Transactional

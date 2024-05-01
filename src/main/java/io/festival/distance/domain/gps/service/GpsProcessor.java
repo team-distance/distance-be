@@ -24,7 +24,7 @@ public class GpsProcessor {
 
     private final MemberService memberService;
     private final MemberRepository memberRepository;
-    private static final double SEARCH_RANGE = 1000;
+    private static final double SEARCH_RANGE = 2000000000;
 
     public double getDistance(long id1, long id2) {
         Member member1 = memberService.findMember(id1);
