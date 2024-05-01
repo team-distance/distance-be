@@ -27,6 +27,7 @@ public class RoomMemberService {
         Member member = memberService.findMember(memberId);
         ChatRoom chatRoom = chatRoomService.findRoom(roomId);
         RoomMember roomMember = roomMemberRepository.findByMemberAndChatRoom(member, chatRoom);
+        System.out.println(roomMember.getRoomMemberId());
         roomMember.updateMessageId(chatMessageId);
     }
 
