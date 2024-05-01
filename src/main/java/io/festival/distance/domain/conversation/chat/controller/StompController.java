@@ -82,8 +82,13 @@ public class StompController {
 
                 Long messageId = chatMessageService.createMessage(chatRoom, messageDto,
                     SenderType.SYSTEM);
-                roomMemberService.updateLastMessage(chatMessageDto.getSenderId(), messageId,
-                    roomId);
+
+                for (ChatRoomSession chatRoomSession : sessionByChatRoom) {
+                    Long memberId = chatRoomSession.getMemberId();
+                    roomMemberService.updateLastMessage(memberId, messageId,
+                        roomId); //가장 최근에 읽은 메시지 수정
+                }
+
                 return ResponseEntity.ok(
                     chatMessageService.generateMessage(messageId, 2, chatRoom)
                 );
