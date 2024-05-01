@@ -3,6 +3,9 @@ package io.festival.distance.domain.conversation.roommember.service;
 import io.festival.distance.domain.conversation.chat.repository.ChatMessageRepository;
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import io.festival.distance.domain.conversation.chatroom.service.ChatRoomService;
+import io.festival.distance.domain.conversation.chatroomsession.entity.ChatRoomSession;
+import io.festival.distance.domain.conversation.chatroomsession.repository.ChatRoomSessionRepository;
+import io.festival.distance.domain.conversation.chatroomsession.service.ChatRoomSessionService;
 import io.festival.distance.domain.conversation.roommember.entity.RoomMember;
 import io.festival.distance.domain.conversation.roommember.repository.RoomMemberRepository;
 import io.festival.distance.domain.member.entity.Member;
@@ -21,6 +24,8 @@ public class RoomMemberService {
     private final ChatMessageRepository chatMessageRepository;
     private final MemberService memberService;
     private final ChatRoomService chatRoomService;
+    private final ChatRoomSessionService chatRoomSessionService;
+    private final ChatRoomSessionRepository sessionRepository;
     public static final String IN_ACTIVE="INACTIVE";
     @Transactional
     public void updateLastMessage(Long memberId, Long chatMessageId, Long roomId) {
@@ -53,6 +58,8 @@ public class RoomMemberService {
 
         chatRoom.roomInActive();
         roomMemberRepository.deleteByChatRoomAndMember(chatRoom, member);
+        ChatRoomSession session = sessionRepository.findByMemberIdAndChatRoom(memberId, chatRoom);
+        chatRoomSessionService.deleteChatRoomSession(session);
         return member;
     }
 }
