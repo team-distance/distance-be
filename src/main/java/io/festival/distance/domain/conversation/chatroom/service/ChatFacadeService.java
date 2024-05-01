@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,15 +56,17 @@ public class ChatFacadeService {
         }
 
         // A, B 대화 중 A가 나갔다가 다시 B랑 대화했던 방으로 들어오는 경우 -> 나갔던 사람이 다시 들어오는 경우
-        Long reEnterRoomId = validExistRoom.ReEnterRoom(me, opponent);
+        Optional<Long> reEnterRoomId = validExistRoom.ReEnterRoom(me, opponent);
 
-        if(Objects.nonNull(reEnterRoomId)){
-            ChatRoom chatRoom = chatRoomService.findRoom(reEnterRoomId);
-            chatRoom.roomActive();
-            chatRoomService.saveRoomMember(me,chatRoom,opponent);
-            return reEnterRoomId;
+        Long opponentRoomId = validExistRoom.existOpponentChatRoom(reEnterRoomId, me, opponent);
+        if (opponentRoomId != null) {
+            return opponentRoomId;
         }
 
+        Optional<Long> reEnterRoomId1 = validExistRoom.ReEnterInActiveRoom(me, opponent);
+        if (reEnterRoomId1.isPresent()){
+            return reEnterRoomId1.get();
+        }
         //이미 방에 있는데
 
         validRoomCount.checkRoom(opponent, me, flag);
