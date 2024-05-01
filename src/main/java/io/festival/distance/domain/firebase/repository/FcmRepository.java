@@ -17,4 +17,7 @@ public interface FcmRepository extends JpaRepository<Fcm, Long> {
         + "WHERE f.member = :member AND f.senderName = :senderName AND f.isSend = false")
     boolean existByFcmMessage(@Param("member") Member member,
         @Param("senderName") String senderName);
+
+    @Query("delete from Fcm f where f.isSend=true")
+    void deleteAllFcmMessage();
 }

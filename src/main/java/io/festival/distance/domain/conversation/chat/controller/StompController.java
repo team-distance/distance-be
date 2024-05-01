@@ -82,9 +82,8 @@ public class StompController {
 
                 Long messageId = chatMessageService.createMessage(chatRoom, messageDto,
                     SenderType.SYSTEM);
-
-                //roomMemberService.updateLastMessage(chatMessageDto.getSenderId(),messageId,roomId);
-
+                roomMemberService.updateLastMessage(chatMessageDto.getSenderId(), messageId,
+                    roomId);
                 return ResponseEntity.ok(
                     chatMessageService.generateMessage(messageId, 2, chatRoom)
                 );

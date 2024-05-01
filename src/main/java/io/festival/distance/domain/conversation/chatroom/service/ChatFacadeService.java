@@ -16,6 +16,7 @@ import io.festival.distance.exception.DistanceException;
 import io.festival.distance.exception.ErrorCode;
 import java.security.Principal;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -48,20 +49,22 @@ public class ChatFacadeService {
 
         //validGps.checkGps(me);
 
-        //기존에 대화 중인 방이 있는 경우 해당 방id 반환
+        //기존에 대화 중인 방이 있는 경우 해당 방id 반환 -> 둘 다 방에 있는 경우
         if (validExistRoom.ExistRoom(me, opponent).isPresent()) {
             return validExistRoom.ExistRoom(me, opponent).get();
         }
 
-        // A, B 대화 중 A가 나갔다가 다시 B랑 대화했던 방으로 들어오는 경우
-        Optional<Long> reEnterRoom = validExistRoom.ReEnterRoom(me, opponent);
-        if(reEnterRoom.isPresent()){
-            Long chatRoomId = reEnterRoom.get();
-            ChatRoom chatRoom = chatRoomService.findRoom(chatRoomId);
+        // A, B 대화 중 A가 나갔다가 다시 B랑 대화했던 방으로 들어오는 경우 -> 나갔던 사람이 다시 들어오는 경우
+        Long reEnterRoomId = validExistRoom.ReEnterRoom(me, opponent);
+
+        if(Objects.nonNull(reEnterRoomId)){
+            ChatRoom chatRoom = chatRoomService.findRoom(reEnterRoomId);
             chatRoom.roomActive();
             chatRoomService.saveRoomMember(me,chatRoom,opponent);
-            return chatRoomId;
+            return reEnterRoomId;
         }
+
+        //이미 방에 있는데
 
         validRoomCount.checkRoom(opponent, me, flag);
 
