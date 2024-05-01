@@ -58,8 +58,6 @@ public class RoomMemberService {
 
         chatRoom.roomInActive();
         roomMemberRepository.deleteByChatRoomAndMember(chatRoom, member);
-        ChatRoomSession session = sessionRepository.findByMemberIdAndChatRoom(memberId, chatRoom);
-        chatRoomSessionService.deleteChatRoomSession(session);
         return member;
     }
 }

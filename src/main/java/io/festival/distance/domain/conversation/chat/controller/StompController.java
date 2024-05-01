@@ -21,6 +21,7 @@ import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.MemberService;
 import io.festival.distance.exception.DistanceException;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
@@ -89,12 +90,12 @@ public class StompController {
 
                  sessionByChatRoom = chatRoomSessionService
                      .findSessionByChatRoom(chatRoom); //2개가 나올 듯?
-                System.out.println("sessionSize = "+ sessionByChatRoom.size());
                 if (!sessionByChatRoom.isEmpty()) {
                     for (ChatRoomSession chatRoomSession : sessionByChatRoom) {
                         Long memberId = chatRoomSession.getMemberId();
-                        System.out.println("반복");
-                        roomMemberService.updateLastMessage(memberId, messageId, roomId); //가장 최근에 읽은 메시지 수정
+                        if(Objects.equals(memberId, chatMessageDto.getSenderId())){
+                            roomMemberService.updateLastMessage(memberId, messageId, roomId); //가장 최근에 읽은 메시지 수정
+                        }
                     }
                 }
 
