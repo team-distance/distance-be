@@ -115,6 +115,17 @@ public class ChatRoomService {
     }
 
     @Transactional
+    public void saveMyRoom(Member me, ChatRoom chatRoom, Member opponent) {
+        RoomMember roomMember = RoomMember.builder()
+            .chatRoom(chatRoom)
+            .myRoomName(opponent.getNickName())
+            .lastReadMessageId(1L)
+            .member(me)
+            .build();
+        roomMemberRepository.save(roomMember);
+    }
+
+    @Transactional
     public void delete(Long roomId) {
         chatRoomRepository.deleteById(roomId);
     }
