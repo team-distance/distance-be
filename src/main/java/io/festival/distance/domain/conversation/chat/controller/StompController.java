@@ -86,10 +86,12 @@ public class StompController {
                  sessionByChatRoom = chatRoomSessionService
                     .findSessionByChatRoom(chatRoom); //2개가 나올 듯?
 
-                for (ChatRoomSession chatRoomSession : sessionByChatRoom) {
-                    Long memberId = chatRoomSession.getMemberId();
-                    roomMemberService.updateLastMessage(memberId, messageId,
-                        roomId); //가장 최근에 읽은 메시지 수정
+                if (!sessionByChatRoom.isEmpty()) {
+                    for (ChatRoomSession chatRoomSession : sessionByChatRoom) {
+                        Long memberId = chatRoomSession.getMemberId();
+                        roomMemberService.updateLastMessage(memberId, messageId,
+                            roomId); //가장 최근에 읽은 메시지 수정
+                    }
                 }
 
                 return ResponseEntity.ok(
