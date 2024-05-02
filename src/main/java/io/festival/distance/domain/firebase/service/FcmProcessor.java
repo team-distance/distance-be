@@ -12,7 +12,7 @@ public class FcmProcessor {
     private final FcmRepository fcmRepository;
 
     @Transactional
-    @Scheduled(cron = "0 0 21 * * *") //매일 6시에 작동
+    @Scheduled(cron = "0 7 21 * * *") //매일 6시에 작동
     public void deleteFcm(){
         fcmRepository.deleteAllFcmMessage();
     }
