@@ -4,6 +4,7 @@ import io.festival.distance.domain.firebase.entity.Fcm;
 import io.festival.distance.domain.member.entity.Member;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -18,6 +19,7 @@ public interface FcmRepository extends JpaRepository<Fcm, Long> {
     boolean existByFcmMessage(@Param("member") Member member,
         @Param("senderName") String senderName);
 
+    @Modifying
     @Query("delete from Fcm f where f.isSend=true")
     void deleteAllFcmMessage();
 }
