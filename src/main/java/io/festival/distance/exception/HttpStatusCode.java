@@ -1,5 +1,6 @@
 package io.festival.distance.exception;
 
+import javax.print.attribute.standard.Media;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,7 +15,8 @@ public enum HttpStatusCode {
     FORBIDDEN(403),
     CONTAIN_BADWORD(451),
     NOT_FOUND_MESSAGE(406),
-    LENGTH_REQUIRED(411);
+    LENGTH_REQUIRED(411),
+    UNSUPPORTED_MEDIA_TYPE(415);
 
     private final int status;
 }
