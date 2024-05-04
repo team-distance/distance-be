@@ -14,8 +14,8 @@ public enum ErrorCode {
         "Security Context에 인증 정보가 없습니다!"),
     NOT_EXIST_STUDENT_CARD(HttpStatusCode.BAD_REQUEST.getStatus(), "존재하지 않는 학생증입니다!"),
     NOT_EXIST_CHATROOM(HttpStatusCode.BAD_REQUEST.getStatus(), "존재하지 않는 채팅방입니다!"),
-    NOT_EXIST_GPS(HttpStatusCode.BAD_REQUEST.getStatus(),"사용자의 위치 정보가 존재하지 않습니다!"),
-    NOT_EXIST_FCM(HttpStatusCode.BAD_REQUEST.getStatus(),"존재하지 않는 FCM 입니다!"),
+    NOT_EXIST_GPS(HttpStatusCode.BAD_REQUEST.getStatus(), "사용자의 위치 정보가 존재하지 않습니다!"),
+    NOT_EXIST_FCM(HttpStatusCode.BAD_REQUEST.getStatus(), "존재하지 않는 FCM 입니다!"),
     //EXIST_
     EXIST_EMAIL(HttpStatusCode.BAD_REQUEST.getStatus(), "이미 존재하는 Email 입니다!"),
     EXIST_ROOM(HttpStatusCode.BAD_REQUEST.getStatus(), "이미 상대방과의 방이 존재합니다!"),
@@ -48,8 +48,8 @@ public enum ErrorCode {
 
     THIRD_PARTY_AUTH_ERROR(HttpStatusCode.UNAUTHORIZED.getStatus(), "인증서가 유효하지 않습니다!"),
 
-    NOT_AUTHENTICATION_STUDENT(HttpStatusCode.UNAUTHORIZED.getStatus(),"학생 인증이 되지 않았습니다!");
-
+    NOT_AUTHENTICATION_STUDENT(HttpStatusCode.UNAUTHORIZED.getStatus(), "학생 인증이 되지 않았습니다!"),
+    FAILED_TO_IMAGE_UPLOAD(HttpStatusCode.UNSUPPORTED_MEDIA_TYPE.getStatus(), "이미지 업로드에 실패했습니다!");
     private final int status;
     private final String message;
-    }
+}

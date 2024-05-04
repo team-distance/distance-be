@@ -8,8 +8,6 @@ import io.festival.distance.auth.refresh.RefreshRepository;
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import io.festival.distance.domain.conversation.chatroom.service.ChatRoomService;
 import io.festival.distance.domain.conversation.roommember.repository.RoomMemberRepository;
-import io.festival.distance.domain.member.dto.AccountRequestDto;
-import io.festival.distance.domain.member.dto.ChangePasswordDto;
 import io.festival.distance.domain.member.dto.CheckAuthenticateNum;
 import io.festival.distance.domain.member.dto.MemberHobbyDto;
 import io.festival.distance.domain.member.dto.MemberInfoDto;
@@ -28,7 +26,6 @@ import io.festival.distance.domain.memberhobby.service.MemberHobbyService;
 import io.festival.distance.domain.membertag.service.MemberTagService;
 import io.festival.distance.exception.DistanceException;
 import io.festival.distance.infra.sms.SmsUtil;
-import java.util.Base64.Decoder;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -136,8 +133,17 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public MemberProfileDto memberProfile(String telNum) { //멤버 프로필 조회
-        System.out.println("telNum = " + telNum);
         Member member = findByTelNum(telNum);
+        return getMemberProfileDto(member);
+    }
+
+    @Transactional(readOnly = true)
+    public MemberProfileDto getMemberProfile(Long memberId) { //멤버 프로필 조회
+        Member member = findMember(memberId);
+        return getMemberProfileDto(member);
+    }
+
+    private MemberProfileDto getMemberProfileDto(Member member) {
         List<MemberHobbyDto> hobbyDtoList = memberHobbyService.showHobby(member);
         List<MemberTagDto> tagDtoList = memberTagService.showTag(member);
         return MemberProfileDto.builder()

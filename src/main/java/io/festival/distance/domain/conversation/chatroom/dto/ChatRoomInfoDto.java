@@ -1,14 +1,11 @@
 package io.festival.distance.domain.conversation.chatroom.dto;
 
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
-import io.festival.distance.domain.member.entity.UnivCert;
-import io.swagger.models.auth.In;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor

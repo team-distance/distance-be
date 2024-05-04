@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -73,6 +74,14 @@ public class MemberController {
         return ResponseEntity.ok(memberService.memberProfile(principal.getName()));
     }
 
+    @GetMapping("/profile/{memberId}")
+    public ResponseEntity<MemberProfileDto> memberProfileInfo(
+        @PathVariable Long memberId,
+        Principal principal
+    ) {
+        return ResponseEntity.ok(memberService.getMemberProfile(memberId));
+    }
+
     /**
      * NOTE
      * 멤버 프로필 수정
@@ -101,12 +110,14 @@ public class MemberController {
         @RequestParam(name = "memberId") Long memberId,
         @RequestParam(name = "chatRoomId") Long chatRoomId,
         Principal principal) {
-        return ResponseEntity.ok(memberService.findTelNum(memberId, principal.getName(),chatRoomId));
+        return ResponseEntity.ok(
+            memberService.findTelNum(memberId, principal.getName(), chatRoomId));
     }
 
     /**
      * NOTE
      * 메시지 전송
+     *
      * @param telNumRequest 전화번호
      */
     @PostMapping("/send/sms")
@@ -119,6 +130,7 @@ public class MemberController {
     /**
      * NOTE
      * 메시지 인증번호 인증
+     *
      * @param checkAuthenticateNum 사용자가 입력한 인증번호
      */
     @PostMapping("/authenticate")
@@ -131,6 +143,7 @@ public class MemberController {
     /**
      * NOTE
      * 멤버가 대학인증을 했는지 안했는지 여부
+     *
      * @param principal 현재 로그인한 객체
      * @return 인증되어있다면 true, 안되어있으면 false
      */
@@ -142,6 +155,7 @@ public class MemberController {
     /**
      * NOTE
      * logout
+     *
      * @param principal 현재 로그인한 객체
      */
     @GetMapping("/logout")
@@ -150,10 +164,12 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 비밀번호 확인
+     *
      * @param accountRequestDto 사용자가 입력한 비밀번호
-     * @param principal 현재 로그인한 객체
+     * @param principal         현재 로그인한 객체
      */
     @PostMapping("/check/password")
     public ResponseEntity<Void> checkPassword(@RequestBody AccountRequestDto accountRequestDto,
@@ -162,12 +178,13 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 비밀번로 변경 API
      */
     @PostMapping("/change/password")
-    public ResponseEntity<Void> changePassword(@RequestBody ChangePasswordDto changePasswordDto){
-        memberService.modifyAccount(changePasswordDto.telNum(),changePasswordDto.password());
+    public ResponseEntity<Void> changePassword(@RequestBody ChangePasswordDto changePasswordDto) {
+        memberService.modifyAccount(changePasswordDto.telNum(), changePasswordDto.password());
         return ResponseEntity.ok().build();
     }
 }

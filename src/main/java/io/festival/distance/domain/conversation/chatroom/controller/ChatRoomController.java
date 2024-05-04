@@ -58,8 +58,11 @@ public class ChatRoomController {
     }
 
     @GetMapping("/{chatRoomId}/message")
-    public ResponseEntity<List<ChatMessageResponseDto>> getAllMessage(@PathVariable Long chatRoomId,
-        PageRequestDto pageRequestDto, Principal principal) {
+    public ResponseEntity<List<ChatMessageResponseDto>> getAllMessage(
+        @PathVariable Long chatRoomId,
+        PageRequestDto pageRequestDto,
+        Principal principal
+    ) {
         return ResponseEntity.ok(
             chatMessageService.findAllMessage(chatRoomService.findRoom(chatRoomId),
                 pageGenerate(pageRequestDto), principal));
@@ -74,8 +77,10 @@ public class ChatRoomController {
      * @return
      */
     @GetMapping("/{chatRoomId}/allmessage")
-    public ResponseEntity<List<ChatMessageResponseDto>> getMessage(@PathVariable Long chatRoomId,
-        Principal principal) {
+    public ResponseEntity<List<ChatMessageResponseDto>> getMessage(
+        @PathVariable Long chatRoomId,
+        Principal principal
+    ) {
         Member member = memberService.findByTelNum(principal.getName());
         validUnivCert.checkUnivCert(member);
         return ResponseEntity.ok(
