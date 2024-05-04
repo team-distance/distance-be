@@ -38,7 +38,7 @@ public class ArtistController {
      * @param file 이미지 파일
      * @return
      */
-    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping
     public ResponseEntity<Void> uploadFile(
         @RequestPart(value = "file", required = false) MultipartFile file,
         @RequestPart(value = "artistRequest") ArtistRequest artistRequest
