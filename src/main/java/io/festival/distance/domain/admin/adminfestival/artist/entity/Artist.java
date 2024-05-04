@@ -2,6 +2,7 @@ package io.festival.distance.domain.admin.adminfestival.artist.entity;
 
 import io.festival.distance.domain.admin.adminfestival.artist.dto.ArtistRequest;
 import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.S3Response;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,6 +13,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "artist")
@@ -29,8 +32,10 @@ public class Artist {
     @Column(name = "artist_name")
     private String artistName;
 
+    @CreationTimestamp
+    @DateTimeFormat(pattern = "yyyy-mm-dd")
     @Column(name = "start_at")
-    private String startAt;
+    private LocalDateTime startAt;
 
     @Column(name = "artist_image_url")
     private String artistImageUrl;

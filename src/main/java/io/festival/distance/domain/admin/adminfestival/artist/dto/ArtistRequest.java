@@ -1,8 +1,10 @@
 package io.festival.distance.domain.admin.adminfestival.artist.dto;
 
+import java.time.LocalDateTime;
+
 public record ArtistRequest(
     String artistName,
-    String startAt,
+    LocalDateTime startAt,
     String school
 ) {
 
