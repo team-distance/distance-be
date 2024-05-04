@@ -8,6 +8,7 @@ import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.S3Response;
 import io.festival.distance.exception.DistanceException;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class S3UploadImage {
 
     public S3Response saveImage(MultipartFile file) {
         try {
-            String fileName = file.getOriginalFilename();
+            String fileName = UUID.randomUUID().toString();
 
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentType(file.getContentType());
@@ -33,7 +34,6 @@ public class S3UploadImage {
 
             amazonS3.putObject(bucket, fileName, file.getInputStream(), metadata);
             String imageUrl = amazonS3.getUrl(bucket, fileName).toString();
-            System.out.println("imageUrl = " + imageUrl);
             return S3Response
                 .builder()
                 .imageUrl(imageUrl)
