@@ -43,7 +43,9 @@ public class ArtistController {
         @RequestPart(value = "file", required = false) MultipartFile file,
         @RequestPart(value = "artistRequest") ArtistRequest artistRequest
     ) {
+        System.out.println("this is multipart");
         S3Response response = s3UploadImage.saveImage(file); //s3에 이미지 저장
+        System.out.println("response.fileName() = " + response.fileName());
         artistService.saveArtist(artistRequest, response);
         return ResponseEntity.ok().build();
     }
