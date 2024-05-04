@@ -5,12 +5,14 @@ import lombok.Builder;
 
 @Builder
 public record FoodTruckResponse(
+    Long foodTruckId,
     String truckName,
     String foodTruckImageUrl,
     String description
 ) {
     public static FoodTruckResponse fromEntity(FoodTruck foodTruck){
         return FoodTruckResponse.builder()
+            .foodTruckId(foodTruck.getFoodTruckId())
             .truckName(foodTruck.getTruckName())
             .foodTruckImageUrl(foodTruck.getFoodTruckImageUrl())
             .description(foodTruck.getDescription())

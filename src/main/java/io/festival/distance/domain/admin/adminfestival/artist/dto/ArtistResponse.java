@@ -6,12 +6,14 @@ import lombok.Builder;
 
 @Builder
 public record ArtistResponse(
+    Long artistId,
     String artistName,
     LocalDateTime startAt,
     String artistImageUrl
 ) {
     public static ArtistResponse toEntity(Artist artist){
         return ArtistResponse.builder()
+            .artistId(artist.getArtistId())
             .artistName(artist.getArtistName())
             .startAt(artist.getStartAt())
             .artistImageUrl(artist.getArtistImageUrl())
