@@ -32,7 +32,6 @@ public class Artist {
     @Column(name = "artist_name")
     private String artistName;
 
-    @CreationTimestamp
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     @Column(name = "start_at")
     private LocalDateTime startAt;
