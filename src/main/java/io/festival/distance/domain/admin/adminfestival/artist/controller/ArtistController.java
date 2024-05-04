@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,13 +54,11 @@ public class ArtistController {
     /**
      * NOTE
      * 가수 목록 불러오는 API
-     *
-     * @param artistSearch
      * @return
      */
     @GetMapping
-    public ResponseEntity<List<ArtistResponse>> getArtist(@RequestBody ArtistSearch artistSearch) {
-        return ResponseEntity.ok(artistService.getAllArtist(artistSearch.school()));
+    public ResponseEntity<List<ArtistResponse>> getArtist(@RequestParam String school) {
+        return ResponseEntity.ok(artistService.getAllArtist(school));
     }
 
 
