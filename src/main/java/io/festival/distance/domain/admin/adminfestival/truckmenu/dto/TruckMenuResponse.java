@@ -6,6 +6,7 @@ import lombok.Builder;
 @Builder
 public record TruckMenuResponse(
     Long truckMenuId,
+    String truckName,
     String menu,
     String menuImageUrl,
     int price
@@ -13,6 +14,7 @@ public record TruckMenuResponse(
     public static TruckMenuResponse fromEntity(TruckMenu truckMenu){
         return TruckMenuResponse.builder()
             .truckMenuId(truckMenu.getMenuId())
+            .truckName(truckMenu.getFoodTruck().getTruckName())
             .menu(truckMenu.getMenu())
             .menuImageUrl(truckMenu.getMenuImageUrl())
             .price(truckMenu.getPrice())
