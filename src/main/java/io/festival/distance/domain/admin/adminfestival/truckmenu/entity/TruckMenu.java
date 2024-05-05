@@ -1,6 +1,8 @@
 package io.festival.distance.domain.admin.adminfestival.truckmenu.entity;
 
+import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.S3Response;
 import io.festival.distance.domain.admin.adminfestival.foodtruck.entity.FoodTruck;
+import io.festival.distance.domain.admin.adminfestival.truckmenu.dto.TruckMenuRequest;
 import io.swagger.models.auth.In;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,4 +47,10 @@ public class TruckMenu {
     @JoinColumn(name = "food_truck_id")
     private FoodTruck foodTruck;
 
+    public void update(TruckMenuRequest truckMenuRequest, S3Response response){
+        this.menu=truckMenuRequest.menu();
+        this.menuFileName=response.fileName();
+        this.price=truckMenuRequest.price();
+        this.menuImageUrl=response.imageUrl();
+    }
 }

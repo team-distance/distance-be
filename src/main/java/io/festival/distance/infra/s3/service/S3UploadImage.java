@@ -3,16 +3,15 @@ package io.festival.distance.infra.s3.service;
 import static io.festival.distance.exception.ErrorCode.FAILED_TO_IMAGE_UPLOAD;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.S3Response;
 import io.festival.distance.exception.DistanceException;
 import java.io.IOException;
-import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -47,4 +46,5 @@ public class S3UploadImage {
     public void deleteImage(String fileName) {
         amazonS3.deleteObject(bucket, fileName);
     }
+
 }

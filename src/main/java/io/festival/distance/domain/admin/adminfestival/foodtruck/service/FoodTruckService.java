@@ -8,9 +8,7 @@ import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.S3Response;
 import io.festival.distance.domain.admin.adminfestival.foodtruck.entity.FoodTruck;
 import io.festival.distance.domain.admin.adminfestival.foodtruck.repository.FoodTruckRepository;
 import io.festival.distance.exception.DistanceException;
-import io.festival.distance.exception.ErrorCode;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,5 +51,15 @@ public class FoodTruckService {
     @Transactional
     public void removeFoodTruck(Long foodTruckId) {
         foodTruckRepository.deleteById(foodTruckId);
+    }
+
+    @Transactional
+    public void modifyFoodTruck(
+        FoodTruckRequest foodTruckRequest,
+        S3Response response,
+        Long foodTruckId
+    ) {
+        FoodTruck foodTruck = findFoodTruck(foodTruckId);
+        foodTruck.update(foodTruckRequest,response);
     }
 }

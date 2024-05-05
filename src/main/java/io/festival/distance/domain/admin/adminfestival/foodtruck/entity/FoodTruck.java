@@ -1,5 +1,7 @@
 package io.festival.distance.domain.admin.adminfestival.foodtruck.entity;
 
+import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.FoodTruckRequest;
+import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.S3Response;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -37,4 +39,12 @@ public class FoodTruck {
 
     @Column(name = "school")
     private String school;
+
+    public void update(FoodTruckRequest foodTruckRequest, S3Response response){
+        this.truckName=foodTruckRequest.truckName();
+        this.school=foodTruckRequest.school();
+        this.description=foodTruckRequest.description();
+        this.foodTruckImageUrl=response.imageUrl();
+        this.truckFileName=response.fileName();
+    }
 }
