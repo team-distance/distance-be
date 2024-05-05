@@ -52,9 +52,10 @@ public class FoodTruckController {
      * @return
      */
     @DeleteMapping("/{foodTruckId}")
-    public ResponseEntity<Void> deleteImage(@PathVariable Long foodTruckId) {
+    public ResponseEntity<Void> deleteFoodTruck(@PathVariable Long foodTruckId) {
         String truckFileName = foodTruckService.findFoodTruck(foodTruckId).getTruckFileName();
         s3UploadImage.deleteImage(truckFileName);
+        foodTruckService.removeFoodTruck(foodTruckId);
         return ResponseEntity.ok().build();
     }
 

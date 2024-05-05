@@ -49,4 +49,9 @@ public class FoodTruckService {
             .map(FoodTruckResponse::fromEntity)
             .toList();
     }
+
+    @Transactional
+    public void removeFoodTruck(Long foodTruckId) {
+        foodTruckRepository.deleteById(foodTruckId);
+    }
 }
