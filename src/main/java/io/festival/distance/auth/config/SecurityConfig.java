@@ -65,6 +65,10 @@ public class SecurityConfig {
             .antMatchers("/api/admin/signup").permitAll()
             .antMatchers("/api/member/send/sms").permitAll()
             .antMatchers("/api/member/authenticate").permitAll()
+            .antMatchers("/api/gps/matching").permitAll()
+            .antMatchers("/api/performance/**").permitAll()
+            .antMatchers("/api/food-truck/**").permitAll()
+            .antMatchers("/api/truck-menu/**").permitAll()
             .antMatchers("/swagger-resources/**",
                 "/swagger-ui.html",
                 "/v2/api-docs",
