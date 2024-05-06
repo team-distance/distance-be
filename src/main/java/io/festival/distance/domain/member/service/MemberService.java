@@ -80,6 +80,11 @@ public class MemberService {
         memberTagService.updateTag(member, signDto.memberTagDto());
         Long memberId = memberRepository.save(member).getMemberId();
         member.memberNicknameUpdate(member.getNickName() + member.getMbti() + PREFIX + memberId);
+        System.out.println("before member.getNickName() = " + member.getNickName());
+        if(!member.getNickName().contains(PREFIX+memberId)){
+            member.memberNicknameUpdate(member.getNickName() + member.getMbti() + PREFIX + memberId);
+        }
+        System.out.println("after member = " + member.getNickName());
         return member.getMemberId();
     }
 
