@@ -163,7 +163,7 @@ public class MemberService {
     public Long modifyProfile(String loginId, MemberInfoDto memberInfoDto) { // 사용자가 입력한 값이 들어있음
         Member member = findByTelNum(loginId);
         member.memberInfoUpdate(memberInfoDto); //mbti랑 멤버 캐릭터 이미지 수정
-        member.memberNicknameUpdate(member.getDepartment() + PREFIX + memberInfoDto.mbti());
+        member.memberNicknameUpdate(member.getDepartment() + memberInfoDto.mbti()+PREFIX + member.getMemberId());
         memberTagService.modifyTag(member, memberInfoDto.memberTagDto());
         memberHobbyService.modifyHobby(member, memberInfoDto.memberHobbyDto());
         return member.getMemberId();
