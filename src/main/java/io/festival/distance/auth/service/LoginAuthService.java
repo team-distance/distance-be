@@ -10,7 +10,9 @@ import io.festival.distance.auth.refresh.RefreshRepository;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.repository.MemberRepository;
 import io.festival.distance.exception.DistanceException;
+import io.festival.distance.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -30,27 +32,31 @@ public class LoginAuthService {
 
     @Transactional
     public TokenDto login(LoginDto loginDto) {
-        Member member = memberRepository.findByTelNum(loginDto.getTelNum())
-            .orElseThrow(() -> new DistanceException(NOT_EXIST_MEMBER));
+        try {
+            Member member = memberRepository.findByTelNum(loginDto.getTelNum())
+                .orElseThrow(() -> new DistanceException(NOT_EXIST_MEMBER));
 
-        Authentication authentication = getAuthentication(loginDto);
-        // authentication 객체를 createToken 메소드를 통해서 JWT Token을 생성
-        String accessToken = tokenProvider.createAccessToken(authentication);
-        String refreshToken = tokenProvider.createRefreshToken(authentication);
+            Authentication authentication = getAuthentication(loginDto);
+            // authentication 객체를 createToken 메소드를 통해서 JWT Token을 생성
+            String accessToken = tokenProvider.createAccessToken(authentication);
+            String refreshToken = tokenProvider.createRefreshToken(authentication);
 
-        if(refreshRepository.existsBySubject(loginDto.getTelNum())){
-            refreshRepository.deleteBySubject(loginDto.getTelNum());
+            if (refreshRepository.existsBySubject(loginDto.getTelNum())) {
+                refreshRepository.deleteBySubject(loginDto.getTelNum());
+            }
+
+            Refresh refresh = Refresh.builder()
+                .refreshToken(refreshToken)
+                .subject(loginDto.getTelNum())
+                .build();
+            refreshRepository.save(refresh);
+
+            member.clientTokenUpdate(loginDto.getClientToken()); // FCM clientToken 갱신
+            return new TokenDto(accessToken, refreshToken);
+        }catch (BadCredentialsException e) {
+            throw new DistanceException(ErrorCode.NOT_CORRECT_PASSWORD);
         }
 
-        Refresh refresh = Refresh.builder()
-            .refreshToken(refreshToken)
-            .subject(loginDto.getTelNum())
-            .build();
-        refreshRepository.save(refresh);
-
-        member.clientTokenUpdate(loginDto.getClientToken()); // FCM clientToken 갱신
-
-        return new TokenDto(accessToken, refreshToken);
     }
 
     public Authentication getAuthentication(LoginDto loginDto) {
