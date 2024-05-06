@@ -36,4 +36,9 @@ public class RoomMember extends RoomName { //채팅방 참여자
     public void updateMessageId(Long chatMessageId){
         this.lastReadMessageId=chatMessageId;
     }
+
+    @Override
+    public void updateRoomName(String newRoomName) {
+        super.updateRoomName(newRoomName);
+    }
 }

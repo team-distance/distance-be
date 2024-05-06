@@ -8,6 +8,8 @@ import io.festival.distance.auth.refresh.RefreshRepository;
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import io.festival.distance.domain.conversation.chatroom.service.ChatRoomService;
 import io.festival.distance.domain.conversation.roommember.repository.RoomMemberRepository;
+import io.festival.distance.domain.conversation.roommember.service.RoomMemberProcessor;
+import io.festival.distance.domain.conversation.roommember.service.RoomMemberService;
 import io.festival.distance.domain.member.dto.CheckAuthenticateNum;
 import io.festival.distance.domain.member.dto.MemberHobbyDto;
 import io.festival.distance.domain.member.dto.MemberInfoDto;
@@ -46,6 +48,7 @@ public class MemberService {
     private final ChatRoomService chatRoomService;
     private final RoomMemberRepository roomMemberRepository;
     private final SmsUtil smsUtil;
+    private final RoomMemberProcessor roomMemberProcessor;
     private static final String PREFIX = "#";
     private static final String INACTIVE = "INACTIVE";
     private static final String SCHOOL = "순천향대학교";
@@ -163,7 +166,9 @@ public class MemberService {
     public Long modifyProfile(String loginId, MemberInfoDto memberInfoDto) { // 사용자가 입력한 값이 들어있음
         Member member = findByTelNum(loginId);
         member.memberInfoUpdate(memberInfoDto); //mbti랑 멤버 캐릭터 이미지 수정
+        String nickName=member.getNickName();
         member.memberNicknameUpdate(member.getDepartment() + memberInfoDto.mbti()+PREFIX + member.getMemberId());
+        roomMemberProcessor.updateRoomName(member,nickName); //채팅방 방 이름 업데이트
         memberTagService.modifyTag(member, memberInfoDto.memberTagDto());
         memberHobbyService.modifyHobby(member, memberInfoDto.memberHobbyDto());
         return member.getMemberId();
