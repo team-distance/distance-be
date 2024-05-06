@@ -80,6 +80,11 @@ public class MemberService {
         memberTagService.updateTag(member, signDto.memberTagDto());
         Long memberId = memberRepository.save(member).getMemberId();
         member.memberNicknameUpdate(member.getNickName() + member.getMbti() + PREFIX + memberId);
+        System.out.println("before member.getNickName() = " + member.getNickName());
+        if(!member.getNickName().contains(PREFIX+memberId)){
+            member.memberNicknameUpdate(member.getNickName() + member.getMbti() + PREFIX + memberId);
+        }
+        System.out.println("after member = " + member.getNickName());
         return member.getMemberId();
     }
 
@@ -158,7 +163,7 @@ public class MemberService {
     public Long modifyProfile(String loginId, MemberInfoDto memberInfoDto) { // 사용자가 입력한 값이 들어있음
         Member member = findByTelNum(loginId);
         member.memberInfoUpdate(memberInfoDto); //mbti랑 멤버 캐릭터 이미지 수정
-        member.memberNicknameUpdate(member.getDepartment() + PREFIX + memberInfoDto.mbti());
+        member.memberNicknameUpdate(member.getDepartment() + memberInfoDto.mbti()+PREFIX + member.getMemberId());
         memberTagService.modifyTag(member, memberInfoDto.memberTagDto());
         memberHobbyService.modifyHobby(member, memberInfoDto.memberHobbyDto());
         return member.getMemberId();
