@@ -152,9 +152,9 @@ public class StompController {
                 chatRoom));
     }
 
-    @MessageMapping("/waiting/{memberId}")
+   /* @MessageMapping("/waiting/{memberId}")
     @SendTo("/topic/waiting/{memberId}") // Subscription URL -> 수신
     public ResponseEntity<ChatWaitingCountDto> getWaitingCount(@DestinationVariable Long memberId) {
         return ResponseEntity.ok(chatWaitingService.countingWaitingRoom(memberId));
-    }
+    }*/
 }
