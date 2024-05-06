@@ -60,4 +60,14 @@ public class TruckMenuService {
     public void removeTruckMenu(Long truckMenuId) {
         truckMenuRepository.deleteById(truckMenuId);
     }
+
+    @Transactional
+    public void modifyTruckMenu(
+        TruckMenuRequest truckMenuRequest,
+        S3Response response,
+        Long truckMenuId
+    ) {
+        TruckMenu truckMenu = findTruckMenu(truckMenuId);
+        truckMenu.update(truckMenuRequest,response);
+    }
 }

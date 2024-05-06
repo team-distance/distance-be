@@ -1,5 +1,6 @@
 package io.festival.distance.domain.admin.adminfestival.truckmenu.controller;
 
+import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.FoodTruckRequest;
 import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.S3Response;
 import io.festival.distance.domain.admin.adminfestival.truckmenu.dto.TruckMenuRequest;
 import io.festival.distance.domain.admin.adminfestival.truckmenu.dto.TruckMenuResponse;
@@ -66,6 +67,17 @@ public class TruckMenuController {
         String menuFileName = truckMenuService.findTruckMenu(truckMenuId).getMenuFileName();
         s3UploadImage.deleteImage(menuFileName);
         truckMenuService.removeTruckMenu(truckMenuId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping(value = "/{truckMenuId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> updateFoodTruck(
+        @PathVariable Long truckMenuId,
+        @RequestPart(value = "file", required = false) MultipartFile file,
+        @RequestPart(value = "truckMenuRequest") TruckMenuRequest truckMenuRequest
+    ) {
+        S3Response response = s3UploadImage.saveImage(file);
+        truckMenuService.modifyTruckMenu(truckMenuRequest, response, truckMenuId);
         return ResponseEntity.ok().build();
     }
 }

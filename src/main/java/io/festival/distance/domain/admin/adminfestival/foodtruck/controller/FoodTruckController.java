@@ -1,5 +1,6 @@
 package io.festival.distance.domain.admin.adminfestival.foodtruck.controller;
 
+import io.festival.distance.domain.admin.adminfestival.artist.dto.ArtistRequest;
 import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.FoodTruckRequest;
 import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.FoodTruckResponse;
 import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.S3Response;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,9 +54,10 @@ public class FoodTruckController {
      * @return
      */
     @DeleteMapping("/{foodTruckId}")
-    public ResponseEntity<Void> deleteImage(@PathVariable Long foodTruckId) {
+    public ResponseEntity<Void> deleteFoodTruck(@PathVariable Long foodTruckId) {
         String truckFileName = foodTruckService.findFoodTruck(foodTruckId).getTruckFileName();
         s3UploadImage.deleteImage(truckFileName);
+        foodTruckService.removeFoodTruck(foodTruckId);
         return ResponseEntity.ok().build();
     }
 
@@ -67,4 +70,16 @@ public class FoodTruckController {
     public ResponseEntity<List<FoodTruckResponse>> getTrucks(@RequestParam String school){
         return ResponseEntity.ok(foodTruckService.getTruckList(school));
     }
+
+    @PatchMapping(value = "/{foodTruckId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> updateFoodTruck(
+        @PathVariable Long foodTruckId,
+        @RequestPart(value = "file", required = false) MultipartFile file,
+        @RequestPart(value = "foodTruckRequest") FoodTruckRequest foodTruckRequest
+    ) {
+        S3Response response = s3UploadImage.saveImage(file);
+        foodTruckService.modifyFoodTruck(foodTruckRequest, response, foodTruckId);
+        return ResponseEntity.ok().build();
+    }
+
 }

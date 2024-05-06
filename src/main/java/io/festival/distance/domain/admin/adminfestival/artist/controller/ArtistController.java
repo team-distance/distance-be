@@ -35,16 +35,13 @@ public class ArtistController {
      * 가수 이미지 등록 API
      *
      * @param file 이미지 파일
-     * @return
      */
-    @PostMapping(value = "",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> uploadFile(
         @RequestPart(value = "file", required = false) MultipartFile file,
         @RequestPart(value = "artistRequest") ArtistRequest artistRequest
     ) {
-        System.out.println("this is multipart");
         S3Response response = s3UploadImage.saveImage(file); //s3에 이미지 저장
-        System.out.println("response.fileName() = " + response.fileName());
         artistService.saveArtist(artistRequest, response);
         return ResponseEntity.ok().build();
     }
@@ -52,7 +49,6 @@ public class ArtistController {
     /**
      * NOTE
      * 가수 목록 불러오는 API
-     * @return
      */
     @GetMapping
     public ResponseEntity<List<ArtistResponse>> getArtist(@RequestParam String school) {
@@ -75,8 +71,10 @@ public class ArtistController {
         return ResponseEntity.ok().build();
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 가수 정보 수정 API
+     *
      * @param file
      * @param artistRequest
      * @return
@@ -88,7 +86,7 @@ public class ArtistController {
         @RequestPart(value = "artistRequest") ArtistRequest artistRequest
     ) {
         S3Response response = s3UploadImage.saveImage(file);
-        artistService.modifyArtist(artistRequest,response,artistId);
+        artistService.modifyArtist(artistRequest, response, artistId);
         return ResponseEntity.ok().build();
     }
 }
