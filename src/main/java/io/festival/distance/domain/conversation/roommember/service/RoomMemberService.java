@@ -12,6 +12,7 @@ import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.MemberService;
 import io.festival.distance.exception.DistanceException;
 import io.festival.distance.exception.ErrorCode;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +25,7 @@ public class RoomMemberService {
     private final ChatMessageRepository chatMessageRepository;
     private final MemberService memberService;
     private final ChatRoomService chatRoomService;
-    private final ChatRoomSessionService chatRoomSessionService;
-    private final ChatRoomSessionRepository sessionRepository;
+
     public static final String IN_ACTIVE="INACTIVE";
     @Transactional
     public void updateLastMessage(Long memberId, Long chatMessageId, Long roomId) {

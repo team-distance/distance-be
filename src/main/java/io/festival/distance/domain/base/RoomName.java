@@ -16,5 +16,9 @@ import javax.persistence.MappedSuperclass;
 public class RoomName extends BaseTimeEntity{
     @Column(name = "my_room_name")
     private String myRoomName;
+
+    public void updateRoomName(String newRoomName) {
+        this.myRoomName = newRoomName;
+    }
 }
 

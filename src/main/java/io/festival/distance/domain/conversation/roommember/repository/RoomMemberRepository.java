@@ -28,4 +28,6 @@ public interface RoomMemberRepository extends JpaRepository<RoomMember, Long> {
         String myRoomName);
 
     Optional<RoomMember> findByMemberAndMyRoomName(Member member, String myRoomName);
+
+    List<RoomMember> findAllByMyRoomName(String myRoomName);
 }
