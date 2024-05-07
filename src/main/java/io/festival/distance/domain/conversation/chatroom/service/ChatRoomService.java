@@ -9,7 +9,6 @@ import io.festival.distance.domain.conversation.roommember.entity.RoomMember;
 import io.festival.distance.domain.conversation.roommember.repository.RoomMemberRepository;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.repository.MemberRepository;
-import io.festival.distance.domain.member.validlogin.ValidUnivCert;
 import io.festival.distance.exception.DistanceException;
 import io.festival.distance.exception.ErrorCode;
 import java.time.LocalDateTime;
@@ -40,8 +39,10 @@ public class ChatRoomService {
             .map(roomMember -> {
                 ChatRoom chatRoom = roomMember.getChatRoom();
 
+
                 Optional<Member> opponent = memberRepository.findByNickName(
                     roomMember.getMyRoomName());
+
                 return opponent.map(
                         //멤버가 존재하는 경우
                         opponentMember -> {
@@ -132,7 +133,7 @@ public class ChatRoomService {
 
     public ChatRoom findRoom(Long roomId) {
         return chatRoomRepository.findById(roomId)
-            .orElseThrow(() -> new IllegalStateException("존재하지 않는 방"));
+            .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_CHATROOM));
     }
 
     @Transactional(readOnly = true)

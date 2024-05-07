@@ -7,9 +7,13 @@ import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.FoodTruckRe
 import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.S3Response;
 import io.festival.distance.domain.admin.adminfestival.foodtruck.entity.FoodTruck;
 import io.festival.distance.domain.admin.adminfestival.foodtruck.repository.FoodTruckRepository;
+import io.festival.distance.domain.admin.adminfestival.truckmenu.service.TruckMenuService;
 import io.festival.distance.exception.DistanceException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class FoodTruckService {
 
     private final FoodTruckRepository foodTruckRepository;
-
+    private final Logger logger = LoggerFactory.getLogger(FoodTruckService.class);
     @Transactional
     public void saveTruck(
         FoodTruckRequest foodTruckRequest,
@@ -41,7 +45,9 @@ public class FoodTruckService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = "foodtrucks")
     public List<FoodTruckResponse> getTruckList(String school) {
+        logger.info("not acceptable caches");
          return foodTruckRepository.findAllBySchool(school)
             .stream()
             .map(FoodTruckResponse::fromEntity)

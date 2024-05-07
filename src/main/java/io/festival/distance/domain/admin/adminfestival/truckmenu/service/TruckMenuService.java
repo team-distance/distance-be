@@ -14,6 +14,9 @@ import io.festival.distance.exception.DistanceException;
 import io.festival.distance.exception.ErrorCode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +27,7 @@ public class TruckMenuService {
     private final TruckMenuRepository truckMenuRepository;
     private final FoodTruckService foodTruckService;
 
+    private final Logger logger = LoggerFactory.getLogger(TruckMenuService.class);
     @Transactional
     public void saveTruckMenu(
         Long foodTruckId,
@@ -43,7 +47,9 @@ public class TruckMenuService {
 
 
     @Transactional(readOnly = true)
+    @Cacheable(cacheNames = "menus")
     public List<TruckMenuResponse> getListMenu(Long foodTruckId) {
+        logger.info("Fetching user from database for id: {}", foodTruckId);
         return truckMenuRepository.findAllByFoodTruckFoodTruckId(foodTruckId)
             .stream()
             .map(TruckMenuResponse::fromEntity)

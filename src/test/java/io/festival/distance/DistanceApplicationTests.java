@@ -9,6 +9,4 @@ class DistanceApplicationTests {
 	void contextLoads() {
 	}
 }
-
-
- */
+*/
