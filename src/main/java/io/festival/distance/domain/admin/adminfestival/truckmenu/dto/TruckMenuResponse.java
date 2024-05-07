@@ -9,7 +9,7 @@ public record TruckMenuResponse(
     String truckName,
     String menu,
     String menuImageUrl,
-    int price
+    String price
 ) {
     public static TruckMenuResponse fromEntity(TruckMenu truckMenu){
         return TruckMenuResponse.builder()

@@ -41,7 +41,7 @@ public class TruckMenu {
     private String menuFileName;
 
     @Column(name = "price")
-    private Integer price;
+    private String price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "food_truck_id")
