@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class FoodTruckService {
 
     private final FoodTruckRepository foodTruckRepository;
-
     @Transactional
     public void saveTruck(
         FoodTruckRequest foodTruckRequest,
