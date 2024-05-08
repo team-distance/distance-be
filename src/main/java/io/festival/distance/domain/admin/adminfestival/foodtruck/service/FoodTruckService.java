@@ -7,13 +7,9 @@ import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.FoodTruckRe
 import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.S3Response;
 import io.festival.distance.domain.admin.adminfestival.foodtruck.entity.FoodTruck;
 import io.festival.distance.domain.admin.adminfestival.foodtruck.repository.FoodTruckRepository;
-import io.festival.distance.domain.admin.adminfestival.truckmenu.service.TruckMenuService;
 import io.festival.distance.exception.DistanceException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
