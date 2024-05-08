@@ -12,7 +12,7 @@ public class MenuCachingService {
     private final TruckMenuService truckMenuService;
 
     @Cacheable(cacheNames = "menus")
-    public List<TruckMenuResponse> getListMenu(Long foodTruckId) {
+    public List<TruckMenuResponse> getCacheMenuList(Long foodTruckId) {
         return truckMenuService.getListMenu(foodTruckId);
     }
 }
