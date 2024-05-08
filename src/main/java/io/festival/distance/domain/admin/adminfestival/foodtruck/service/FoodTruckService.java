@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class FoodTruckService {
 
     private final FoodTruckRepository foodTruckRepository;
-    private final Logger logger = LoggerFactory.getLogger(FoodTruckService.class);
     @Transactional
     public void saveTruck(
         FoodTruckRequest foodTruckRequest,
@@ -45,9 +44,7 @@ public class FoodTruckService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = "foodtrucks")
     public List<FoodTruckResponse> getTruckList(String school) {
-        logger.info("not acceptable caches");
          return foodTruckRepository.findAllBySchool(school)
             .stream()
             .map(FoodTruckResponse::fromEntity)

@@ -27,7 +27,6 @@ public class TruckMenuService {
     private final TruckMenuRepository truckMenuRepository;
     private final FoodTruckService foodTruckService;
 
-    private final Logger logger = LoggerFactory.getLogger(TruckMenuService.class);
     @Transactional
     public void saveTruckMenu(
         Long foodTruckId,
@@ -47,9 +46,7 @@ public class TruckMenuService {
 
 
     @Transactional(readOnly = true)
-    @Cacheable(cacheNames = "menus")
     public List<TruckMenuResponse> getListMenu(Long foodTruckId) {
-        logger.info("Fetching user from database for id: {}", foodTruckId);
         return truckMenuRepository.findAllByFoodTruckFoodTruckId(foodTruckId)
             .stream()
             .map(TruckMenuResponse::fromEntity)
