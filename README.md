@@ -17,7 +17,7 @@
 ## 개발 환경
 - BACKEND : Spring Framework, Java17, Mysql, Spring Data Jpa, AWS ec2, Docker, Docker-compose, CI/CD, Nginx, STOMP   <br>
 - APIs : CoolSms API <br>
-- 버전 및 이슈관리 : Github, Github actions   <br>
+- 버전 및 이슈관리 : Github, Github actions, Slack   <br>
 
 ## 주제
 - 대학 축제 떄 새로운 만남을 원하는 사람들을 위해 이어주는 서비스
