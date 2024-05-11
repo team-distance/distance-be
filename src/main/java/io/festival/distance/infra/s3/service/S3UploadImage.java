@@ -3,7 +3,6 @@ package io.festival.distance.infra.s3.service;
 import static io.festival.distance.exception.ErrorCode.FAILED_TO_IMAGE_UPLOAD;
 
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.S3Response;
 import io.festival.distance.exception.DistanceException;
@@ -42,9 +41,4 @@ public class S3UploadImage {
             throw new DistanceException(FAILED_TO_IMAGE_UPLOAD);
         }
     }
-
-    public void deleteImage(String fileName) {
-        amazonS3.deleteObject(bucket, fileName);
-    }
-
 }
