@@ -26,7 +26,7 @@ public class ArtistService {
 
     @Transactional
     public void saveArtist(ArtistRequest artistRequest, MultipartFile file) {
-        S3Response response = uploadImage(file);
+        S3Response response = uploadArtistImage(file);
         Artist artist = Artist.builder()
             .artistName(artistRequest.artistName())
             .startAt(artistRequest.startAt())
@@ -59,7 +59,7 @@ public class ArtistService {
         Long artistId
     ) {
         Artist artist = findArtist(artistId);
-        S3Response response = uploadImage(file);
+        S3Response response = uploadArtistImage(file);
         updateArtistInfo(artistRequest,response,artist);
     }
 
@@ -77,7 +77,7 @@ public class ArtistService {
         return artist.getArtistFileName();
     }
 
-    public S3Response uploadImage(MultipartFile file) {
+    public S3Response uploadArtistImage(MultipartFile file) {
         return s3UploadImage.saveImage(file);
     }
 
