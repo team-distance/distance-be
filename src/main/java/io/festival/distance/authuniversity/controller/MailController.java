@@ -6,7 +6,6 @@ import io.festival.distance.authuniversity.dto.SchoolNameDto;
 import io.festival.distance.authuniversity.service.univmail.AuthenticateMail;
 import io.festival.distance.authuniversity.service.univmail.SendSchoolDomain;
 import io.festival.distance.authuniversity.usecase.UnivUseCase;
-import io.festival.distance.domain.member.validsignup.ValidEmail;
 import java.security.Principal;
 import javax.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
