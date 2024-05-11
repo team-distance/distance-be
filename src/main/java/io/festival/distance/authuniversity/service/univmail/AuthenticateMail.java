@@ -26,7 +26,7 @@ public class AuthenticateMail {
         //schoolEmail= MessageFormat.format("{0}@{1}.ac.kr", schoolEmail,getDomainByName(schoolEmail));
         UnivMailDto univMailDto = sendMailService.createCertificationNumber(schoolEmail);  //번호가 발급
         sendMailService.mailSend(univMailDto); //메일 전송
-        return univMailDto.getTempPw();
+        return univMailDto.tempPw();
     }
 
     @Transactional
