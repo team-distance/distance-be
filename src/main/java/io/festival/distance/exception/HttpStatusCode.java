@@ -1,6 +1,5 @@
 package io.festival.distance.exception;
 
-import javax.print.attribute.standard.Media;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
