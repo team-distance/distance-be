@@ -1,9 +1,8 @@
 package io.festival.distance.domain.admin.adminfestival.truckmenu.entity;
 
-import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.S3Response;
+import io.festival.distance.infra.s3.dto.S3Response;
 import io.festival.distance.domain.admin.adminfestival.foodtruck.entity.FoodTruck;
 import io.festival.distance.domain.admin.adminfestival.truckmenu.dto.TruckMenuRequest;
-import io.swagger.models.auth.In;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,7 +16,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.checkerframework.checker.units.qual.C;
 
 @Entity
 @Table(name = "truck_menu")
