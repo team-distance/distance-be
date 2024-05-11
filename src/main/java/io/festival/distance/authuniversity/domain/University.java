@@ -1,5 +1,8 @@
 package io.festival.distance.authuniversity.domain;
 
+import static io.festival.distance.exception.ErrorCode.NOT_EXIST_SCHOOL;
+
+import io.festival.distance.exception.DistanceException;
 import lombok.Getter;
 
 import java.util.Collections;
@@ -58,12 +61,15 @@ public enum University {
 
     public final static Map<University,University> UNIV_MAP=createUnmodifiableMap();
 
-    public static String getDomainByName(String name) {
+    /** TODO
+     *  Custom Exception 변경
+     */
+    public static String getDomainByName(String name) { //순천향대학교 -> sch 반환
         for (Map.Entry<University, University> entry : UNIV_MAP.entrySet()) {
             if (entry.getKey().getName().equals(name)) {
                 return entry.getKey().getDomain();
             }
         }
-        throw new IllegalStateException("존재하지 않는 대학교입니다!");
+        throw new DistanceException(NOT_EXIST_SCHOOL);
     }
 }

@@ -14,7 +14,6 @@ public class ValidEmail {
 	private final MemberRepository memberRepository;
 	private static final Pattern EMAIL_PATTERN =
 		Pattern.compile("^[a-zA-Z0-9._%+-]{2,}+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$");
-	// Null, 이메일 형식인지, 중복된 이메일인지 확인
 	public void checkValidEmail(String email) {
 		if (!EMAIL_PATTERN.matcher(email).matches()) {
 			throw new DistanceException(ErrorCode.INVALID_EMAIL_FORMAT);
