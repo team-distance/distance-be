@@ -4,7 +4,7 @@ import static io.festival.distance.exception.ErrorCode.FAILED_TO_IMAGE_UPLOAD;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.S3Response;
+import io.festival.distance.infra.s3.dto.S3Response;
 import io.festival.distance.exception.DistanceException;
 import java.io.IOException;
 import java.util.UUID;
