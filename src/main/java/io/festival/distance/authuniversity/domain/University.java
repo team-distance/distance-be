@@ -1,8 +1,6 @@
 package io.festival.distance.authuniversity.domain;
 
-import static io.festival.distance.exception.ErrorCode.NOT_EXIST_SCHOOL;
 
-import io.festival.distance.exception.DistanceException;
 import lombok.Getter;
 
 import java.util.Collections;
