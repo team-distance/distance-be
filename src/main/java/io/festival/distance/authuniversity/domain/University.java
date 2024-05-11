@@ -70,6 +70,6 @@ public enum University {
                 return entry.getKey().getDomain();
             }
         }
-        throw new DistanceException(NOT_EXIST_SCHOOL);
+        throw new IllegalStateException("존재하지 않는 대학교");
     }
 }
