@@ -1,6 +1,7 @@
 package io.festival.distance.domain.member.service;
 
-import static io.festival.distance.authuniversity.config.mail.SendMailService.getAuthenticateNumber;
+import static io.festival.distance.authuniversity.config.mail.SendMailService.CHAR_SET_AUTHENTICATE_NUMBER;
+import static io.festival.distance.authuniversity.config.mail.SendMailService.getTempPassword;
 import static io.festival.distance.exception.ErrorCode.NOT_CORRECT_AUTHENTICATION_NUMBER;
 import static io.festival.distance.exception.ErrorCode.NOT_EXIST_MEMBER;
 
@@ -9,7 +10,6 @@ import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import io.festival.distance.domain.conversation.chatroom.service.ChatRoomService;
 import io.festival.distance.domain.conversation.roommember.repository.RoomMemberRepository;
 import io.festival.distance.domain.conversation.roommember.service.RoomMemberProcessor;
-import io.festival.distance.domain.conversation.roommember.service.RoomMemberService;
 import io.festival.distance.domain.member.dto.CheckAuthenticateNum;
 import io.festival.distance.domain.member.dto.MemberHobbyDto;
 import io.festival.distance.domain.member.dto.MemberInfoDto;
@@ -52,6 +52,7 @@ public class MemberService {
     private static final String PREFIX = "#";
     private static final String INACTIVE = "INACTIVE";
     private static final String SCHOOL = "순천향대학교";
+
     /**
      * NOTE
      * 회원가입
@@ -84,8 +85,9 @@ public class MemberService {
         Long memberId = memberRepository.save(member).getMemberId();
         member.memberNicknameUpdate(member.getNickName() + member.getMbti() + PREFIX + memberId);
         System.out.println("before member.getNickName() = " + member.getNickName());
-        if(!member.getNickName().contains(PREFIX+memberId)){
-            member.memberNicknameUpdate(member.getNickName() + member.getMbti() + PREFIX + memberId);
+        if (!member.getNickName().contains(PREFIX + memberId)) {
+            member.memberNicknameUpdate(
+                member.getNickName() + member.getMbti() + PREFIX + memberId);
         }
         System.out.println("after member = " + member.getNickName());
         return member.getMemberId();
@@ -166,9 +168,11 @@ public class MemberService {
     public Long modifyProfile(String loginId, MemberInfoDto memberInfoDto) { // 사용자가 입력한 값이 들어있음
         Member member = findByTelNum(loginId);
         member.memberInfoUpdate(memberInfoDto); //mbti랑 멤버 캐릭터 이미지 수정
-        String nickName=member.getNickName();
-        member.memberNicknameUpdate(member.getDepartment() + memberInfoDto.mbti()+PREFIX + member.getMemberId());
-        roomMemberProcessor.updateRoomName(member,nickName); //채팅방 방 이름 업데이트
+        String nickName = member.getNickName();
+        member.memberNicknameUpdate(
+            member.getDepartment() + memberInfoDto.mbti() + PREFIX + member.getMemberId()
+        );
+        roomMemberProcessor.updateRoomName(member, nickName); //채팅방 방 이름 업데이트
         memberTagService.modifyTag(member, memberInfoDto.memberTagDto());
         memberHobbyService.modifyHobby(member, memberInfoDto.memberHobbyDto());
         return member.getMemberId();
@@ -203,11 +207,12 @@ public class MemberService {
     /**
      * NOTE
      * 인증메일 전송
+     *
      * @param telNumRequest 전화번호
      */
     public String sendSms(TelNumRequest telNumRequest) {
-        String num = getAuthenticateNumber();
-        smsUtil.sendOne(telNumRequest,num);
+        String num = getTempPassword(CHAR_SET_AUTHENTICATE_NUMBER);
+        smsUtil.sendOne(telNumRequest, num);
         return num;
     }
 
