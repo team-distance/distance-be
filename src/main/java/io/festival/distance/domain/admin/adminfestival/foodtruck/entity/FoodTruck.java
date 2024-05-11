@@ -1,7 +1,7 @@
 package io.festival.distance.domain.admin.adminfestival.foodtruck.entity;
 
 import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.FoodTruckRequest;
-import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.S3Response;
+import io.festival.distance.infra.s3.dto.S3Response;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
