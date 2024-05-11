@@ -1,7 +1,7 @@
 package io.festival.distance.domain.admin.adminfestival.artist.entity;
 
 import io.festival.distance.domain.admin.adminfestival.artist.dto.ArtistRequest;
-import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.S3Response;
+import io.festival.distance.infra.s3.dto.S3Response;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +13,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity

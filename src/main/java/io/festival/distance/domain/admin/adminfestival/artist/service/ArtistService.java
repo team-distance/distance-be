@@ -6,7 +6,7 @@ import io.festival.distance.domain.admin.adminfestival.artist.dto.ArtistRequest;
 import io.festival.distance.domain.admin.adminfestival.artist.dto.ArtistResponse;
 import io.festival.distance.domain.admin.adminfestival.artist.entity.Artist;
 import io.festival.distance.domain.admin.adminfestival.artist.repository.ArtistRepository;
-import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.S3Response;
+import io.festival.distance.infra.s3.dto.S3Response;
 import io.festival.distance.exception.DistanceException;
 import io.festival.distance.infra.s3.service.S3DeleteImage;
 import io.festival.distance.infra.s3.service.S3UploadImage;
@@ -27,13 +27,8 @@ public class ArtistService {
     @Transactional
     public void saveArtist(ArtistRequest artistRequest, MultipartFile file) {
         S3Response response = uploadArtistImage(file);
-        Artist artist = Artist.builder()
-            .artistName(artistRequest.artistName())
-            .startAt(artistRequest.startAt())
-            .artistImageUrl(response.imageUrl())
-            .school(artistRequest.school())
-            .artistFileName(response.fileName())
-            .build();
+        Artist artist = getArtistEntity(
+            artistRequest, response);
         artistRepository.save(artist);
     }
 
@@ -60,7 +55,7 @@ public class ArtistService {
     ) {
         Artist artist = findArtist(artistId);
         S3Response response = uploadArtistImage(file);
-        updateArtistInfo(artistRequest,response,artist);
+        updateArtistInfo(artistRequest, response, artist);
     }
 
     @Transactional(readOnly = true)
@@ -82,7 +77,18 @@ public class ArtistService {
     }
 
     @Transactional
-    public void updateArtistInfo(ArtistRequest artistRequest, S3Response s3Response,Artist artist){
-        artist.update(artistRequest,s3Response);
+    public void updateArtistInfo(ArtistRequest artistRequest, S3Response s3Response,
+        Artist artist) {
+        artist.update(artistRequest, s3Response);
+    }
+
+    private static Artist getArtistEntity(ArtistRequest artistRequest, S3Response response) {
+        return Artist.builder()
+            .artistName(artistRequest.artistName())
+            .startAt(artistRequest.startAt())
+            .artistImageUrl(response.imageUrl())
+            .school(artistRequest.school())
+            .artistFileName(response.fileName())
+            .build();
     }
 }
