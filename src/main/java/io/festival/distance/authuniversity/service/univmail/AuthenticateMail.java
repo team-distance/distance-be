@@ -1,5 +1,6 @@
 package io.festival.distance.authuniversity.service.univmail;
 
+import static io.festival.distance.authuniversity.domain.University.getDomainByName;
 import static io.festival.distance.domain.member.entity.UnivCert.SUCCESS;
 import static io.festival.distance.exception.ErrorCode.NOT_CORRECT_AUTHENTICATION_NUMBER;
 
@@ -9,6 +10,7 @@ import io.festival.distance.authuniversity.dto.CertificateDto;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.MemberService;
 import io.festival.distance.exception.DistanceException;
+import java.text.MessageFormat;
 import javax.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -23,20 +25,47 @@ public class AuthenticateMail {
     private final MemberService memberService;
 
     public String sendNumber(String schoolEmail) throws MessagingException { //실 서비스
-        //schoolEmail= MessageFormat.format("{0}@{1}.ac.kr", schoolEmail,getDomainByName(schoolEmail));
-        UnivMailDto univMailDto = sendMailService.createCertificationNumber(schoolEmail);  //번호가 발급
-        sendMailService.mailSend(univMailDto); //메일 전송
-        return univMailDto.getTempPw();
+        String formattedEmail = formatEmail(schoolEmail);
+        UnivMailDto univMailDto = makeCertificationNumber(formattedEmail);
+        sendEmail(univMailDto); //메일 전송
+        return univMailDto.tempPw();
+    }
+
+    public String formatEmail(String schoolEmail) {
+        return MessageFormat.format("{0}@{1}.ac.kr", schoolEmail, getDomainByName(schoolEmail));
+    }
+
+    public UnivMailDto makeCertificationNumber(String formattedEmail) {
+        return sendMailService.createCertificationNumber(formattedEmail);
+    }
+
+    public void sendEmail(UnivMailDto univMailDto) throws MessagingException {
+        sendMailService.mailSend(univMailDto);
     }
 
     @Transactional
-    public void checkCertificationNumber(CertificateDto certificateDto, String num2,
-        String telNum) {
-        Member member = memberService.findByTelNum(telNum);
-        if (!certificateDto.number().equals(num2)) {
+    public void checkCertificationNumber(
+        CertificateDto certificateDto,
+        String certificationNumber,
+        String telNum
+    ) {
+        verifyCertificationNumber(certificateDto, certificationNumber);
+        updateMemberAuthenticationState(telNum, certificateDto.schoolEmail());
+    }
+
+    public void verifyCertificationNumber(
+        CertificateDto certificateDto,
+        String certificationNumber
+    ) {
+        if (!certificateDto.number().equals(certificationNumber)) {
             throw new DistanceException(NOT_CORRECT_AUTHENTICATION_NUMBER);
         }
+    }
+
+    @Transactional
+    public void updateMemberAuthenticationState(String telNum, String schoolEmail) {
+        Member member = memberService.findByTelNum(telNum);
         member.updateAuthUniv(SUCCESS);
-        member.updateEmail(certificateDto.schoolEmail());
+        member.updateEmail(schoolEmail);
     }
 }

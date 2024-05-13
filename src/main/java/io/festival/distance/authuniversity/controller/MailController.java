@@ -5,7 +5,7 @@ import io.festival.distance.authuniversity.dto.EmailDto;
 import io.festival.distance.authuniversity.dto.SchoolNameDto;
 import io.festival.distance.authuniversity.service.univmail.AuthenticateMail;
 import io.festival.distance.authuniversity.service.univmail.SendSchoolDomain;
-import io.festival.distance.domain.member.validsignup.ValidEmail;
+import io.festival.distance.authuniversity.usecase.UnivUseCase;
 import java.security.Principal;
 import javax.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class MailController {
 
     private final SendSchoolDomain sendSchoolDomain;
     private final AuthenticateMail authenticateMail;
-    private final ValidEmail validEmail;
+    private final UnivUseCase univUseCase;
     private String certificationNumber;
 
     /**
@@ -43,8 +43,7 @@ public class MailController {
     @PostMapping("/send/email")
     public ResponseEntity<Void> sendEmail(@RequestBody EmailDto emailDto)
         throws MessagingException {
-        validEmail.checkValidEmail(emailDto.schoolEmail());
-        certificationNumber = authenticateMail.sendNumber(emailDto.schoolEmail());
+        certificationNumber = univUseCase.execute(emailDto.schoolEmail());
         return ResponseEntity.ok().build();
     }
 
@@ -53,10 +52,13 @@ public class MailController {
      * 인증번호가 일치하는지 확인
      */
     @PostMapping("/certificate/email")
-    public ResponseEntity<Void> certificationNumber(@RequestBody CertificateDto certificateDto,
-        Principal principal) {
-        authenticateMail.checkCertificationNumber(certificateDto,
-            certificationNumber, principal.getName());
+    public ResponseEntity<Void> certificationNumber(
+        @RequestBody CertificateDto certificateDto,
+        Principal principal
+    ) {
+        authenticateMail.checkCertificationNumber(
+            certificateDto, certificationNumber, principal.getName()
+        );
         return ResponseEntity.ok().build();
     }
 }

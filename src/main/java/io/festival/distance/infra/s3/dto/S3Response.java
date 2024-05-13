@@ -1,4 +1,4 @@
-package io.festival.distance.domain.admin.adminfestival.foodtruck.dto;
+package io.festival.distance.infra.s3.dto;
 
 import lombok.Builder;
 

@@ -1,14 +1,6 @@
 package io.festival.distance.domain.member.dto;
 
-import org.springframework.lang.NonNull;
-
-import javax.validation.Valid;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
-
 import java.util.List;
-import java.util.Objects;
 
 /**
  * NOTE
@@ -19,6 +11,7 @@ public record MemberSignDto(
     String password,
     String gender,
     String mbti,
+    String school,
     String department,
     String college,
     String memberCharacter,
