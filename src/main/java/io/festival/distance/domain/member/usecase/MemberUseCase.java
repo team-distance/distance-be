@@ -6,6 +6,7 @@ import io.festival.distance.domain.member.validsignup.ValidInfoDto;
 import io.festival.distance.domain.member.validsignup.ValidTelNum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -13,9 +14,18 @@ public class MemberUseCase {
     private final MemberService memberService;
     private final ValidInfoDto validInfoDto;
     private final ValidTelNum validLoginId;
+    @Transactional
     public Long execute(MemberSignDto signDto){
-        validLoginId.duplicateCheckTelNum(signDto.telNum());
-        validInfoDto.checkInfoDto(signDto);
+        ValidMemberTelNum(signDto.telNum());
+        ValidMemberInfo(signDto);
         return memberService.createMember(signDto);
+    }
+
+    public void ValidMemberTelNum(String telNum){
+        validLoginId.duplicateCheckTelNum(telNum);
+    }
+
+    public void ValidMemberInfo(MemberSignDto signDto){
+        validInfoDto.checkInfoDto(signDto);
     }
 }
