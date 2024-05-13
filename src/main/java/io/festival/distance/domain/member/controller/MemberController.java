@@ -12,7 +12,6 @@ import io.festival.distance.domain.member.service.MemberService;
 import io.festival.distance.domain.member.usecase.MemberUseCase;
 import io.festival.distance.domain.member.usecase.SendSmsUseCase;
 import io.festival.distance.domain.member.validsignup.ValidPassword;
-import io.festival.distance.domain.member.validsignup.ValidSignup;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
