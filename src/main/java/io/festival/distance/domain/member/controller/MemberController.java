@@ -9,6 +9,8 @@ import io.festival.distance.domain.member.dto.MemberSignDto;
 import io.festival.distance.domain.member.dto.MemberTelNumDto;
 import io.festival.distance.domain.member.dto.TelNumRequest;
 import io.festival.distance.domain.member.service.MemberService;
+import io.festival.distance.domain.member.usecase.MemberUseCase;
+import io.festival.distance.domain.member.usecase.SendSmsUseCase;
 import io.festival.distance.domain.member.validsignup.ValidPassword;
 import io.festival.distance.domain.member.validsignup.ValidSignup;
 import java.security.Principal;
@@ -32,17 +34,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
     private final MemberService memberService;
-    private final ValidSignup validSignup;
+    private final MemberUseCase memberUseCase;
+    private final SendSmsUseCase sendSmsUseCase;
     private final ValidPassword validPassword;
     private String authenticateNum;
 
-    /**
-     * NOTE
+    /** NOTE
      * 회원가입 API
      */
     @PostMapping("/signup")
     public ResponseEntity<Long> signup(@RequestBody MemberSignDto signDto) {
-        return ResponseEntity.ok(memberService.createMember(signDto));
+        return ResponseEntity.ok(memberUseCase.execute(signDto));
     }
 
     /**
@@ -74,6 +76,10 @@ public class MemberController {
         return ResponseEntity.ok(memberService.memberProfile(principal.getName()));
     }
 
+    /** NOTE
+     * 채팅방에서 상대방 프로필 조회
+     * @param memberId 상대방 Id
+     */
     @GetMapping("/profile/{memberId}")
     public ResponseEntity<MemberProfileDto> memberProfileInfo(
         @PathVariable Long memberId,
@@ -82,8 +88,7 @@ public class MemberController {
         return ResponseEntity.ok(memberService.getMemberProfile(memberId));
     }
 
-    /**
-     * NOTE
+    /** NOTE
      * 멤버 프로필 수정
      */
     @PatchMapping("/profile/update")
@@ -92,8 +97,7 @@ public class MemberController {
         return ResponseEntity.ok(memberService.modifyProfile(principal.getName(), memberInfoDto));
     }
 
-    /**
-     * NOTE
+    /** NOTE
      * 멤버 ID값 반환
      */
     @GetMapping("/id")
@@ -101,8 +105,7 @@ public class MemberController {
         return ResponseEntity.ok(memberService.findByTelNum(principal.getName()).getMemberId());
     }
 
-    /**
-     * NOTE
+    /** NOTE
      * 사용자 전화번호 조회 (10번 티키타카 한 경우)
      */
     @GetMapping("/tel-num")
@@ -114,23 +117,17 @@ public class MemberController {
             memberService.findTelNum(memberId, principal.getName(), chatRoomId));
     }
 
-    /**
-     * NOTE
+    /** NOTE
      * 메시지 전송
-     *
-     * @param telNumRequest 전화번호
      */
     @PostMapping("/send/sms")
     public ResponseEntity<Void> sendSms(@RequestBody TelNumRequest telNumRequest) {
-        validSignup.validationTelNum(telNumRequest);
-        authenticateNum = memberService.sendSms(telNumRequest);
+        authenticateNum = sendSmsUseCase.execute(telNumRequest);
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * NOTE
+    /** NOTE
      * 메시지 인증번호 인증
-     *
      * @param checkAuthenticateNum 사용자가 입력한 인증번호
      */
     @PostMapping("/authenticate")
@@ -140,10 +137,8 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * NOTE
+    /** NOTE
      * 멤버가 대학인증을 했는지 안했는지 여부
-     *
      * @param principal 현재 로그인한 객체
      * @return 인증되어있다면 true, 안되어있으면 false
      */
@@ -152,10 +147,8 @@ public class MemberController {
         return ResponseEntity.ok(memberService.verifyUniv(principal.getName()));
     }
 
-    /**
-     * NOTE
+    /** NOTE
      * logout
-     *
      * @param principal 현재 로그인한 객체
      */
     @GetMapping("/logout")
@@ -164,10 +157,8 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * NOTE
+    /** NOTE
      * 비밀번호 확인
-     *
      * @param accountRequestDto 사용자가 입력한 비밀번호
      * @param principal         현재 로그인한 객체
      */
@@ -178,8 +169,7 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * NOTE
+    /** NOTE
      * 비밀번로 변경 API
      */
     @PostMapping("/change/password")
