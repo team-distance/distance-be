@@ -101,7 +101,7 @@ public class Member extends BaseTimeEntity {
     public void clientTokenUpdate(String clientToken) {
         this.clientToken = clientToken;
     }
-    public void updateReport() {
+    public void increaseReport() {
         this.reportCount += 1;
     }
     public void disableAccount() {
