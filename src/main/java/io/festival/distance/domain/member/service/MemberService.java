@@ -3,12 +3,13 @@ package io.festival.distance.domain.member.service;
 import static io.festival.distance.authuniversity.config.mail.SendMailService.CHAR_SET_AUTHENTICATE_NUMBER;
 import static io.festival.distance.authuniversity.config.mail.SendMailService.getTempPassword;
 import static io.festival.distance.exception.ErrorCode.NOT_CORRECT_AUTHENTICATION_NUMBER;
-import static io.festival.distance.exception.ErrorCode.NOT_EXIST_MEMBER;
 
+import io.festival.distance.auth.refresh.RefreshDeleter;
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
-import io.festival.distance.domain.conversation.chatroom.service.ChatRoomService;
-import io.festival.distance.domain.conversation.roommember.repository.RoomMemberRepository;
+import io.festival.distance.domain.conversation.chatroom.service.ChatRoomDeleter;
+import io.festival.distance.domain.conversation.chatroom.service.ChatRoomReader;
 import io.festival.distance.domain.conversation.roommember.service.RoomMemberProcessor;
+import io.festival.distance.domain.conversation.roommember.service.serviceimpl.RoomMemberReader;
 import io.festival.distance.domain.member.dto.CheckAuthenticateNum;
 import io.festival.distance.domain.member.dto.MemberHobbyDto;
 import io.festival.distance.domain.member.dto.MemberInfoDto;
@@ -20,7 +21,16 @@ import io.festival.distance.domain.member.dto.TelNumRequest;
 import io.festival.distance.domain.member.entity.Authority;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.entity.UnivCert;
-import io.festival.distance.domain.member.repository.MemberRepository;
+import io.festival.distance.domain.member.service.serviceimpl.MemberCreator;
+import io.festival.distance.domain.member.service.serviceimpl.MemberDeleter;
+import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
+import io.festival.distance.domain.member.service.serviceimpl.MemberUpdater;
+import io.festival.distance.domain.memberhobby.service.serviceimpl.HobbyCreator;
+import io.festival.distance.domain.memberhobby.service.serviceimpl.HobbyReader;
+import io.festival.distance.domain.memberhobby.service.serviceimpl.HobbyUpdater;
+import io.festival.distance.domain.membertag.service.serviceimpl.TagCreator;
+import io.festival.distance.domain.membertag.service.serviceimpl.TagReader;
+import io.festival.distance.domain.membertag.service.serviceimpl.TagUpdater;
 import io.festival.distance.exception.DistanceException;
 import io.festival.distance.infra.sms.SmsUtil;
 import java.util.List;
@@ -32,29 +42,39 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final MemberRepository memberRepository;
-    private final MemberCreate memberCreate;
-    private final MemberDelete memberDelete;
-    private final MemberAccount memberAccount;
-    private final MemberProfile memberProfile;
-    private final CommunicationFacade communicationFacade;
-    private final ChatRoomService chatRoomService;
-    private final RoomMemberRepository roomMemberRepository;
-    private final SmsUtil smsUtil;
-    private final RoomMemberProcessor roomMemberProcessor;
     public static final String PREFIX = "#";
     private static final String INACTIVE = "INACTIVE";
+    private final MemberCreator memberCreator;
+    private final MemberDeleter memberDeleter;
+    private final MemberUpdater memberUpdater;
+    private final MemberReader memberReader;
 
-    /**
-     * NOTE
+    private final HobbyCreator hobbyCreator;
+    private final HobbyUpdater hobbyUpdater;
+    private final HobbyReader hobbyReader;
+
+    private final TagCreator tagCreator;
+    private final TagUpdater tagUpdater;
+    private final TagReader tagReader;
+
+    private final ChatRoomReader chatRoomReader;
+    private final ChatRoomDeleter chatRoomDeleter;
+
+    private final RoomMemberReader roomMemberReader;
+    private final RefreshDeleter refreshDeleter;
+    private final CommunicationFacade communicationFacade;
+    private final SmsUtil smsUtil;
+    private final RoomMemberProcessor roomMemberProcessor;
+
+    /** NOTE
      * 회원가입
      */
     @Transactional
     public Long createMember(MemberSignDto signDto) {
         Member member = getMember(signDto);
-        memberCreate.memberHobbyUpdate(member, signDto);
-        memberCreate.memberTagUpdate(member, signDto);
-        memberCreate.memberNickNameUpdate(member);
+        hobbyCreator.create(member, signDto.memberHobbyDto());
+        tagCreator.create(member, signDto.memberTagDto());
+        memberCreator.memberNickNameUpdate(member);
         return member.getMemberId();
     }
 
@@ -64,61 +84,48 @@ public class MemberService {
      */
     @Transactional
     public String withDrawal(String telNum) {
-        Member member = findByTelNum(telNum);
+        Member member = memberReader.findByTelNum(telNum);
         withDrawalChatRoom(member);
-        memberDelete.deleteMember(telNum);
-        memberDelete.deleteRefreshToken(telNum);
+        memberDeleter.deleteMember(telNum);
+        refreshDeleter.deleteRefreshToken(telNum);
         return telNum;
     }
 
     private void withDrawalChatRoom(Member member) {
-        List<Long> chatRoomIdList = roomMemberRepository.findAllByMember(member)
-            .stream()
-            .map(chatRoomId -> chatRoomId.getChatRoom().getChatRoomId())
-            .toList();
+        List<Long> chatRoomIdList = roomMemberReader.roomMemberList(member);
         for (Long chatRoomId : chatRoomIdList) {
-            ChatRoom chatRoom = chatRoomService.findRoom(chatRoomId);
+            ChatRoom chatRoom = chatRoomReader.findChatRoom(chatRoomId);
             if (chatRoom.getRoomStatus().equals(INACTIVE)) {
-                chatRoomService.delete(chatRoomId);
+                chatRoomDeleter.delete(chatRoomId);
                 continue;
             }
             chatRoom.roomInActive();
         }
     }
 
-    public Member findMember(Long memberId) {
-        return memberRepository.findById(memberId)
-            .orElseThrow(() -> new DistanceException(NOT_EXIST_MEMBER));
-    }
-
-    public Member findByTelNum(String telNum) {
-        return memberRepository.findByTelNum(telNum)
-            .orElseThrow(() -> new DistanceException(NOT_EXIST_MEMBER));
-    }
-
     @Transactional
     public Long modifyAccount(String telNum, String password) {
-        Member member = findByTelNum(telNum);
-        String encryptedPassword = memberAccount.modifyPassword(password);
-        memberAccount.modifyMemberAccount(encryptedPassword, member);
+        Member member = memberReader.findByTelNum(telNum);
+        String encryptedPassword = memberUpdater.modifyPassword(password);
+        memberUpdater.modifyMemberAccount(encryptedPassword, member);
         return member.getMemberId();
     }
 
     @Transactional(readOnly = true)
     public MemberProfileDto memberProfile(String telNum) { //멤버 프로필 조회
-        Member member = findByTelNum(telNum);
+        Member member = memberReader.findByTelNum(telNum);
         return getMemberProfileDto(member);
     }
 
     @Transactional(readOnly = true)
     public MemberProfileDto getMemberProfile(Long memberId) { //상대방 프로필 조회
-        Member member = findMember(memberId);
+        Member member = memberReader.findMember(memberId);
         return getMemberProfileDto(member);
     }
 
     private MemberProfileDto getMemberProfileDto(Member member) {
-        List<MemberHobbyDto> hobbyDtoList = memberProfile.getHobbyList(member);
-        List<MemberTagDto> tagDtoList = memberProfile.getTagList(member);
+        List<MemberHobbyDto> hobbyDtoList = hobbyReader.getHobbyList(member);
+        List<MemberTagDto> tagDtoList = tagReader.getTagList(member);
         return MemberProfileDto.builder()
             .memberCharacter(member.getMemberCharacter())
             .mbti(member.getMbti())
@@ -130,13 +137,13 @@ public class MemberService {
 
     @Transactional
     public Long modifyProfile(String loginId, MemberInfoDto memberInfoDto) { // 사용자가 입력한 값이 들어있음
-        Member member = findByTelNum(loginId);
-        memberProfile.profileUpdate(memberInfoDto, member);
+        Member member = memberReader.findByTelNum(loginId);
+        memberUpdater.profileUpdate(memberInfoDto, member);
         String nickName = member.getNickName(); // 닉네임 변경 전
-        memberCreate.memberNickNameUpdate(member); // 닉네임 변경
+        memberCreator.memberNickNameUpdate(member); // 닉네임 변경
         roomMemberProcessor.updateRoomName(member, nickName); //채팅방 방 이름 업데이트
-        memberProfile.memberTagUpdate(memberInfoDto.memberTagDto(), member);
-        memberProfile.memberHobbyUpdate(memberInfoDto.memberHobbyDto(),member);
+        tagUpdater.memberTagUpdate(memberInfoDto.memberTagDto(), member);
+        hobbyUpdater.memberHobbyUpdate(memberInfoDto.memberHobbyDto(),member);
         return member.getMemberId();
     }
 
@@ -144,23 +151,10 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public MemberTelNumDto findTelNum(Long memberId, String telNum, Long chatRoomId) {
-        Member me = findByTelNum(telNum);
-        Member opponent = findMember(memberId);
+        Member me = memberReader.findByTelNum(telNum);
+        Member opponent = memberReader.findMember(memberId);
        return communicationFacade.findTelNum(me,opponent,chatRoomId);
     }
-
-    @Transactional
-    public void increaseDeclare(Long memberId) {
-        Member member = findMember(memberId);
-        member.updateReport();
-    }
-
-    @Transactional
-    public void blockAccount(Long opponentId) {
-        Member member = findMember(opponentId);
-        member.disableAccount();
-    }
-
 
     /**
      * NOTE
@@ -184,18 +178,18 @@ public class MemberService {
     }
 
     public String verifyUniv(String name) {
-        return findByTelNum(name).getAuthUniv().getType();
+        return memberReader.findByTelNum(name).getAuthUniv().getType();
     }
 
     @Transactional
     public void memberLogout(String telNum) {
-        Member member = findByTelNum(telNum);
+        Member member = memberReader.findByTelNum(telNum);
         member.clearInfo();
     }
 
     private Member getMember(MemberSignDto signDto) {
         Member member = Member.builder()
-            .password(memberAccount.modifyPassword(signDto.password()))
+            .password(memberUpdater.modifyPassword(signDto.password()))
             .gender(signDto.gender())
             .telNum(signDto.telNum())
             .authority(Authority.ROLE_USER)
@@ -209,6 +203,6 @@ public class MemberService {
             .authUniv(UnivCert.FAILED_1)
             .activated(true)
             .build();
-        return memberRepository.save(member);
+       return memberCreator.createMember(member);
     }
 }
