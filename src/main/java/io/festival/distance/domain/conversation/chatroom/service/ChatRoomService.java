@@ -5,6 +5,7 @@ import io.festival.distance.domain.conversation.chat.repository.ChatMessageRepos
 import io.festival.distance.domain.conversation.chatroom.dto.ChatRoomInfoDto;
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import io.festival.distance.domain.conversation.chatroom.repository.ChatRoomRepository;
+import io.festival.distance.domain.conversation.chatroom.service.serviceimpl.ChatRoomReader;
 import io.festival.distance.domain.conversation.roommember.entity.RoomMember;
 import io.festival.distance.domain.conversation.roommember.repository.RoomMemberRepository;
 import io.festival.distance.domain.member.entity.Member;
@@ -28,6 +29,7 @@ public class ChatRoomService {
     private final MemberRepository memberRepository;
     private final RoomMemberRepository roomMemberRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final ChatRoomReader chatRoomReader;
 
     @Transactional(readOnly = true)
     public List<ChatRoomInfoDto> findAllRoom(String telNum) {
@@ -131,14 +133,14 @@ public class ChatRoomService {
         chatRoomRepository.deleteById(roomId);
     }
 
-    public ChatRoom findRoom(Long roomId) {
+    /*public ChatRoom findRoom(Long roomId) {
         return chatRoomRepository.findById(roomId)
             .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_CHATROOM));
-    }
+    }*/
 
     @Transactional(readOnly = true)
     public Boolean getAgreedStatus(Long chatRoomId) {
-        return findRoom(chatRoomId).isBothAgreed();
+        return chatRoomReader.findChatRoom(chatRoomId).isBothAgreed();
     }
 
     public boolean checkRoomCondition(Member me, Member opponent, ChatRoom chatRoom) {

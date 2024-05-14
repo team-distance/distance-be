@@ -6,8 +6,8 @@ import static io.festival.distance.exception.ErrorCode.NOT_CORRECT_AUTHENTICATIO
 
 import io.festival.distance.auth.refresh.RefreshDeleter;
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
-import io.festival.distance.domain.conversation.chatroom.service.ChatRoomDeleter;
-import io.festival.distance.domain.conversation.chatroom.service.ChatRoomReader;
+import io.festival.distance.domain.conversation.chatroom.service.serviceimpl.ChatRoomDeleter;
+import io.festival.distance.domain.conversation.chatroom.service.serviceimpl.ChatRoomReader;
 import io.festival.distance.domain.conversation.roommember.service.RoomMemberProcessor;
 import io.festival.distance.domain.conversation.roommember.service.serviceimpl.RoomMemberReader;
 import io.festival.distance.domain.member.dto.CheckAuthenticateNum;

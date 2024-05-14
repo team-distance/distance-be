@@ -8,7 +8,7 @@ import static io.festival.distance.domain.firebase.service.FcmService.SET_SENDER
 import io.festival.distance.domain.firebase.service.FcmService;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.entity.UnivCert;
-import io.festival.distance.domain.member.service.MemberService;
+import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.domain.studentcard.dto.AdminRequest;
 import io.festival.distance.domain.studentcard.dto.ImageResponse;
 import io.festival.distance.domain.studentcard.entity.StudentCard;
@@ -27,11 +27,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class StudentService {
 
     private final StudentCardRepository studentCardRepository;
-    private final MemberService memberService;
+    private final MemberReader memberReader;
     private final FcmService fcmService;
     @Transactional
     public void sendImage(MultipartFile file, String telNum) throws IOException {
-        Member member = memberService.findByTelNum(telNum);
+        Member member = memberReader.findByTelNum(telNum);
         byte[] imageData = file.getBytes();
         StudentCard studentCard = StudentCard.builder()
             .member(member)

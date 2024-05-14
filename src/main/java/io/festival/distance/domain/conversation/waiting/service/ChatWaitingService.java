@@ -11,7 +11,7 @@ import io.festival.distance.domain.conversation.waiting.repository.ChatWaitingRe
 import io.festival.distance.domain.firebase.service.FcmService;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.repository.MemberRepository;
-import io.festival.distance.domain.member.service.MemberService;
+import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.exception.DistanceException;
 import io.festival.distance.exception.ErrorCode;
 import java.util.ArrayList;
@@ -26,9 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class ChatWaitingService {
 
     private final ChatWaitingRepository chatWaitingRepository;
-    private final MemberService memberService;
     private final FcmService fcmService;
     private final MemberRepository memberRepository;
+    private final MemberReader memberReader;
     private final ApplicationEventPublisher aep;
 
     /**
@@ -56,11 +56,11 @@ public class ChatWaitingService {
 
     @Transactional(readOnly = true)
     public List<ChatWaitingDto> getWaitingRoom(String loginId) {
-        Member member = memberService.findByTelNum(loginId); //나
+        Member member = memberReader.findByTelNum(loginId); //나
         List<ChatWaiting> allByLoveReceiver = chatWaitingRepository.findAllByLoveReceiver(member);
         List<ChatWaitingDto> chatWaitingDtoList = new ArrayList<>();
         for (ChatWaiting chatWaiting : allByLoveReceiver) {
-            Member opponent = memberService.findMember(chatWaiting.getLoveSender().getMemberId());
+            Member opponent = memberReader.findMember(chatWaiting.getLoveSender().getMemberId());
             ChatWaitingDto dto = ChatWaitingDto.builder()
                 .loveReceiverId(chatWaiting.getLoveReceiver().getMemberId()) //나
                 .loveSenderId(chatWaiting.getLoveSender().getMemberId()) //상대방
@@ -88,7 +88,7 @@ public class ChatWaitingService {
 
     @Transactional
     public void deleteRoom(Long waitingRoodId, String loginId) {
-        Member member = memberService.findByTelNum(loginId);
+        Member member = memberReader.findByTelNum(loginId);
         chatWaitingRepository.deleteByWaitingIdAndLoveReceiver(waitingRoodId, member);
     }
 }

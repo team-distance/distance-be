@@ -9,16 +9,14 @@ import io.festival.distance.domain.conversation.chat.entity.SenderType;
 import io.festival.distance.domain.conversation.chat.service.ChatMessageService;
 import io.festival.distance.domain.conversation.chat.valid.CheckMessageLength;
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
+import io.festival.distance.domain.conversation.chatroom.service.serviceimpl.ChatRoomReader;
 import io.festival.distance.domain.conversation.chatroom.service.ChatRoomService;
 import io.festival.distance.domain.conversation.chatroomsession.entity.ChatRoomSession;
 import io.festival.distance.domain.conversation.chatroomsession.service.ChatRoomSessionService;
 import io.festival.distance.domain.conversation.roommember.service.RoomMemberService;
-import io.festival.distance.domain.conversation.waiting.dto.ChatWaitingCountDto;
-import io.festival.distance.domain.conversation.waiting.service.ChatWaitingService;
-import io.festival.distance.domain.firebase.entity.FcmType;
 import io.festival.distance.domain.firebase.service.FcmService;
 import io.festival.distance.domain.member.entity.Member;
-import io.festival.distance.domain.member.service.MemberService;
+import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.exception.DistanceException;
 import java.util.List;
 import java.util.Objects;
@@ -43,10 +41,10 @@ public class StompController {
     private final ChatMessageService chatMessageService;
     private final ChatRoomSessionService chatRoomSessionService;
     private final RoomMemberService roomMemberService;
-    private final ChatWaitingService chatWaitingService;
     private final CheckMessageLength checkMessageLength;
     private final FcmService fcmService;
-    private final MemberService memberService;
+    private final MemberReader memberReader;
+    private final ChatRoomReader chatRoomReader;
     private static final String LEAVE = "LEAVE";
 
     @MessageMapping("/chat/{roomId}") //app/chat/{roomId}로 요청이 들어왔을 때 -> 발신
@@ -58,7 +56,7 @@ public class StompController {
     ) {
         try {
             checkMessageLength.validMessageLength(chatMessageDto.getChatMessage());
-            ChatRoom chatRoom = chatRoomService.findRoom(roomId);
+            ChatRoom chatRoom = chatRoomReader.findChatRoom(roomId);
 
             // 채팅방 새션 조회
             List<ChatRoomSession> sessionByChatRoom = chatRoomSessionService
@@ -135,8 +133,8 @@ public class StompController {
             chatMessageDto, SenderType.of(chatMessageDto.getPublishType())); //메시지 생성
 
         // receiver 에게 PUSH 알림 전송
-        Member opponent = memberService.findMember(chatMessageDto.getSenderId());
-        Member member = memberService.findMember(chatMessageDto.getReceiverId());
+        Member opponent = memberReader.findMember(chatMessageDto.getSenderId());
+        Member member = memberReader.findMember(chatMessageDto.getReceiverId());
         fcmService.createFcm(opponent, member.getNickName(), "새로운 메시지가 도착했습니다!", MESSAGE);
         //chatMessageService.sendNotificationIfReceiverNotInChatRoom(chatMessageDto, roomId);
 

@@ -9,7 +9,7 @@ import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import io.festival.distance.domain.conversation.roommember.entity.RoomMember;
 import io.festival.distance.domain.conversation.roommember.service.RoomMemberService;
 import io.festival.distance.domain.member.entity.Member;
-import io.festival.distance.domain.member.service.MemberService;
+import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.exception.DistanceException;
 import io.festival.distance.exception.ErrorCode;
 import java.security.Principal;
@@ -30,14 +30,14 @@ public class ChatMessageService {
 
     private final ChatMessageRepository chatMessageRepository;
     private final RoomMemberService roomMemberService;
-    private final MemberService memberService;
+    private final MemberReader memberReader;
 
     private final static Integer INITIAL_COUNT = 2;
 
     @Transactional
     public Long createMessage(ChatRoom chatRoom, ChatMessageDto chatMessageDto,
         SenderType senderType) {
-        Member member = memberService.findMember(chatMessageDto.getReceiverId()); //나
+        Member member = memberReader.findMember(chatMessageDto.getReceiverId()); //나
         if (chatMessageDto.getChatMessage().isEmpty()) {
             return null;
         }
@@ -109,7 +109,7 @@ public class ChatMessageService {
     @Transactional
     public List<ChatMessageResponseDto> findAllChatRoomMessage(ChatRoom chatRoom,
         Principal principal) {
-        Member member = memberService.findByTelNum(principal.getName());
+        Member member = memberReader.findByTelNum(principal.getName());
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom);
 
         if (Objects.isNull(roomMember)) {
@@ -147,7 +147,7 @@ public class ChatMessageService {
     @Transactional(readOnly = true)
     public List<ChatMessageResponseDto> findAllMessage(ChatRoom chatRoom, PageRequest pageRequest,
         Principal principal) {
-        Member member = memberService.findByTelNum(principal.getName());
+        Member member = memberReader.findByTelNum(principal.getName());
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom);
         Long lastChatMessageId = roomMember.getLastReadMessageId();
         return chatMessageRepository.findByChatRoomAndChatMessageIdLessThanOrderByCreateDtDesc(

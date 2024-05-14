@@ -8,7 +8,7 @@ import io.festival.distance.authuniversity.config.mail.SendMailService;
 import io.festival.distance.authuniversity.config.mail.dto.UnivMailDto;
 import io.festival.distance.authuniversity.dto.CertificateDto;
 import io.festival.distance.domain.member.entity.Member;
-import io.festival.distance.domain.member.service.MemberService;
+import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.exception.DistanceException;
 import java.text.MessageFormat;
 import javax.mail.MessagingException;
@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthenticateMail {
 
     private final SendMailService sendMailService;
-    private final MemberService memberService;
+    private final MemberReader memberReader;
 
     public String sendNumber(String schoolEmail) throws MessagingException { //실 서비스
         String formattedEmail = formatEmail(schoolEmail);
@@ -64,7 +64,7 @@ public class AuthenticateMail {
 
     @Transactional
     public void updateMemberAuthenticationState(String telNum, String schoolEmail) {
-        Member member = memberService.findByTelNum(telNum);
+        Member member = memberReader.findByTelNum(telNum);
         member.updateAuthUniv(SUCCESS);
         member.updateEmail(schoolEmail);
     }

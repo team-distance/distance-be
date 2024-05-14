@@ -9,6 +9,7 @@ import io.festival.distance.domain.gps.dto.MatchUserDto;
 import io.festival.distance.domain.member.entity.Authority;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.repository.MemberRepository;
+import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.domain.member.service.MemberService;
 import io.festival.distance.exception.DistanceException;
 import io.festival.distance.exception.ErrorCode;
@@ -27,6 +28,7 @@ public class GpsService {
     private final MemberService memberService;
     private final ChatRoomRepository chatRoomRepository;
     private final GpsProcessor gpsProcessor;
+    private final MemberReader memberReader;
 
     /**
      * NOTE
@@ -34,7 +36,7 @@ public class GpsService {
      */
     @Transactional
     public GpsResponseDto updateMemberGps(String telNum, GpsDto gpsDto) {
-        Member member = memberService.findByTelNum(telNum);
+        Member member = memberReader.findByTelNum(telNum);
         member.memberGpsUpdate(gpsDto);
         return GpsResponseDto.builder()
             .memberId(member.getMemberId())
@@ -46,7 +48,7 @@ public class GpsService {
     @Transactional(readOnly = true)
     public MatchResponseDto matchUser(String telNum) {
 
-        Member centerUser = memberService.findByTelNum(telNum); //나
+        Member centerUser = memberReader.findByTelNum(telNum); //나
         double centerLongitude = centerUser.getLongitude();
         double centerLatitude = centerUser.getLatitude();
 
@@ -67,7 +69,9 @@ public class GpsService {
                 .map(
                     user -> MatchUserDto.builder().memberId(user.getMemberId())
                         .memberProfileDto(memberService.memberProfile(user.getTelNum()))
-                        .nickName(user.getNickName()).build()).toList());
+                        .nickName(user.getNickName()).build()
+                )
+                .toList());
 
         Collections.shuffle(matcheList); //랜덤
 

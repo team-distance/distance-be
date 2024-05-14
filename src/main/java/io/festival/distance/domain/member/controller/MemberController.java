@@ -8,6 +8,7 @@ import io.festival.distance.domain.member.dto.MemberProfileDto;
 import io.festival.distance.domain.member.dto.MemberSignDto;
 import io.festival.distance.domain.member.dto.MemberTelNumDto;
 import io.festival.distance.domain.member.dto.TelNumRequest;
+import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.domain.member.service.MemberService;
 import io.festival.distance.domain.member.usecase.MemberUseCase;
 import io.festival.distance.domain.member.usecase.SendSmsUseCase;
@@ -36,7 +37,9 @@ public class MemberController {
     private final MemberUseCase memberUseCase;
     private final SendSmsUseCase sendSmsUseCase;
     private final ValidPassword validPassword;
+    private final MemberReader memberReader;
     private String authenticateNum;
+
 
     /** NOTE
      * 회원가입 API
@@ -101,7 +104,7 @@ public class MemberController {
      */
     @GetMapping("/id")
     public ResponseEntity<Long> sendMemberId(Principal principal) {
-        return ResponseEntity.ok(memberService.findByTelNum(principal.getName()).getMemberId());
+        return ResponseEntity.ok(memberReader.findByTelNum(principal.getName()).getMemberId());
     }
 
     /** NOTE

@@ -2,18 +2,17 @@ package io.festival.distance.domain.gps.service;
 
 import static io.festival.distance.domain.gps.service.GpsService.calculateDistance;
 
-import io.festival.distance.domain.conversation.chatroom.repository.ChatRoomRepository;
 import io.festival.distance.domain.gps.dto.MatchResponseDto;
 import io.festival.distance.domain.gps.dto.MatchUserDto;
 import io.festival.distance.domain.member.entity.Authority;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.repository.MemberRepository;
+import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.domain.member.service.MemberService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -24,11 +23,12 @@ public class GpsProcessor {
 
     private final MemberService memberService;
     private final MemberRepository memberRepository;
+    private final MemberReader memberReader;
     private static final double SEARCH_RANGE = 1000;
 
     public double getDistance(long id1, long id2) {
-        Member member1 = memberService.findMember(id1);
-        Member member2 = memberService.findMember(id2);
+        Member member1 = memberReader.findMember(id1);
+        Member member2 = memberReader.findMember(id2);
         if (member1.getLatitude() == 0 || member1.getLongitude() == 0 || member2.getLongitude() == 0
             || member2.getLatitude() == 0) {
             return -1;
