@@ -15,7 +15,7 @@ public class CommunicationFacade {
     private final ChatRoomReader chatRoomReader;
     public MemberTelNumDto findTelNum(Member me, Member opponent, Long chatRoomId) {
         ChatRoom chatRoom = chatRoomReader.findChatRoom(chatRoomId);
-        if (chatRoomService.checkRoomCondition(me, opponent, chatRoom)) {
+        if (chatRoomService.checkRoomCondition(me, chatRoom)) {
             return MemberTelNumDto.builder()
                 .telNum(opponent.getTelNum())
                 .build();

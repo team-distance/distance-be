@@ -11,11 +11,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 public class ChatRoomReader {
+    private static final String INACTIVE = "INACTIVE";
     private final ChatRoomRepository chatRoomRepository;
 
     @Transactional(readOnly = true)
     public ChatRoom findChatRoom(Long chatRoomId){
         return chatRoomRepository.findById(chatRoomId)
             .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_CHATROOM));
+    }
+
+    public boolean getChatRoomStatus(ChatRoom chatRoom){
+        return chatRoom.getRoomStatus().equals(INACTIVE);
     }
 }

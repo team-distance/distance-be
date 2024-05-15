@@ -41,7 +41,6 @@ public class ChatRoomService {
             .map(roomMember -> {
                 ChatRoom chatRoom = roomMember.getChatRoom();
 
-
                 Optional<Member> opponent = memberRepository.findByNickName(
                     roomMember.getMyRoomName());
 
@@ -117,35 +116,15 @@ public class ChatRoomService {
         roomMemberRepository.save(roomMember);
     }
 
-    @Transactional
-    public void saveMyRoom(Member me, ChatRoom chatRoom, Member opponent) {
-        RoomMember roomMember = RoomMember.builder()
-            .chatRoom(chatRoom)
-            .myRoomName(opponent.getNickName())
-            .lastReadMessageId(1L)
-            .member(me)
-            .build();
-        roomMemberRepository.save(roomMember);
-    }
-
-    @Transactional
-    public void delete(Long roomId) {
-        chatRoomRepository.deleteById(roomId);
-    }
-
-    /*public ChatRoom findRoom(Long roomId) {
-        return chatRoomRepository.findById(roomId)
-            .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_CHATROOM));
-    }*/
-
     @Transactional(readOnly = true)
     public Boolean getAgreedStatus(Long chatRoomId) {
         return chatRoomReader.findChatRoom(chatRoomId).isBothAgreed();
     }
 
-    public boolean checkRoomCondition(Member me, Member opponent, ChatRoom chatRoom) {
-        return (roomMemberRepository.existsByChatRoomAndMemberAndMyRoomName(chatRoom, opponent,
-            me.getNickName()) && chatRoom.isBothAgreed());
+    @Transactional(readOnly = true)
+    public boolean checkRoomCondition(Member me, ChatRoom chatRoom) {
+        return (roomMemberRepository.existsByChatRoomAndMember(chatRoom, me)
+            && chatRoom.isBothAgreed());
     }
 
     @Transactional
