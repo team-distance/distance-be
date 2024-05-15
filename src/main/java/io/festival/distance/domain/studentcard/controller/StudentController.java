@@ -28,6 +28,9 @@ public class StudentController {
 
     private final StudentService studentService;
 
+    /** NOTE
+     * 학생증 전송
+     */
     @PostMapping("/send")
     public ResponseEntity<Void> sendStudentCard(
         @RequestParam(name = "studentcard") MultipartFile multipartFile,
