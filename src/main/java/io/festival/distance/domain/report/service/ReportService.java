@@ -19,6 +19,10 @@ public class ReportService {
     private final MemberReader memberReader;
     private final MemberUpdater memberUpdater;
     private final ReportRepository declareRepository;
+
+    /** NOTE
+     * 신고하기 메소드
+     */
     @Transactional
     public void writeReport(ReportDto reportDto, Principal principal) {
         Member me = memberReader.findByTelNum(principal.getName()); //나 => 신고하는 사람
