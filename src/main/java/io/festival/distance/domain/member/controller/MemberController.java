@@ -55,7 +55,7 @@ public class MemberController {
      */
     @DeleteMapping
     public ResponseEntity<String> delete(Principal principal) {
-        return ResponseEntity.ok(memberService.withDrawal(principal.getName()));
+        return ResponseEntity.ok(memberService.resignMember(principal.getName()));
     }
 
     /**
