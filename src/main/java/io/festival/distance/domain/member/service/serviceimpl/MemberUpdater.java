@@ -2,6 +2,7 @@ package io.festival.distance.domain.member.service.serviceimpl;
 
 import io.festival.distance.domain.member.dto.MemberInfoDto;
 import io.festival.distance.domain.member.entity.Member;
+import io.festival.distance.domain.member.entity.UnivCert;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -33,5 +34,10 @@ public class MemberUpdater {
     @Transactional
     public void updateStatus(Member member){
         member.disableAccount();
+    }
+
+    @Transactional
+    public void updateUniv(Member member,UnivCert univCert){
+        member.updateAuthUniv(univCert);
     }
 }

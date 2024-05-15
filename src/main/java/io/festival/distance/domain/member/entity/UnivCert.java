@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 public enum UnivCert {
 
     SUCCESS("SUCCESS","인증되었습니다!"),
+    PENDING("PENDING","인증 중...!"),
     FAILED_1("FAILED_1","학생증 인증이 안되었습니다!"),
     FAILED_2("FAILED_2","사진이 흔들렸습니다!"),
     FAILED_3("FAILED_3","해당 학교 학생증이 아닙니다!"),
