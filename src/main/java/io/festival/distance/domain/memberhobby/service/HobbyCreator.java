@@ -1,4 +1,4 @@
-package io.festival.distance.domain.memberhobby.service.serviceimpl;
+package io.festival.distance.domain.memberhobby.service;
 
 import io.festival.distance.domain.member.dto.MemberHobbyDto;
 import io.festival.distance.domain.member.entity.Member;
@@ -17,16 +17,25 @@ public class HobbyCreator {
     private final MemberHobbyRepository memberHobbyRepository;
 
     @Transactional
-    public void create(Member member, List<MemberHobbyDto> memberHobbyDto){
-        List<MemberHobby> memberHobby=new ArrayList<>();
+    public void createHobbies(Member member, List<MemberHobbyDto> memberHobbyDto) {
+        List<MemberHobby> memberHobby = new ArrayList<>();
 
         for (MemberHobbyDto hobbyDto : memberHobbyDto) {
-            MemberHobby hobby = MemberHobby.builder()
-                .hobbyName(hobbyDto.hobby())
-                .member(member)
-                .build();
+            MemberHobby hobby = getHobby(member, hobbyDto);
             memberHobby.add(hobby);
         }
         memberHobbyRepository.saveAll(memberHobby);
+    }
+
+    @Transactional
+    public void createHobby(MemberHobby memberHobby) {
+        memberHobbyRepository.save(memberHobby);
+    }
+
+    public MemberHobby getHobby(Member member, MemberHobbyDto memberHobbyDto) {
+        return MemberHobby.builder()
+            .hobbyName(memberHobbyDto.hobby())
+            .member(member)
+            .build();
     }
 }
