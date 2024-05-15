@@ -1,7 +1,5 @@
 package io.festival.distance.domain.member.service.serviceimpl;
 
-import static io.festival.distance.domain.member.service.MemberService.PREFIX;
-
 import io.festival.distance.domain.member.dto.MemberSignDto;
 import io.festival.distance.domain.member.entity.Authority;
 import io.festival.distance.domain.member.entity.Member;
@@ -14,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 public class MemberCreator {
+    public static final String PREFIX = "#";
     private final MemberRepository memberRepository;
+    private final MemberUpdater memberUpdater;
     @Transactional
     public void memberNickNameUpdate(Member member) {
         member.memberNicknameUpdate(
@@ -23,7 +23,25 @@ public class MemberCreator {
     }
 
     @Transactional
-    public Member createMember(Member member){
-        return memberRepository.save(member);
+    public void createMember(Member member){
+        memberRepository.save(member);
+    }
+
+    public Member getMember(MemberSignDto signDto){
+        return Member.builder()
+            .password(memberUpdater.modifyPassword(signDto.password()))
+            .gender(signDto.gender())
+            .telNum(signDto.telNum())
+            .authority(Authority.ROLE_USER)
+            .mbti(signDto.mbti())
+            .department(signDto.department())
+            .college(signDto.college())
+            .school(signDto.school())
+            .memberCharacter(signDto.memberCharacter())
+            .nickName(signDto.department())
+            .reportCount(0)
+            .authUniv(UnivCert.FAILED_1)
+            .activated(true)
+            .build();
     }
 }
