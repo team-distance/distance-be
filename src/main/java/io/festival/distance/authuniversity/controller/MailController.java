@@ -11,6 +11,7 @@ import javax.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,9 +32,9 @@ public class MailController {
      * NOTE
      * 학교 이름 선택시 해당 도메인 값 return
      */
-    @PostMapping("/check/univ-domain")
-    public ResponseEntity<String> checkDomain(@RequestBody SchoolNameDto schoolNameDto) {
-        return ResponseEntity.ok(sendSchoolDomain.sendDomain(schoolNameDto.schoolName()));
+    @GetMapping("/check/univ-domain")
+    public ResponseEntity<String> checkDomain(Principal principal) {
+        return ResponseEntity.ok(sendSchoolDomain.sendDomain(principal.getName()));
     }
 
     /**
