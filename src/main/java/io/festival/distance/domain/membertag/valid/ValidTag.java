@@ -1,13 +1,11 @@
-package io.festival.distance.domain.member.validsignup;
+package io.festival.distance.domain.membertag.valid;
 
 import io.festival.distance.domain.member.dto.MemberTagDto;
 import io.festival.distance.exception.DistanceException;
 import io.festival.distance.exception.ErrorCode;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Objects;
+import org.springframework.stereotype.Component;
 
 @Component
 public class ValidTag {

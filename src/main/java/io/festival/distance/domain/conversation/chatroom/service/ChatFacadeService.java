@@ -7,7 +7,7 @@ import io.festival.distance.domain.conversation.chatroom.validroomcount.ValidExi
 import io.festival.distance.domain.conversation.chatroom.validroomcount.ValidRoomCount;
 import io.festival.distance.domain.conversation.waiting.entity.ChatWaiting;
 import io.festival.distance.domain.conversation.waiting.repository.ChatWaitingRepository;
-import io.festival.distance.domain.gps.service.GpsProcessor;
+import io.festival.distance.domain.gps.service.serviceimpl.GpsProcessor;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.repository.MemberRepository;
 import io.festival.distance.domain.member.validlogin.ValidUnivCert;
@@ -16,10 +16,8 @@ import io.festival.distance.exception.DistanceException;
 import io.festival.distance.exception.ErrorCode;
 import java.security.Principal;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

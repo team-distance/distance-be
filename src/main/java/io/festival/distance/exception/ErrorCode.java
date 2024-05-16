@@ -16,7 +16,7 @@ public enum ErrorCode {
     NOT_EXIST_CHATROOM(HttpStatusCode.BAD_REQUEST.getStatus(), "존재하지 않는 채팅방입니다!"),
     NOT_EXIST_GPS(HttpStatusCode.BAD_REQUEST.getStatus(), "사용자의 위치 정보가 존재하지 않습니다!"),
     NOT_EXIST_FCM(HttpStatusCode.BAD_REQUEST.getStatus(), "존재하지 않는 FCM 입니다!"),
-    //NOT_EXIST_SCHOOL(HttpStatusCode.BAD_REQUEST.getStatus(), "존재하지 않는 대학교입니다!"),
+    NOT_EXIST_SCHOOL(HttpStatusCode.BAD_REQUEST.getStatus(), "존재하지 않는 대학교입니다!"),
     //EXIST_
     EXIST_EMAIL(HttpStatusCode.BAD_REQUEST.getStatus(), "이미 존재하는 Email 입니다!"),
     EXIST_ROOM(HttpStatusCode.BAD_REQUEST.getStatus(), "이미 상대방과의 방이 존재합니다!"),

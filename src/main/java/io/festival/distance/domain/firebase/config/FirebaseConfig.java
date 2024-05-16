@@ -3,15 +3,11 @@ package io.festival.distance.domain.firebase.config;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.messaging.AndroidConfig;
 import com.google.firebase.messaging.FirebaseMessaging;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.apache.bcel.util.ClassPath;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 
 @Configuration
 @Slf4j
@@ -39,7 +35,6 @@ public class FirebaseConfig {
         } catch (Exception e) {
 			log.info(e.getMessage());
         }
-
         return FirebaseMessaging.getInstance();
     }
 }

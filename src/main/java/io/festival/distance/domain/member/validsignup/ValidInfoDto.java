@@ -1,5 +1,7 @@
 package io.festival.distance.domain.member.validsignup;
 
+import io.festival.distance.domain.memberhobby.valid.ValidHobby;
+import io.festival.distance.domain.membertag.valid.ValidTag;
 import org.springframework.stereotype.Component;
 
 import io.festival.distance.domain.member.dto.MemberSignDto;
