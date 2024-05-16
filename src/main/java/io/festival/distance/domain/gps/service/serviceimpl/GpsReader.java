@@ -16,11 +16,12 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class GpsReader {
+
     private static final double SEARCH_RANGE = 1000;
     private final MemberReader memberReader;
     private final GpsDtoCreator gpsDtoCreator;
 
-    public List<MatchUserDto> getNonLoginUserMatchList(){
+    public List<MatchUserDto> getNonLoginUserMatchList() {
         return memberReader.findMemberList()
             .stream()
             .filter(
@@ -38,11 +39,14 @@ public class GpsReader {
         Member centerUser,
         double centerLatitude,
         double centerLongitude
-    ){
+    ) {
         List<MatchUserDto> userDtoList = memberReader.findMemberList()
             .stream()
-            .filter(user -> user.isActivated() && user.getAuthority().equals(Authority.ROLE_USER)
-                && !user.getGender().equals(centerUser.getGender()))
+            .filter(user -> user.getSchool().equals(centerUser.getSchool()))
+            .filter(
+                user -> user.isActivated() && user.getAuthority().equals(Authority.ROLE_USER)
+                    && !user.getGender().equals(centerUser.getGender())
+            )
             .filter(user -> user.getLongitude() != 0 || user.getLatitude() != 0)
             .filter(
                 user -> {
