@@ -4,7 +4,7 @@ import io.festival.distance.domain.gps.dto.DistanceResponse;
 import io.festival.distance.domain.gps.dto.GpsDto;
 import io.festival.distance.domain.gps.dto.GpsResponseDto;
 import io.festival.distance.domain.gps.dto.MatchResponseDto;
-import io.festival.distance.domain.gps.service.GpsProcessor;
+import io.festival.distance.domain.gps.service.serviceimpl.GpsProcessor;
 import io.festival.distance.domain.gps.service.GpsService;
 import java.security.Principal;
 import java.util.Objects;
