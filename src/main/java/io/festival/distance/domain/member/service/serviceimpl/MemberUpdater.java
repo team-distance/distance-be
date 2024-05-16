@@ -1,5 +1,6 @@
 package io.festival.distance.domain.member.service.serviceimpl;
 
+import io.festival.distance.domain.gps.dto.GpsDto;
 import io.festival.distance.domain.member.dto.MemberInfoDto;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.entity.UnivCert;
@@ -39,5 +40,10 @@ public class MemberUpdater {
     @Transactional
     public void updateUniv(Member member,UnivCert univCert){
         member.updateAuthUniv(univCert);
+    }
+
+    @Transactional
+    public void updateGps(Member member, GpsDto gpsDto){
+        member.memberGpsUpdate(gpsDto);
     }
 }
