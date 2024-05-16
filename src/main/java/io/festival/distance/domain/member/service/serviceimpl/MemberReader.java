@@ -13,6 +13,7 @@ import io.festival.distance.exception.DistanceException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -46,5 +47,10 @@ public class MemberReader {
             .memberHobbyDto(hobbyDtoList)
             .department(member.getDepartment())
             .build();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Member> findMemberList(){
+        return memberRepository.findAll();
     }
 }
