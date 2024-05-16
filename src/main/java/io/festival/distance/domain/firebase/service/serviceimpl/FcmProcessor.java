@@ -1,4 +1,4 @@
-package io.festival.distance.domain.firebase.service;
+package io.festival.distance.domain.firebase.service.serviceimpl;
 
 import io.festival.distance.domain.firebase.repository.FcmRepository;
 import lombok.RequiredArgsConstructor;
