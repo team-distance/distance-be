@@ -39,7 +39,7 @@ public class StudentService {
         byte[] imageData = file.getBytes();
         StudentCard studentCard = studentCardCreator.getStudentCard(member, imageData);
         studentCardCreator.create(studentCard);
-        memberUpdater.updateUniv(member, UnivCert.SUCCESS);
+        memberUpdater.updateUniv(member, UnivCert.PENDING);
     }
 
     @Transactional(readOnly = true)
@@ -50,6 +50,8 @@ public class StudentService {
     @Transactional
     public void approve(Long studentCardId) {
         StudentCard studentCard = studentCardReader.getStudentCard(studentCardId);
+        Member member = memberReader.findByTelNum(studentCard.getMember().getTelNum());
+        memberUpdater.updateUniv(member,UnivCert.SUCCESS);
         studentCardDeleter.delete(studentCard);
     }
 
