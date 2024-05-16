@@ -6,11 +6,13 @@ import io.festival.distance.domain.member.entity.Member;
 import lombok.Builder;
 
 @Builder
-public record MemberFcmDto(Member member,
-                           String senderNickName,
-                           String message,
-                           FcmType type,
-                           Long fcmId) {
+public record MemberFcmDto(
+    Member member,
+    String senderNickName,
+    String message,
+    FcmType type,
+    Long fcmId
+) {
 
     public static MemberFcmDto fromEntity(Fcm fcm){
         return MemberFcmDto.builder()
