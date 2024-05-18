@@ -56,10 +56,13 @@ public class GpsService {
 
     @Transactional(readOnly = true)
     public MatchResponseDto matchNonLoginUser() {
-        List<MatchUserDto> matcheList = gpsReader.getNonLoginUserMatchList();
-        Collections.shuffle(matcheList); //랜덤
-        matcheList = matcheList.stream().limit(4).collect(Collectors.toList());
-        return gpsDtoCreator.getMatchResponseDto(matcheList);
+        List<MatchUserDto> matchList = gpsReader.getNonLoginUserMatchList();
+        for (MatchUserDto matchUserDto : matchList) {
+            System.out.println(matchUserDto.nickName());
+        }
+        //Collections.shuffle(matchList); //랜덤
+        matchList = matchList.stream().limit(4).collect(Collectors.toList());
+        return gpsDtoCreator.getMatchResponseDto(matchList);
     }
 
     public DistanceResponse callDistance(Long chatRoomId) {
