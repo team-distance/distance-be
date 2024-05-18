@@ -8,6 +8,7 @@ import io.festival.distance.domain.gps.dto.MatchUserDto;
 import io.festival.distance.domain.member.entity.Authority;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -87,12 +88,14 @@ public class GpsReader {
     }
 
     public MatchResponseDto getMatchResponseDto(List<MatchUserDto> dtoList) {
+        List<MatchUserDto> modifiableList = new ArrayList<>(dtoList);
         try {
-            Collections.shuffle(dtoList);
+            Collections.shuffle(modifiableList);
+            //Collections.shuffle(dtoList);
         } catch (Exception e) {
             System.out.println("Exception during shuffle: " + e);
         }
-        List<MatchUserDto> userDtoList = gpsDtoCreator.getMatchUserDto(dtoList);
+        List<MatchUserDto> userDtoList = gpsDtoCreator.getMatchUserDto(modifiableList);
         return gpsDtoCreator.getMatchResponseDto(userDtoList);
     }
 }
