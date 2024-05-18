@@ -87,7 +87,7 @@ public class GpsReader {
     }
 
     private MatchResponseDto getMatchResponseDto(List<MatchUserDto> dtoList) {
-        Collections.shuffle(dtoList);
+        //Collections.shuffle(dtoList);
         List<MatchUserDto> userDtoList = gpsDtoCreator.getMatchUserDto(dtoList);
         return gpsDtoCreator.getMatchResponseDto(userDtoList);
     }
