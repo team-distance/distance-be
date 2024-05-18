@@ -60,7 +60,11 @@ public class GpsService {
         for (MatchUserDto matchUserDto : matchList) {
             System.out.println(matchUserDto.nickName());
         }
-        //Collections.shuffle(matchList); //랜덤
+        try {
+            Collections.shuffle(matchList);
+        } catch (Exception e) {
+            System.out.println("Exception during shuffle: " + e);
+        }
         matchList = matchList.stream().limit(4).collect(Collectors.toList());
         return gpsDtoCreator.getMatchResponseDto(matchList);
     }
