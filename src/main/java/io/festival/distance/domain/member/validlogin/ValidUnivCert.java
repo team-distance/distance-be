@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class ValidUnivCert {
 
     public void checkUnivCert(Member member){
-        if(member.getAuthUniv()!= UnivCert.SUCCESS){
+        if(member.getAuthUniv()!= UnivCert.SUCCESS && member.getAuthUniv()!=UnivCert.PENDING){
             throw new DistanceException(ErrorCode.NOT_AUTHENTICATION_STUDENT);
         }
     }
