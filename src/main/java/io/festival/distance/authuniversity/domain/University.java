@@ -1,13 +1,13 @@
 package io.festival.distance.authuniversity.domain;
 
 
-import io.festival.distance.exception.DistanceException;
-import io.festival.distance.exception.ErrorCode;
-import lombok.Getter;
+import static io.festival.distance.authuniversity.exception.UnivErrorCode.NOT_EXIST_SCHOOL;
 
+import io.festival.distance.authuniversity.exception.UnivException;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
+import lombok.Getter;
 
 @Getter
 public enum University {
@@ -71,7 +71,7 @@ public enum University {
                 return entry.getKey().getDomain();
             }
         }
-        throw new DistanceException(ErrorCode.NOT_EXIST_SCHOOL);
+        throw new UnivException(NOT_EXIST_SCHOOL);
     }
 
     public static boolean getIsWomen(String name){
@@ -80,6 +80,6 @@ public enum University {
                 return entry.getKey().isWomen;
             }
         }
-        throw new DistanceException(ErrorCode.NOT_EXIST_SCHOOL);
+        throw new UnivException(NOT_EXIST_SCHOOL);
     }
 }

@@ -1,9 +1,10 @@
 package io.festival.distance.domain.firebase.config;
 
+import static io.festival.distance.domain.firebase.exception.FcmErrorCode.THIRD_PARTY_AUTH_ERROR;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.festival.distance.exception.DistanceException;
-import io.festival.distance.exception.ErrorCode;
+import io.festival.distance.domain.firebase.exception.FcmException;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -49,7 +50,7 @@ public class FirebaseProperties {
         try {
             return objectMapper.writeValueAsString(this);
         } catch (JsonProcessingException e) {
-            throw new DistanceException(ErrorCode.THIRD_PARTY_AUTH_ERROR);
+            throw new FcmException(THIRD_PARTY_AUTH_ERROR);
         }
     }
 }

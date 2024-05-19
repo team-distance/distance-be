@@ -1,10 +1,10 @@
-package io.festival.distance.exception;
+package io.festival.distance.global.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class DistanceException extends RuntimeException{
+public class ChatRoomException extends RuntimeException{
     ErrorCode errorCode;
 }

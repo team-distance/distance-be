@@ -17,7 +17,7 @@ import io.festival.distance.domain.conversation.roommember.service.RoomMemberSer
 import io.festival.distance.domain.firebase.service.FcmService;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
-import io.festival.distance.exception.DistanceException;
+import io.festival.distance.global.exception.DistanceException;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;

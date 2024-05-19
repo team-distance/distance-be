@@ -1,9 +1,10 @@
 package io.festival.distance.domain.firebase.service.serviceimpl;
 
+import static io.festival.distance.domain.firebase.exception.FcmErrorCode.NOT_EXIST_FCM;
+
 import io.festival.distance.domain.firebase.entity.Fcm;
+import io.festival.distance.domain.firebase.exception.FcmException;
 import io.festival.distance.domain.firebase.repository.FcmRepository;
-import io.festival.distance.exception.DistanceException;
-import io.festival.distance.exception.ErrorCode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,6 @@ public class FcmReader {
 
     public Fcm getFcm(Long fcmId){
         return fcmRepository.findById(fcmId)
-            .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_FCM));
+            .orElseThrow(() -> new FcmException(NOT_EXIST_FCM));
     }
 }

@@ -1,7 +1,6 @@
 package io.festival.distance.auth.refresh;
 
-import io.festival.distance.exception.DistanceException;
-import java.util.Optional;
+import io.festival.distance.global.exception.DistanceException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 

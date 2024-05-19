@@ -1,4 +1,4 @@
-package io.festival.distance.exception;
+package io.festival.distance.global.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

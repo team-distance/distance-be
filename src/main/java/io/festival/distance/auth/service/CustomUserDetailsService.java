@@ -1,9 +1,10 @@
 package io.festival.distance.auth.service;
 
+import static io.festival.distance.domain.member.exception.MemberErrorCode.NOT_EXIST_MEMBER;
+
 import io.festival.distance.domain.member.entity.Member;
+import io.festival.distance.domain.member.exception.MemberException;
 import io.festival.distance.domain.member.repository.MemberRepository;
-import io.festival.distance.exception.DistanceException;
-import io.festival.distance.exception.ErrorCode;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     // 로그인시에 DB에서 유저정보와 권한정보를 가져와서 해당 정보를 기반으로 userdetails.User 객체를 생성해 리턴
     public UserDetails loadUserByUsername(final String telNum) {
         Member member = memberRepository.findOneWithAuthoritiesByTelNum(telNum)
-                .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_MEMBER));
+                .orElseThrow(() -> new MemberException(NOT_EXIST_MEMBER));
         return createAdmin(telNum,member);
     }
 

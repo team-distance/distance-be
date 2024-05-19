@@ -1,10 +1,11 @@
 package io.festival.distance.domain.conversation.chatroom.validroomcount;
 
-import io.festival.distance.domain.member.entity.Member;
+import static io.festival.distance.domain.conversation.chat.exception.ChatErrorCode.TOO_MANY_MY_CHATROOM;
+import static io.festival.distance.domain.conversation.chat.exception.ChatErrorCode.TOO_MANY_OPPONENT_CHATROOM;
+
+import io.festival.distance.domain.conversation.chat.exception.ChatException;
 import io.festival.distance.domain.conversation.waiting.service.ChatWaitingService;
-import io.festival.distance.exception.ChatRoomException;
-import io.festival.distance.exception.DistanceException;
-import io.festival.distance.exception.ErrorCode;
+import io.festival.distance.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -17,14 +18,14 @@ public class ValidRoomCount {
 
     public void checkRoom(Member opponent, Member me,boolean flag){
         if(validMyRoomCount.checkMyRoom(me)>=3L){
-            throw new DistanceException(ErrorCode.TOO_MANY_MY_CHATROOM);
+            throw new ChatException(TOO_MANY_MY_CHATROOM);
         }
 
         if (validOpponentRoom.checkOpponentRoom(opponent) >= 3L) {
             if (flag) {
                 chatWaitingService.saveWaitingRoom(opponent, me);
             }
-            throw new ChatRoomException(ErrorCode.TOO_MANY_OPPONENT_CHATROOM);
+            throw new ChatException(TOO_MANY_OPPONENT_CHATROOM);
         }
     }
 }

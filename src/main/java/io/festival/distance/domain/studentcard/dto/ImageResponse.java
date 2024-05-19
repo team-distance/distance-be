@@ -7,7 +7,7 @@ import lombok.Builder;
 @Builder
 public record ImageResponse(
     Long imageId,
-    Long memberId,//학교, 성별, 학과
+    Long memberId,
     String school,
     String department,
     String gender,

@@ -14,8 +14,8 @@ import io.festival.distance.domain.studentcard.dto.AdminRequest;
 import io.festival.distance.domain.studentcard.dto.ImageResponse;
 import io.festival.distance.domain.studentcard.entity.StudentCard;
 import io.festival.distance.domain.studentcard.service.serviceimpl.StudentCardCreator;
-import io.festival.distance.domain.studentcard.service.serviceimpl.StudentCardDeleter;
 import io.festival.distance.domain.studentcard.service.serviceimpl.StudentCardReader;
+import io.festival.distance.domain.studentcard.service.serviceimpl.StudentCardUpdater;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class StudentService {
     private final MemberUpdater memberUpdater;
     private final StudentCardCreator studentCardCreator;
     private final StudentCardReader studentCardReader;
-    private final StudentCardDeleter studentCardDeleter;
+    private final StudentCardUpdater studentCardUpdater;
     private final FcmService fcmService;
     @Transactional
     public void sendImage(MultipartFile file, String telNum) throws IOException {
@@ -52,7 +52,7 @@ public class StudentService {
         StudentCard studentCard = studentCardReader.getStudentCard(studentCardId);
         Member member = memberReader.findByTelNum(studentCard.getMember().getTelNum());
         memberUpdater.updateUniv(member,UnivCert.SUCCESS);
-        studentCardDeleter.delete(studentCard);
+        studentCardUpdater.update(studentCard);
     }
 
     @Transactional
@@ -61,6 +61,5 @@ public class StudentService {
         Member member = studentCardReader.getMember(studentCard);
         memberUpdater.updateUniv(member, UnivCert.valueOf(adminRequest.type()));
         fcmService.createFcm(member,SET_SENDER_NAME,REJECT_STUDENT_CARD, STUDENT_CARD);
-        studentCardDeleter.delete(studentCard);
     }
 }

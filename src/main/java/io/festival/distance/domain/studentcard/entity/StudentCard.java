@@ -32,7 +32,14 @@ public class StudentCard {
     @Lob
     private byte[] imageData;
 
+    @Column(name = "is_pass")
+    private boolean isPass;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    public void updateIsPass(){
+        this.isPass=true;
+    }
 }

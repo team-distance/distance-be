@@ -1,8 +1,8 @@
 package io.festival.distance.auth.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.festival.distance.exception.DistanceException;
-import io.festival.distance.exception.ErrorCode;
+import io.festival.distance.global.exception.DistanceException;
+import io.festival.distance.global.exception.ErrorCode;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

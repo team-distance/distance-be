@@ -1,5 +1,7 @@
 package io.festival.distance.domain.conversation.chatroom.service;
 
+import static io.festival.distance.domain.member.exception.MemberErrorCode.NOT_EXIST_MEMBER;
+
 import io.festival.distance.domain.conversation.chat.entity.ChatMessage;
 import io.festival.distance.domain.conversation.chat.repository.ChatMessageRepository;
 import io.festival.distance.domain.conversation.chatroom.dto.ChatRoomInfoDto;
@@ -9,9 +11,8 @@ import io.festival.distance.domain.conversation.chatroom.service.serviceimpl.Cha
 import io.festival.distance.domain.conversation.roommember.entity.RoomMember;
 import io.festival.distance.domain.conversation.roommember.repository.RoomMemberRepository;
 import io.festival.distance.domain.member.entity.Member;
+import io.festival.distance.domain.member.exception.MemberException;
 import io.festival.distance.domain.member.repository.MemberRepository;
-import io.festival.distance.exception.DistanceException;
-import io.festival.distance.exception.ErrorCode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -34,7 +35,7 @@ public class ChatRoomService {
     @Transactional(readOnly = true)
     public List<ChatRoomInfoDto> findAllRoom(String telNum) {
         Member member = memberRepository.findByTelNum(telNum) //현재 로그인한 객체
-            .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_MEMBER));
+            .orElseThrow(() -> new MemberException(NOT_EXIST_MEMBER));
 
         return roomMemberRepository.findAllByMember(member)
             .stream()
@@ -99,7 +100,7 @@ public class ChatRoomService {
                 .stream()
                 .filter(o -> !o.getMemberId().equals(me.getMemberId()))
                 .findFirst()
-                .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_MEMBER));
+                .orElseThrow(() -> new MemberException(NOT_EXIST_MEMBER));
 
             saveRoomMember(me, chatRoom, opponent);
         }

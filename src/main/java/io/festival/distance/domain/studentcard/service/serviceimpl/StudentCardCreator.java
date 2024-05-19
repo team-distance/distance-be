@@ -16,6 +16,7 @@ public class StudentCardCreator {
         return StudentCard.builder()
             .member(member)
             .imageData(imageData)
+            .isPass(false)
             .build();
     }
 

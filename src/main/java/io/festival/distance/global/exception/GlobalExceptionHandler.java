@@ -1,4 +1,4 @@
-package io.festival.distance.exception;
+package io.festival.distance.global.exception;
 
 import io.festival.distance.utils.slack.SlackService;
 import javax.servlet.http.HttpServletRequest;

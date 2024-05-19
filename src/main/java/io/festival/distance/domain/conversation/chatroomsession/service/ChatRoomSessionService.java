@@ -1,11 +1,12 @@
 package io.festival.distance.domain.conversation.chatroomsession.service;
 
+import static io.festival.distance.domain.member.exception.MemberErrorCode.NOT_EXIST_MEMBER;
+
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import io.festival.distance.domain.conversation.chatroom.service.serviceimpl.ChatRoomReader;
 import io.festival.distance.domain.conversation.chatroomsession.entity.ChatRoomSession;
 import io.festival.distance.domain.conversation.chatroomsession.repository.ChatRoomSessionRepository;
-import io.festival.distance.exception.DistanceException;
-import io.festival.distance.exception.ErrorCode;
+import io.festival.distance.domain.member.exception.MemberException;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +45,6 @@ public class ChatRoomSessionService {
 
     public ChatRoomSession findSession(String sessionName){
         return chatRoomSessionRepository.findBySessionName(sessionName)
-                .orElseThrow(()-> new DistanceException(ErrorCode.NOT_EXIST_MEMBER));
+                .orElseThrow(()-> new MemberException(NOT_EXIST_MEMBER));
     }
 }

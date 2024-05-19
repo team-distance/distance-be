@@ -2,14 +2,14 @@ package io.festival.distance.authuniversity.service.univmail;
 
 import static io.festival.distance.authuniversity.domain.University.getDomainByName;
 import static io.festival.distance.domain.member.entity.UnivCert.SUCCESS;
-import static io.festival.distance.exception.ErrorCode.NOT_CORRECT_AUTHENTICATION_NUMBER;
+import static io.festival.distance.domain.member.exception.MemberErrorCode.NOT_CORRECT_AUTHENTICATION_NUMBER;
 
 import io.festival.distance.authuniversity.config.mail.SendMailService;
 import io.festival.distance.authuniversity.config.mail.dto.UnivMailDto;
 import io.festival.distance.authuniversity.dto.CertificateDto;
 import io.festival.distance.domain.member.entity.Member;
+import io.festival.distance.domain.member.exception.MemberException;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
-import io.festival.distance.exception.DistanceException;
 import java.text.MessageFormat;
 import javax.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +58,7 @@ public class AuthenticateMail {
         String certificationNumber
     ) {
         if (!certificateDto.number().equals(certificationNumber)) {
-            throw new DistanceException(NOT_CORRECT_AUTHENTICATION_NUMBER);
+            throw new MemberException(NOT_CORRECT_AUTHENTICATION_NUMBER);
         }
     }
 
