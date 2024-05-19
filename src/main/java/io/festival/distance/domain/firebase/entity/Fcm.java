@@ -41,6 +41,7 @@ public class Fcm extends BaseTimeEntity {
     private boolean isSend;
 
     @Enumerated(STRING)
+    @Column(name = "fcm_type")
     private FcmType fcmType;
 
     @ManyToOne(fetch = FetchType.LAZY)
