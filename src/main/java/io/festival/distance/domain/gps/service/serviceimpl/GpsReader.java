@@ -1,16 +1,12 @@
 package io.festival.distance.domain.gps.service.serviceimpl;
 
-
-import static io.festival.distance.domain.gps.service.serviceimpl.GpsProcessor.calculateDistance;
-
 import io.festival.distance.domain.gps.dto.MatchResponseDto;
 import io.festival.distance.domain.gps.dto.MatchUserDto;
-import io.festival.distance.domain.member.entity.Authority;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,62 +14,68 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class GpsReader {
 
-    private static final double SEARCH_RANGE = 1000;
     private final MemberReader memberReader;
     private final GpsDtoCreator gpsDtoCreator;
-
+    private final GpsValidator gpsValidator;
+    /**
+     * 비로그인 유저 매칭
+     */
     public List<MatchUserDto> getNonLoginUserMatchList() {
         return memberReader.findMemberList()
             .stream()
             .filter(
-                user -> user.isActivated() && user.getAuthority().equals(Authority.ROLE_USER)
+                gpsValidator::isActivatedMember
             )
             .map(
                 user -> MatchUserDto.builder().memberId(user.getMemberId())
                     .memberProfileDto(memberReader.getMemberProfileDto(user))
                     .nickName(user.getNickName()).build()
             )
-            .toList();
+            .collect(Collectors.toList());
     }
 
+    /**
+     * 로그인 유저 매칭
+     */
     public MatchResponseDto getLoginUserMatchList(
-        Member centerUser,
-        double centerLatitude,
-        double centerLongitude
+        Member centerUser
     ) {
         List<MatchUserDto> userDtoList = memberReader.findMemberList()
             .stream()
-            .filter(user -> user.getSchool().equals(centerUser.getSchool()))
             .filter(
-                user -> user.isActivated() && user.getAuthority().equals(Authority.ROLE_USER)
-                    && !user.getGender().equals(centerUser.getGender())
+                user -> gpsValidator.isSameSchool(centerUser,user)
             )
-            .filter(user -> user.getLongitude() != 0 || user.getLatitude() != 0)
             .filter(
-                user -> {
-                    double userLongitude = user.getLongitude();
-                    double userLatitude = user.getLatitude();
-                    double distance = calculateDistance(centerLatitude, centerLongitude,
-                        userLatitude,
-                        userLongitude);
-                    return 0 < distance && distance <= SEARCH_RANGE; // 반경 내 user 필터링 (본인 제외)
-                }
+                gpsValidator::isActivatedMember
+            )
+            .filter(
+                user -> gpsValidator.isWomenSchool(centerUser,user)
+            )
+            .filter(
+                gpsValidator::hasValidLocation
+            )
+            .filter(
+                user -> gpsValidator.isWithinSearchRange(centerUser,user)
             )
             .map(users -> MatchUserDto.fromMember(users, memberReader.getMemberProfileDto(users)))
-            .toList();
+            .collect(Collectors.toList());
+
         return getMatchResponseDto(userDtoList);
     }
 
-    public MatchResponseDto getNotFoundPositionMatchList(Member member) {
+    /**
+     * 로그인 & 위치정보가 없는 유저 매칭
+     */
+    public MatchResponseDto getNotFoundPositionMatchList(Member centerUser) {
         List<MatchUserDto> userDtoList = memberReader.findMemberList().stream()
             .filter(
-                user -> user.isActivated() && user.getAuthority().equals(Authority.ROLE_USER)
+                gpsValidator::isActivatedMember
             )
             .filter(
-                user -> user.getLongitude() != 0 || user.getLatitude() != 0
+                gpsValidator::hasValidLocation
             )
             .filter(
-                user -> !user.getGender().equals(member.getGender())
+                user -> gpsValidator.isWomenSchool(centerUser,user)
             )
             .map(
                 user -> MatchUserDto.builder()
@@ -83,19 +85,17 @@ public class GpsReader {
                     .telNum(user.getTelNum())
                     .build()
             )
-            .toList();
+            .collect(Collectors.toList());
         return getMatchResponseDto(userDtoList);
     }
 
     public MatchResponseDto getMatchResponseDto(List<MatchUserDto> dtoList) {
-        List<MatchUserDto> modifiableList = new ArrayList<>(dtoList);
         try {
-            Collections.shuffle(modifiableList);
-            //Collections.shuffle(dtoList);
+            Collections.shuffle(dtoList);
         } catch (Exception e) {
             System.out.println("Exception during shuffle: " + e);
         }
-        List<MatchUserDto> userDtoList = gpsDtoCreator.getMatchUserDto(modifiableList);
+        List<MatchUserDto> userDtoList = gpsDtoCreator.getMatchUserDto(dtoList);
         return gpsDtoCreator.getMatchResponseDto(userDtoList);
     }
 }

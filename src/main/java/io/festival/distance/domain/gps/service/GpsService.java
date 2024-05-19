@@ -42,7 +42,6 @@ public class GpsService {
 
     @Transactional(readOnly = true)
     public MatchResponseDto matchUser(String telNum) {
-
         Member centerUser = memberReader.findByTelNum(telNum); //나
         double centerLongitude = centerUser.getLongitude();
         double centerLatitude = centerUser.getLatitude();
@@ -51,15 +50,12 @@ public class GpsService {
             return gpsReader.getNotFoundPositionMatchList(centerUser);
         }
         // activate, 거리 내에 있는 유저 필터링 -> 랜덤 4명 선택
-        return gpsReader.getLoginUserMatchList(centerUser, centerLatitude, centerLongitude);
+        return gpsReader.getLoginUserMatchList(centerUser);
     }
 
     @Transactional(readOnly = true)
     public MatchResponseDto matchNonLoginUser() {
         List<MatchUserDto> matchList = gpsReader.getNonLoginUserMatchList();
-        for (MatchUserDto matchUserDto : matchList) {
-            System.out.println(matchUserDto.nickName());
-        }
         try {
             Collections.shuffle(matchList);
         } catch (Exception e) {
