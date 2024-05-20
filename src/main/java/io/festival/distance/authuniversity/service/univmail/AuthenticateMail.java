@@ -25,14 +25,9 @@ public class AuthenticateMail {
     private final MemberReader memberReader;
 
     public String sendNumber(String schoolEmail) throws MessagingException { //실 서비스
-        String formattedEmail = formatEmail(schoolEmail);
-        UnivMailDto univMailDto = makeCertificationNumber(formattedEmail);
+        UnivMailDto univMailDto = makeCertificationNumber(schoolEmail);
         sendEmail(univMailDto); //메일 전송
         return univMailDto.tempPw();
-    }
-
-    public String formatEmail(String schoolEmail) {
-        return MessageFormat.format("{0}@{1}.ac.kr", schoolEmail, getDomainByName(schoolEmail));
     }
 
     public UnivMailDto makeCertificationNumber(String formattedEmail) {
