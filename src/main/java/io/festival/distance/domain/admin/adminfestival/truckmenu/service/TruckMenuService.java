@@ -1,14 +1,15 @@
 package io.festival.distance.domain.admin.adminfestival.truckmenu.service;
 
-import static io.festival.distance.domain.admin.adminfestival.truckmenu.exception.TruckMenuErrorCode.NOT_EXIST_MENU;
+
+import static io.festival.distance.global.exception.ErrorCode.NOT_EXIST_MENU;
 
 import io.festival.distance.domain.admin.adminfestival.foodtruck.entity.FoodTruck;
 import io.festival.distance.domain.admin.adminfestival.foodtruck.service.FoodTruckService;
 import io.festival.distance.domain.admin.adminfestival.truckmenu.dto.TruckMenuRequest;
 import io.festival.distance.domain.admin.adminfestival.truckmenu.dto.TruckMenuResponse;
 import io.festival.distance.domain.admin.adminfestival.truckmenu.entity.TruckMenu;
-import io.festival.distance.domain.admin.adminfestival.truckmenu.exception.TruckMenuException;
 import io.festival.distance.domain.admin.adminfestival.truckmenu.repository.TruckMenuRepository;
+import io.festival.distance.global.exception.DistanceException;
 import io.festival.distance.infra.s3.dto.S3Response;
 import io.festival.distance.infra.s3.service.S3DeleteImage;
 import io.festival.distance.infra.s3.service.S3UploadImage;
@@ -49,7 +50,7 @@ public class TruckMenuService {
     @Transactional(readOnly = true)
     public TruckMenu findTruckMenu(Long truckMenuId) {
         return truckMenuRepository.findById(truckMenuId)
-            .orElseThrow(() -> new TruckMenuException(NOT_EXIST_MENU));
+            .orElseThrow(() -> new DistanceException(NOT_EXIST_MENU));
     }
 
     @Transactional

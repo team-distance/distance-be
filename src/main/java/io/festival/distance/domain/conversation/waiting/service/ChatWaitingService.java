@@ -3,7 +3,7 @@ package io.festival.distance.domain.conversation.waiting.service;
 import static io.festival.distance.domain.firebase.entity.FcmType.WAITING;
 import static io.festival.distance.domain.firebase.service.FcmService.ADD_WAITING_ROOM_MESSAGE;
 import static io.festival.distance.domain.firebase.service.FcmService.SET_SENDER_NAME;
-import static io.festival.distance.domain.member.exception.MemberErrorCode.NOT_EXIST_MEMBER;
+import static io.festival.distance.global.exception.ErrorCode.NOT_EXIST_MEMBER;
 
 import io.festival.distance.domain.conversation.waiting.dto.ChatWaitingCountDto;
 import io.festival.distance.domain.conversation.waiting.dto.ChatWaitingDto;
@@ -11,11 +11,9 @@ import io.festival.distance.domain.conversation.waiting.entity.ChatWaiting;
 import io.festival.distance.domain.conversation.waiting.repository.ChatWaitingRepository;
 import io.festival.distance.domain.firebase.service.FcmService;
 import io.festival.distance.domain.member.entity.Member;
-import io.festival.distance.domain.member.exception.MemberException;
 import io.festival.distance.domain.member.repository.MemberRepository;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.global.exception.DistanceException;
-import io.festival.distance.global.exception.ErrorCode;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -80,7 +78,7 @@ public class ChatWaitingService {
     @Transactional(readOnly = true)
     public ChatWaitingCountDto countingWaitingRoom(Long loginId) {
         Member member = memberRepository.findById(loginId)
-            .orElseThrow(() -> new MemberException(NOT_EXIST_MEMBER));
+            .orElseThrow(() -> new DistanceException(NOT_EXIST_MEMBER));
         Integer count = chatWaitingRepository.countByLoveReceiver(member);
 
         return ChatWaitingCountDto.builder()

@@ -26,6 +26,8 @@ public class GlobalExceptionHandler {
         return ErrorResponseEntity.responseEntity(e.getErrorCode());
     }
 
+
+
     @ExceptionHandler(ChatRoomException.class)
     protected ResponseEntity<ErrorResponseEntity> errorCodeResponseEntity1(ChatRoomException e,
         HttpServletRequest request) {

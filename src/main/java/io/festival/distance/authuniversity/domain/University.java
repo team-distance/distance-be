@@ -1,9 +1,9 @@
 package io.festival.distance.authuniversity.domain;
 
 
-import static io.festival.distance.authuniversity.exception.UnivErrorCode.NOT_EXIST_SCHOOL;
+import static io.festival.distance.global.exception.ErrorCode.NOT_EXIST_SCHOOL;
 
-import io.festival.distance.authuniversity.exception.UnivException;
+import io.festival.distance.global.exception.DistanceException;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
@@ -71,7 +71,7 @@ public enum University {
                 return entry.getKey().getDomain();
             }
         }
-        throw new UnivException(NOT_EXIST_SCHOOL);
+        throw new DistanceException(NOT_EXIST_SCHOOL);
     }
 
     public static boolean getIsWomen(String name){
@@ -80,6 +80,6 @@ public enum University {
                 return entry.getKey().isWomen;
             }
         }
-        throw new UnivException(NOT_EXIST_SCHOOL);
+        throw new DistanceException(NOT_EXIST_SCHOOL);
     }
 }

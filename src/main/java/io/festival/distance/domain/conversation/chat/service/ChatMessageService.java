@@ -1,19 +1,19 @@
 package io.festival.distance.domain.conversation.chat.service;
 
-import static io.festival.distance.domain.conversation.chat.exception.ChatErrorCode.NOT_EXIST_CHATROOM;
-import static io.festival.distance.domain.conversation.chat.exception.ChatErrorCode.NOT_EXIST_MESSAGE;
+import static io.festival.distance.global.exception.ErrorCode.NOT_EXIST_CHATROOM;
+import static io.festival.distance.global.exception.ErrorCode.NOT_EXIST_MESSAGE;
 
 import io.festival.distance.domain.conversation.chat.dto.ChatMessageDto;
 import io.festival.distance.domain.conversation.chat.dto.ChatMessageResponseDto;
 import io.festival.distance.domain.conversation.chat.entity.ChatMessage;
 import io.festival.distance.domain.conversation.chat.entity.SenderType;
-import io.festival.distance.domain.conversation.chat.exception.ChatException;
 import io.festival.distance.domain.conversation.chat.repository.ChatMessageRepository;
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import io.festival.distance.domain.conversation.roommember.entity.RoomMember;
 import io.festival.distance.domain.conversation.roommember.service.RoomMemberService;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
+import io.festival.distance.global.exception.DistanceException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
@@ -68,7 +68,7 @@ public class ChatMessageService {
     public ChatMessageResponseDto generateMessage(Long chatMessageId, int currentMemberCount,
         ChatRoom chatRoom) {
         ChatMessage chatMessage = chatMessageRepository.findById(chatMessageId)
-            .orElseThrow(() -> new ChatException(NOT_EXIST_MESSAGE));
+            .orElseThrow(() -> new DistanceException(NOT_EXIST_MESSAGE));
         chatMessage.readCountUpdate(currentMemberCount);
 
         return ChatMessageResponseDto.builder()
@@ -115,7 +115,7 @@ public class ChatMessageService {
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom);
 
         if (Objects.isNull(roomMember)) {
-            throw new ChatException(NOT_EXIST_CHATROOM);
+            throw new DistanceException(NOT_EXIST_CHATROOM);
         }
 
         getChatMessageResponseDto(chatRoom, roomMember);

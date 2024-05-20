@@ -1,10 +1,11 @@
 package io.festival.distance.domain.conversation.chatroom.service.serviceimpl;
 
-import static io.festival.distance.domain.conversation.chat.exception.ChatErrorCode.NOT_EXIST_CHATROOM;
 
-import io.festival.distance.domain.conversation.chat.exception.ChatException;
+import static io.festival.distance.global.exception.ErrorCode.NOT_EXIST_CHATROOM;
+
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import io.festival.distance.domain.conversation.chatroom.repository.ChatRoomRepository;
+import io.festival.distance.global.exception.DistanceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +19,7 @@ public class ChatRoomReader {
     @Transactional(readOnly = true)
     public ChatRoom findChatRoom(Long chatRoomId){
         return chatRoomRepository.findById(chatRoomId)
-            .orElseThrow(() -> new ChatException(NOT_EXIST_CHATROOM));
+            .orElseThrow(() -> new DistanceException(NOT_EXIST_CHATROOM));
     }
 
     public boolean getChatRoomStatus(ChatRoom chatRoom){

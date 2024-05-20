@@ -1,10 +1,10 @@
 package io.festival.distance.domain.member.validsignup;
 
-import static io.festival.distance.domain.member.exception.MemberErrorCode.EXIST_TEL_NUM;
-import static io.festival.distance.domain.member.exception.MemberErrorCode.NOT_EXIST_MEMBER;
+import static io.festival.distance.global.exception.ErrorCode.EXIST_TEL_NUM;
+import static io.festival.distance.global.exception.ErrorCode.NOT_EXIST_MEMBER;
 
-import io.festival.distance.domain.member.exception.MemberException;
 import io.festival.distance.domain.member.repository.MemberRepository;
+import io.festival.distance.global.exception.DistanceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,12 +15,12 @@ public class ValidTelNum {
 
     public void duplicateCheckTelNum(String telNum){
         if(memberRepository.existsByTelNum(telNum))
-            throw new MemberException(EXIST_TEL_NUM);
+            throw new DistanceException(EXIST_TEL_NUM);
     }
 
     public void notExistTelNum(String telNum){
         if (!memberRepository.existsByTelNum(telNum)){
-            throw new MemberException(NOT_EXIST_MEMBER);
+            throw new DistanceException(NOT_EXIST_MEMBER);
         }
     }
 }

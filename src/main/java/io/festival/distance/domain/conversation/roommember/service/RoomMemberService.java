@@ -1,8 +1,8 @@
 package io.festival.distance.domain.conversation.roommember.service;
 
-import static io.festival.distance.domain.conversation.chat.exception.ChatErrorCode.NOT_EXIST_CHATROOM;
 
-import io.festival.distance.domain.conversation.chat.exception.ChatException;
+import static io.festival.distance.global.exception.ErrorCode.NOT_EXIST_CHATROOM;
+
 import io.festival.distance.domain.conversation.chat.repository.ChatMessageRepository;
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import io.festival.distance.domain.conversation.chatroom.service.serviceimpl.ChatRoomDeleter;
@@ -11,6 +11,7 @@ import io.festival.distance.domain.conversation.roommember.entity.RoomMember;
 import io.festival.distance.domain.conversation.roommember.repository.RoomMemberRepository;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
+import io.festival.distance.global.exception.DistanceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +45,7 @@ public class RoomMemberService {
         Member member = memberReader.findMember(memberId);
 
         if (!roomMemberRepository.existsByMemberAndChatRoom(member, chatRoom)) {
-            throw new ChatException(NOT_EXIST_CHATROOM);
+            throw new DistanceException(NOT_EXIST_CHATROOM);
         }
 
         if (chatRoom.getRoomStatus().equals(IN_ACTIVE)) {

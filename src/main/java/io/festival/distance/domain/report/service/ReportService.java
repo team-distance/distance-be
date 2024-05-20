@@ -1,16 +1,16 @@
 package io.festival.distance.domain.report.service;
 
 
-import static io.festival.distance.domain.report.exception.ReportErrorCode.EXIST_DECLARE;
+import static io.festival.distance.global.exception.ErrorCode.EXIST_DECLARE;
 
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.domain.member.service.serviceimpl.MemberUpdater;
 import io.festival.distance.domain.report.dto.ReportDto;
 import io.festival.distance.domain.report.entity.Report;
-import io.festival.distance.domain.report.exception.ReportException;
 import io.festival.distance.domain.report.service.serviceimpl.ReportCreator;
 import io.festival.distance.domain.report.service.serviceimpl.ReportVerifier;
+import io.festival.distance.global.exception.DistanceException;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class ReportService {
         Member opponent = memberReader.findMember(reportDto.opponentId()); // 상대방 => 신고받는 사람
 
         if(reportVerifier.verifyReport(me,opponent)) {
-            throw new ReportException(EXIST_DECLARE);
+            throw new DistanceException(EXIST_DECLARE);
         }
 
         memberUpdater.updateReport(opponent); //신고하기 갯수 증가

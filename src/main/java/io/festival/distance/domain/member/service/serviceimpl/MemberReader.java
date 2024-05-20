@@ -1,15 +1,16 @@
 package io.festival.distance.domain.member.service.serviceimpl;
 
-import static io.festival.distance.domain.member.exception.MemberErrorCode.NOT_EXIST_MEMBER;
+
+import static io.festival.distance.global.exception.ErrorCode.NOT_EXIST_MEMBER;
 
 import io.festival.distance.domain.member.dto.MemberHobbyDto;
 import io.festival.distance.domain.member.dto.MemberProfileDto;
 import io.festival.distance.domain.member.dto.MemberTagDto;
 import io.festival.distance.domain.member.entity.Member;
-import io.festival.distance.domain.member.exception.MemberException;
 import io.festival.distance.domain.member.repository.MemberRepository;
 import io.festival.distance.domain.memberhobby.service.HobbyReader;
 import io.festival.distance.domain.membertag.service.TagReader;
+import io.festival.distance.global.exception.DistanceException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -25,12 +26,12 @@ public class MemberReader {
 
     public Member findMember(Long memberId) {
         return memberRepository.findById(memberId)
-            .orElseThrow(() -> new MemberException(NOT_EXIST_MEMBER));
+            .orElseThrow(() -> new DistanceException(NOT_EXIST_MEMBER));
     }
 
     public Member findByTelNum(String telNum) {
         return memberRepository.findByTelNum(telNum)
-            .orElseThrow(() -> new MemberException(NOT_EXIST_MEMBER));
+            .orElseThrow(() -> new DistanceException(NOT_EXIST_MEMBER));
     }
 
     public String memberNickName(Member member) {

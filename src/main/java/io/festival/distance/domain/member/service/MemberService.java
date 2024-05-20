@@ -2,7 +2,7 @@ package io.festival.distance.domain.member.service;
 
 import static io.festival.distance.authuniversity.config.mail.SendMailService.CHAR_SET_AUTHENTICATE_NUMBER;
 import static io.festival.distance.authuniversity.config.mail.SendMailService.getTempPassword;
-import static io.festival.distance.domain.member.exception.MemberErrorCode.NOT_CORRECT_AUTHENTICATION_NUMBER;
+import static io.festival.distance.global.exception.ErrorCode.NOT_CORRECT_AUTHENTICATION_NUMBER;
 
 import io.festival.distance.auth.refresh.RefreshDeleter;
 import io.festival.distance.domain.conversation.chatroom.service.serviceimpl.ChatRoomDeleter;
@@ -14,7 +14,6 @@ import io.festival.distance.domain.member.dto.MemberSignDto;
 import io.festival.distance.domain.member.dto.MemberTelNumDto;
 import io.festival.distance.domain.member.dto.TelNumRequest;
 import io.festival.distance.domain.member.entity.Member;
-import io.festival.distance.domain.member.exception.MemberException;
 import io.festival.distance.domain.member.service.serviceimpl.MemberCreator;
 import io.festival.distance.domain.member.service.serviceimpl.MemberDeleter;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
@@ -24,6 +23,7 @@ import io.festival.distance.domain.memberhobby.service.HobbyCreator;
 import io.festival.distance.domain.memberhobby.service.HobbyUpdater;
 import io.festival.distance.domain.membertag.service.TagCreator;
 import io.festival.distance.domain.membertag.service.TagUpdater;
+import io.festival.distance.global.exception.DistanceException;
 import io.festival.distance.infra.sms.SmsUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -127,7 +127,7 @@ public class MemberService {
         String authenticateNum
     ) {
         if (!memberVerifier.verifyNumber(checkAuthenticateNum.authenticateNum(), authenticateNum)) {
-            throw new MemberException(NOT_CORRECT_AUTHENTICATION_NUMBER);
+            throw new DistanceException(NOT_CORRECT_AUTHENTICATION_NUMBER);
         }
     }
 

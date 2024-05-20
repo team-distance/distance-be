@@ -1,13 +1,13 @@
 package io.festival.distance.domain.studentcard.service.serviceimpl;
 
 
-import static io.festival.distance.domain.studentcard.exception.StudentCardErrorCode.NOT_EXIST_STUDENT_CARD;
+import static io.festival.distance.global.exception.ErrorCode.NOT_EXIST_STUDENT_CARD;
 
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.studentcard.dto.ImageResponse;
 import io.festival.distance.domain.studentcard.entity.StudentCard;
-import io.festival.distance.domain.studentcard.exception.StudentCardException;
 import io.festival.distance.domain.studentcard.repository.StudentCardRepository;
+import io.festival.distance.global.exception.DistanceException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -33,7 +33,7 @@ public class StudentCardReader {
 
     public StudentCard getStudentCard(Long studentCardId) {
         return studentCardRepository.findById(studentCardId)
-            .orElseThrow(() -> new StudentCardException(NOT_EXIST_STUDENT_CARD));
+            .orElseThrow(() -> new DistanceException(NOT_EXIST_STUDENT_CARD));
     }
 
     public Member getMember(StudentCard studentCard) {

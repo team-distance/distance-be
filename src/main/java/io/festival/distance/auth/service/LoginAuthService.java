@@ -1,7 +1,7 @@
 package io.festival.distance.auth.service;
 
-import static io.festival.distance.domain.member.exception.MemberErrorCode.NOT_CORRECT_PASSWORD;
-import static io.festival.distance.domain.member.exception.MemberErrorCode.NOT_EXIST_MEMBER;
+import static io.festival.distance.global.exception.ErrorCode.NOT_CORRECT_PASSWORD;
+import static io.festival.distance.global.exception.ErrorCode.NOT_EXIST_MEMBER;
 
 import io.festival.distance.auth.dto.LoginDto;
 import io.festival.distance.auth.dto.TokenDto;
@@ -9,8 +9,8 @@ import io.festival.distance.auth.jwt.TokenProvider;
 import io.festival.distance.auth.refresh.Refresh;
 import io.festival.distance.auth.refresh.RefreshRepository;
 import io.festival.distance.domain.member.entity.Member;
-import io.festival.distance.domain.member.exception.MemberException;
 import io.festival.distance.domain.member.repository.MemberRepository;
+import io.festival.distance.global.exception.DistanceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,7 +34,7 @@ public class LoginAuthService {
     public TokenDto login(LoginDto loginDto) {
         try {
             Member member = memberRepository.findByTelNum(loginDto.getTelNum())
-                .orElseThrow(() -> new MemberException(NOT_EXIST_MEMBER));
+                .orElseThrow(() -> new DistanceException(NOT_EXIST_MEMBER));
 
             Authentication authentication = getAuthentication(loginDto);
             // authentication 객체를 createToken 메소드를 통해서 JWT Token을 생성
@@ -54,7 +54,7 @@ public class LoginAuthService {
             member.clientTokenUpdate(loginDto.getClientToken()); // FCM clientToken 갱신
             return new TokenDto(accessToken, refreshToken);
         }catch (BadCredentialsException e) {
-            throw new MemberException(NOT_CORRECT_PASSWORD);
+            throw new DistanceException(NOT_CORRECT_PASSWORD);
         }
 
     }
