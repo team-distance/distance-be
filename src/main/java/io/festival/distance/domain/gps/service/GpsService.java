@@ -35,14 +35,14 @@ public class GpsService {
      */
     @Transactional
     public GpsResponseDto updateMemberGps(String telNum, GpsDto gpsDto) {
-        Member member = memberReader.findByTelNum(telNum);
+        Member member = memberReader.findTelNum(telNum);
         memberUpdater.updateGps(member,gpsDto);
         return gpsDtoCreator.getGpsResponseDto(member);
     }
 
     @Transactional(readOnly = true)
     public MatchResponseDto matchUser(String telNum) {
-        Member centerUser = memberReader.findByTelNum(telNum); //나
+        Member centerUser = memberReader.findTelNum(telNum); //나
         double centerLongitude = centerUser.getLongitude();
         double centerLatitude = centerUser.getLatitude();
         //유저의 위치정보가 0 일때

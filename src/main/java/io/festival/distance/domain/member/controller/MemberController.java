@@ -104,7 +104,7 @@ public class MemberController {
      */
     @GetMapping("/id")
     public ResponseEntity<Long> sendMemberId(Principal principal) {
-        return ResponseEntity.ok(memberReader.findByTelNum(principal.getName()).getMemberId());
+        return ResponseEntity.ok(memberReader.findTelNum(principal.getName()).getMemberId());
     }
 
     /** NOTE

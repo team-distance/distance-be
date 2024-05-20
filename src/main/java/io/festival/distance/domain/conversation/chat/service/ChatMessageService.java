@@ -20,7 +20,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -88,12 +87,11 @@ public class ChatMessageService {
     public List<ChatMessageResponseDto> markAllMessagesAsRead(ChatRoom chatRoom, Member member) {
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom); //방금 들어온 멤버가
 
-        return getChatMessageResponseDto(
-            chatRoom, roomMember);
+        return getChatMessageResponseDto(chatRoom, roomMember);
     }
 
-    @NotNull
-    private List<ChatMessageResponseDto> getChatMessageResponseDto(ChatRoom chatRoom,
+    @Transactional
+    public List<ChatMessageResponseDto> getChatMessageResponseDto(ChatRoom chatRoom,
         RoomMember roomMember) {
         List<ChatMessage> messages = getChatMessages(chatRoom, roomMember);
 
@@ -111,7 +109,7 @@ public class ChatMessageService {
     @Transactional
     public List<ChatMessageResponseDto> findAllChatRoomMessage(ChatRoom chatRoom,
         Principal principal) {
-        Member member = memberReader.findByTelNum(principal.getName());
+        Member member = memberReader.findTelNum(principal.getName());
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom);
 
         if (Objects.isNull(roomMember)) {
@@ -126,7 +124,8 @@ public class ChatMessageService {
             .toList();
     }
 
-    private List<ChatMessage> getChatMessages(ChatRoom chatRoom, RoomMember roomMember) {
+    @Transactional
+    public List<ChatMessage> getChatMessages(ChatRoom chatRoom, RoomMember roomMember) {
         Long lastChatMessageId = roomMember.getLastReadMessageId(); //가장 나중에 읽은 메시지 PK값
         List<ChatMessage> messages = chatMessageRepository.findByChatRoomAndChatMessageIdGreaterThan(
             chatRoom, lastChatMessageId
@@ -149,7 +148,7 @@ public class ChatMessageService {
     @Transactional(readOnly = true)
     public List<ChatMessageResponseDto> findAllMessage(ChatRoom chatRoom, PageRequest pageRequest,
         Principal principal) {
-        Member member = memberReader.findByTelNum(principal.getName());
+        Member member = memberReader.findTelNum(principal.getName());
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom);
         Long lastChatMessageId = roomMember.getLastReadMessageId();
         return chatMessageRepository.findByChatRoomAndChatMessageIdLessThanOrderByCreateDtDesc(

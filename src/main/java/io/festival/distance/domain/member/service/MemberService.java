@@ -72,7 +72,7 @@ public class MemberService {
      */
     @Transactional
     public String resignMember(String telNum) {
-        Member member = memberReader.findByTelNum(telNum);
+        Member member = memberReader.findTelNum(telNum);
         chatRoomDeleter.deleteByMemberResign(member);
         memberDeleter.deleteMember(telNum);
         refreshDeleter.deleteRefreshToken(telNum);
@@ -81,7 +81,7 @@ public class MemberService {
 
     @Transactional
     public Long modifyAccount(String telNum, String password) {
-        Member member = memberReader.findByTelNum(telNum);
+        Member member = memberReader.findTelNum(telNum);
         String encryptedPassword = memberUpdater.modifyPassword(password);
         memberUpdater.modifyMemberAccount(encryptedPassword, member);
         return member.getMemberId();
@@ -89,7 +89,7 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public MemberProfileDto memberProfile(String telNum) { //멤버 프로필 조회
-        Member member = memberReader.findByTelNum(telNum);
+        Member member = memberReader.findTelNum(telNum);
         return memberReader.getMemberProfileDto(member);
     }
 
@@ -101,7 +101,7 @@ public class MemberService {
 
     @Transactional
     public Long modifyProfile(String loginId, MemberInfoDto memberInfoDto) { // 사용자가 입력한 값이 들어있음
-        Member member = memberReader.findByTelNum(loginId);
+        Member member = memberReader.findTelNum(loginId);
         memberUpdater.profileUpdate(memberInfoDto, member);
         String nickName = memberReader.memberNickName(member); // 닉네임 변경 전
         memberCreator.memberNickNameUpdate(member); // 닉네임 변경
@@ -117,7 +117,7 @@ public class MemberService {
      */
     @Transactional(readOnly = true)
     public MemberTelNumDto findTelNum(Long memberId, String telNum, Long chatRoomId) {
-        Member me = memberReader.findByTelNum(telNum);
+        Member me = memberReader.findTelNum(telNum);
         Member opponent = memberReader.findMember(memberId);
         return communicationFacade.findTelNum(me, opponent, chatRoomId);
     }
@@ -136,7 +136,7 @@ public class MemberService {
     }
 
     public void memberLogout(String telNum) {
-        Member member = memberReader.findByTelNum(telNum);
+        Member member = memberReader.findTelNum(telNum);
         memberDeleter.deleteClientToken(member);
     }
 

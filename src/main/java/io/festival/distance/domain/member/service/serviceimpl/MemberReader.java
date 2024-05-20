@@ -29,8 +29,13 @@ public class MemberReader {
             .orElseThrow(() -> new DistanceException(NOT_EXIST_MEMBER));
     }
 
-    public Member findByTelNum(String telNum) {
+    public Member findTelNum(String telNum) {
         return memberRepository.findByTelNum(telNum)
+            .orElseThrow(() -> new DistanceException(NOT_EXIST_MEMBER));
+    }
+
+    public Member findNickName(String nickName){
+        return memberRepository.findByNickName(nickName)
             .orElseThrow(() -> new DistanceException(NOT_EXIST_MEMBER));
     }
 

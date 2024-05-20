@@ -17,4 +17,6 @@ public class RoomMemberReader {
             .map(chatRoomId -> chatRoomId.getChatRoom().getChatRoomId())
             .toList();
     }
+
+
 }

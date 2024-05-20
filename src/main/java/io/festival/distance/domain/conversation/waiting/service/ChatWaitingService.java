@@ -56,7 +56,7 @@ public class ChatWaitingService {
 
     @Transactional(readOnly = true)
     public List<ChatWaitingDto> getWaitingRoom(String loginId) {
-        Member member = memberReader.findByTelNum(loginId); //나
+        Member member = memberReader.findTelNum(loginId); //나
         List<ChatWaiting> allByLoveReceiver = chatWaitingRepository.findAllByLoveReceiver(member);
         List<ChatWaitingDto> chatWaitingDtoList = new ArrayList<>();
         for (ChatWaiting chatWaiting : allByLoveReceiver) {
@@ -88,7 +88,7 @@ public class ChatWaitingService {
 
     @Transactional
     public void deleteRoom(Long waitingRoodId, String loginId) {
-        Member member = memberReader.findByTelNum(loginId);
+        Member member = memberReader.findTelNum(loginId);
         chatWaitingRepository.deleteByWaitingIdAndLoveReceiver(waitingRoodId, member);
     }
 }

@@ -17,11 +17,11 @@ public class ValidRoomCount {
     private final ChatWaitingService chatWaitingService;
 
     public void checkRoom(Member opponent, Member me,boolean flag){
-        if(validMyRoomCount.checkMyRoom(me)>=3L){
+        if(validMyRoomCount.checkMyRoom(me)>=5L){
             throw new DistanceException(TOO_MANY_MY_CHATROOM);
         }
 
-        if (validOpponentRoom.checkOpponentRoom(opponent) >= 3L) {
+        if (validOpponentRoom.checkOpponentRoom(opponent) >= 5L) {
             if (flag) {
                 chatWaitingService.saveWaitingRoom(opponent, me);
             }

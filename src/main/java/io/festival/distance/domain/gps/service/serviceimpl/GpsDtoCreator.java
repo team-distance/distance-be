@@ -33,7 +33,7 @@ public class GpsDtoCreator {
                 MatchUserDto.builder()
                     .memberId(user.memberId())
                     .memberProfileDto(
-                        memberReader.getMemberProfileDto(memberReader.findByTelNum(user.telNum()))
+                        memberReader.getMemberProfileDto(memberReader.findTelNum(user.telNum()))
                     )
                     .nickName(user.nickName())
                     .build())

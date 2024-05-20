@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class MemberVerifier {
     private final MemberReader memberReader;
     public String proofUniv(String telNum){
-        return memberReader.findByTelNum(telNum).getAuthUniv().getType();
+        return memberReader.findTelNum(telNum).getAuthUniv().getType();
     }
 
     public boolean verifyNumber(String inputNum, String authenticateNum){

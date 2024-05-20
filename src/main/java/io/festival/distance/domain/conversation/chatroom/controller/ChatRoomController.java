@@ -51,7 +51,7 @@ public class ChatRoomController {
     @GetMapping("/{chatRoomId}") //채팅방에 들어온 경우
     public ResponseEntity<List<ChatMessageResponseDto>> readMessage(@PathVariable Long chatRoomId,
         Principal principal) {
-        Member member = memberReader.findByTelNum(principal.getName());
+        Member member = memberReader.findTelNum(principal.getName());
         validUnivCert.checkUnivCert(member);
 
         return ResponseEntity.ok(
@@ -73,7 +73,6 @@ public class ChatRoomController {
     /**
      * NOTE
      * 로컬 스토리지 비어있을 때 한번만 호출)
-     *
      * @param chatRoomId
      * @param principal
      * @return
@@ -83,7 +82,7 @@ public class ChatRoomController {
         @PathVariable Long chatRoomId,
         Principal principal
     ) {
-        Member member = memberReader.findByTelNum(principal.getName());
+        Member member = memberReader.findTelNum(principal.getName());
         validUnivCert.checkUnivCert(member);
         return ResponseEntity.ok(
             chatMessageService.findAllChatRoomMessage(chatRoomReader.findChatRoom(chatRoomId),
@@ -94,6 +93,8 @@ public class ChatRoomController {
     public ResponseEntity<Boolean> isAgreed(@PathVariable Long chatRoomId) {
         return ResponseEntity.ok(chatRoomService.getAgreedStatus(chatRoomId));
     }
+
+
 
     public static PageRequest pageGenerate(PageRequestDto dto) {
         int page = dto.page();

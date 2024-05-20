@@ -64,7 +64,7 @@ public class AuthenticateMail {
 
     @Transactional
     public void updateMemberAuthenticationState(String telNum, String schoolEmail) {
-        Member member = memberReader.findByTelNum(telNum);
+        Member member = memberReader.findTelNum(telNum);
         member.updateAuthUniv(SUCCESS);
         member.updateEmail(schoolEmail);
     }

@@ -18,7 +18,7 @@ public class ValidPassword {
     private final PasswordEncoder encoder;
 
     public void duplicateCheckPassword(Principal principal, String checkPassword) {
-        String password = memberReader.findByTelNum(principal.getName()).getPassword();
+        String password = memberReader.findTelNum(principal.getName()).getPassword();
         if (!encoder.matches(checkPassword, password)) {
             throw new DistanceException(NOT_CORRECT_PASSWORD);
         }

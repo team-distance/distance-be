@@ -12,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface RoomMemberRepository extends JpaRepository<RoomMember, Long> {
 
-    RoomMember findByMemberAndChatRoom(Member member, ChatRoom chatRoom);
+    Optional<RoomMember> findByMemberAndChatRoom(Member member, ChatRoom chatRoom);
 
     List<RoomMember> findAllByMember(Member member);
 

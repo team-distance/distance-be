@@ -29,7 +29,7 @@ public class ReportService {
      */
     @Transactional
     public void writeReport(ReportDto reportDto, Principal principal) {
-        Member me = memberReader.findByTelNum(principal.getName()); //나 => 신고하는 사람
+        Member me = memberReader.findTelNum(principal.getName()); //나 => 신고하는 사람
         Member opponent = memberReader.findMember(reportDto.opponentId()); // 상대방 => 신고받는 사람
 
         if(reportVerifier.verifyReport(me,opponent)) {

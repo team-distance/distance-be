@@ -35,7 +35,7 @@ public class StudentService {
     private final FcmService fcmService;
     @Transactional
     public void sendImage(MultipartFile file, String telNum) throws IOException {
-        Member member = memberReader.findByTelNum(telNum);
+        Member member = memberReader.findTelNum(telNum);
         byte[] imageData = file.getBytes();
         StudentCard studentCard = studentCardCreator.getStudentCard(member, imageData);
         studentCardCreator.create(studentCard);
@@ -50,7 +50,7 @@ public class StudentService {
     @Transactional
     public void approve(Long studentCardId) {
         StudentCard studentCard = studentCardReader.getStudentCard(studentCardId);
-        Member member = memberReader.findByTelNum(studentCard.getMember().getTelNum());
+        Member member = memberReader.findTelNum(studentCard.getMember().getTelNum());
         memberUpdater.updateUniv(member,UnivCert.SUCCESS);
         studentCardUpdater.update(studentCard);
     }
