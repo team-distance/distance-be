@@ -9,6 +9,8 @@ public interface RefreshRepository extends JpaRepository<Refresh,Long> {
     void deleteBySubject(String subject);
     boolean existsBySubject(String subject);
 
-    @Transactional(noRollbackFor = ExpiredJwtException.class)
+    boolean existsByRefreshToken(String refreshToken);
+
+    @Transactional(noRollbackFor = {DistanceException.class, ExpiredJwtException.class})
     void deleteByRefreshToken(String refreshToken);
 }
