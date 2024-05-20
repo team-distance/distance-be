@@ -43,10 +43,10 @@ public class GpsReader {
         List<MatchUserDto> userDtoList = memberReader.findMemberList()
             .stream()
             .filter(
-                user -> gpsValidator.isSameSchool(centerUser,user)
+                gpsValidator::isActivatedMember
             )
             .filter(
-                gpsValidator::isActivatedMember
+                user -> gpsValidator.isSameSchool(centerUser,user)
             )
             .filter(
                 user -> gpsValidator.isWomenSchool(centerUser,user)
