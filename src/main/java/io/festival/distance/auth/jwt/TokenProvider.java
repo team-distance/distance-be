@@ -131,7 +131,9 @@ public class TokenProvider implements InitializingBean {
         } catch (ExpiredJwtException e) {
             log.error(EXPIRED_JWT);
             if(type.equals("REFRESH")){
+                log.debug(token);
                 refreshRepository.deleteByRefreshToken(token);
+                log.debug("refresh token delete success!!");
             }
             throw new DistanceException(ErrorCode.EXPIRED_JWT);
         }
