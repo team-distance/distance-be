@@ -3,6 +3,7 @@ package io.festival.distance.domain.conversation.waiting.service;
 import static io.festival.distance.domain.firebase.entity.FcmType.WAITING;
 import static io.festival.distance.domain.firebase.service.FcmService.ADD_WAITING_ROOM_MESSAGE;
 import static io.festival.distance.domain.firebase.service.FcmService.SET_SENDER_NAME;
+import static io.festival.distance.global.exception.ErrorCode.NOT_EXIST_MEMBER;
 
 import io.festival.distance.domain.conversation.waiting.dto.ChatWaitingCountDto;
 import io.festival.distance.domain.conversation.waiting.dto.ChatWaitingDto;
@@ -11,9 +12,8 @@ import io.festival.distance.domain.conversation.waiting.repository.ChatWaitingRe
 import io.festival.distance.domain.firebase.service.FcmService;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.repository.MemberRepository;
-import io.festival.distance.domain.member.service.MemberService;
-import io.festival.distance.exception.DistanceException;
-import io.festival.distance.exception.ErrorCode;
+import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
+import io.festival.distance.global.exception.DistanceException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class ChatWaitingService {
 
     private final ChatWaitingRepository chatWaitingRepository;
-    private final MemberService memberService;
     private final FcmService fcmService;
     private final MemberRepository memberRepository;
+    private final MemberReader memberReader;
     private final ApplicationEventPublisher aep;
 
     /**
@@ -56,11 +56,11 @@ public class ChatWaitingService {
 
     @Transactional(readOnly = true)
     public List<ChatWaitingDto> getWaitingRoom(String loginId) {
-        Member member = memberService.findByTelNum(loginId); //나
+        Member member = memberReader.findTelNum(loginId); //나
         List<ChatWaiting> allByLoveReceiver = chatWaitingRepository.findAllByLoveReceiver(member);
         List<ChatWaitingDto> chatWaitingDtoList = new ArrayList<>();
         for (ChatWaiting chatWaiting : allByLoveReceiver) {
-            Member opponent = memberService.findMember(chatWaiting.getLoveSender().getMemberId());
+            Member opponent = memberReader.findMember(chatWaiting.getLoveSender().getMemberId());
             ChatWaitingDto dto = ChatWaitingDto.builder()
                 .loveReceiverId(chatWaiting.getLoveReceiver().getMemberId()) //나
                 .loveSenderId(chatWaiting.getLoveSender().getMemberId()) //상대방
@@ -78,7 +78,7 @@ public class ChatWaitingService {
     @Transactional(readOnly = true)
     public ChatWaitingCountDto countingWaitingRoom(Long loginId) {
         Member member = memberRepository.findById(loginId)
-            .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_MEMBER));
+            .orElseThrow(() -> new DistanceException(NOT_EXIST_MEMBER));
         Integer count = chatWaitingRepository.countByLoveReceiver(member);
 
         return ChatWaitingCountDto.builder()
@@ -88,7 +88,7 @@ public class ChatWaitingService {
 
     @Transactional
     public void deleteRoom(Long waitingRoodId, String loginId) {
-        Member member = memberService.findByTelNum(loginId);
+        Member member = memberReader.findTelNum(loginId);
         chatWaitingRepository.deleteByWaitingIdAndLoveReceiver(waitingRoodId, member);
     }
 }

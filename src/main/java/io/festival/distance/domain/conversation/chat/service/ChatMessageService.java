@@ -1,5 +1,8 @@
 package io.festival.distance.domain.conversation.chat.service;
 
+import static io.festival.distance.global.exception.ErrorCode.NOT_EXIST_CHATROOM;
+import static io.festival.distance.global.exception.ErrorCode.NOT_EXIST_MESSAGE;
+
 import io.festival.distance.domain.conversation.chat.dto.ChatMessageDto;
 import io.festival.distance.domain.conversation.chat.dto.ChatMessageResponseDto;
 import io.festival.distance.domain.conversation.chat.entity.ChatMessage;
@@ -9,16 +12,14 @@ import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import io.festival.distance.domain.conversation.roommember.entity.RoomMember;
 import io.festival.distance.domain.conversation.roommember.service.RoomMemberService;
 import io.festival.distance.domain.member.entity.Member;
-import io.festival.distance.domain.member.service.MemberService;
-import io.festival.distance.exception.DistanceException;
-import io.festival.distance.exception.ErrorCode;
+import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
+import io.festival.distance.global.exception.DistanceException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,14 +31,14 @@ public class ChatMessageService {
 
     private final ChatMessageRepository chatMessageRepository;
     private final RoomMemberService roomMemberService;
-    private final MemberService memberService;
+    private final MemberReader memberReader;
 
     private final static Integer INITIAL_COUNT = 2;
 
     @Transactional
     public Long createMessage(ChatRoom chatRoom, ChatMessageDto chatMessageDto,
         SenderType senderType) {
-        Member member = memberService.findMember(chatMessageDto.getReceiverId()); //나
+        Member member = memberReader.findMember(chatMessageDto.getReceiverId()); //나
         if (chatMessageDto.getChatMessage().isEmpty()) {
             return null;
         }
@@ -66,7 +67,7 @@ public class ChatMessageService {
     public ChatMessageResponseDto generateMessage(Long chatMessageId, int currentMemberCount,
         ChatRoom chatRoom) {
         ChatMessage chatMessage = chatMessageRepository.findById(chatMessageId)
-            .orElseThrow(() -> new IllegalStateException("존재하지 않는 메시지"));
+            .orElseThrow(() -> new DistanceException(NOT_EXIST_MESSAGE));
         chatMessage.readCountUpdate(currentMemberCount);
 
         return ChatMessageResponseDto.builder()
@@ -86,12 +87,11 @@ public class ChatMessageService {
     public List<ChatMessageResponseDto> markAllMessagesAsRead(ChatRoom chatRoom, Member member) {
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom); //방금 들어온 멤버가
 
-        return getChatMessageResponseDto(
-            chatRoom, roomMember);
+        return getChatMessageResponseDto(chatRoom, roomMember);
     }
 
-    @NotNull
-    private List<ChatMessageResponseDto> getChatMessageResponseDto(ChatRoom chatRoom,
+    @Transactional
+    public List<ChatMessageResponseDto> getChatMessageResponseDto(ChatRoom chatRoom,
         RoomMember roomMember) {
         List<ChatMessage> messages = getChatMessages(chatRoom, roomMember);
 
@@ -109,11 +109,11 @@ public class ChatMessageService {
     @Transactional
     public List<ChatMessageResponseDto> findAllChatRoomMessage(ChatRoom chatRoom,
         Principal principal) {
-        Member member = memberService.findByTelNum(principal.getName());
+        Member member = memberReader.findTelNum(principal.getName());
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom);
 
         if (Objects.isNull(roomMember)) {
-            throw new DistanceException(ErrorCode.NOT_EXIST_CHATROOM);
+            throw new DistanceException(NOT_EXIST_CHATROOM);
         }
 
         getChatMessageResponseDto(chatRoom, roomMember);
@@ -124,7 +124,8 @@ public class ChatMessageService {
             .toList();
     }
 
-    private List<ChatMessage> getChatMessages(ChatRoom chatRoom, RoomMember roomMember) {
+    @Transactional
+    public List<ChatMessage> getChatMessages(ChatRoom chatRoom, RoomMember roomMember) {
         Long lastChatMessageId = roomMember.getLastReadMessageId(); //가장 나중에 읽은 메시지 PK값
         List<ChatMessage> messages = chatMessageRepository.findByChatRoomAndChatMessageIdGreaterThan(
             chatRoom, lastChatMessageId
@@ -147,7 +148,7 @@ public class ChatMessageService {
     @Transactional(readOnly = true)
     public List<ChatMessageResponseDto> findAllMessage(ChatRoom chatRoom, PageRequest pageRequest,
         Principal principal) {
-        Member member = memberService.findByTelNum(principal.getName());
+        Member member = memberReader.findTelNum(principal.getName());
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom);
         Long lastChatMessageId = roomMember.getLastReadMessageId();
         return chatMessageRepository.findByChatRoomAndChatMessageIdLessThanOrderByCreateDtDesc(

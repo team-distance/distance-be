@@ -1,14 +1,15 @@
 package io.festival.distance.domain.conversation.chatroom.controller;
 
-import io.festival.distance.domain.conversation.chatroom.dto.PageRequestDto;
 import io.festival.distance.domain.conversation.chat.dto.ChatMessageResponseDto;
 import io.festival.distance.domain.conversation.chat.service.ChatMessageService;
 import io.festival.distance.domain.conversation.chatroom.dto.ChatRoomDto;
 import io.festival.distance.domain.conversation.chatroom.dto.ChatRoomInfoDto;
+import io.festival.distance.domain.conversation.chatroom.dto.PageRequestDto;
 import io.festival.distance.domain.conversation.chatroom.service.ChatFacadeService;
+import io.festival.distance.domain.conversation.chatroom.service.serviceimpl.ChatRoomReader;
 import io.festival.distance.domain.conversation.chatroom.service.ChatRoomService;
 import io.festival.distance.domain.member.entity.Member;
-import io.festival.distance.domain.member.service.MemberService;
+import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.domain.member.validlogin.ValidUnivCert;
 import java.security.Principal;
 import java.util.List;
@@ -30,10 +31,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
-    private final MemberService memberService;
     private final ChatMessageService chatMessageService;
     private final ChatFacadeService chatFacadeService;
     private final ValidUnivCert validUnivCert;
+    private final MemberReader memberReader;
+    private final ChatRoomReader chatRoomReader;
 
     @PostMapping("/create")
     public ResponseEntity<Long> createRoom(@RequestBody ChatRoomDto chatRoomDto,
@@ -49,11 +51,11 @@ public class ChatRoomController {
     @GetMapping("/{chatRoomId}") //채팅방에 들어온 경우
     public ResponseEntity<List<ChatMessageResponseDto>> readMessage(@PathVariable Long chatRoomId,
         Principal principal) {
-        Member member = memberService.findByTelNum(principal.getName());
+        Member member = memberReader.findTelNum(principal.getName());
         validUnivCert.checkUnivCert(member);
 
         return ResponseEntity.ok(
-            chatMessageService.markAllMessagesAsRead(chatRoomService.findRoom(chatRoomId),
+            chatMessageService.markAllMessagesAsRead(chatRoomReader.findChatRoom(chatRoomId),
                 member));
     }
 
@@ -64,14 +66,13 @@ public class ChatRoomController {
         Principal principal
     ) {
         return ResponseEntity.ok(
-            chatMessageService.findAllMessage(chatRoomService.findRoom(chatRoomId),
+            chatMessageService.findAllMessage(chatRoomReader.findChatRoom(chatRoomId),
                 pageGenerate(pageRequestDto), principal));
     }
 
     /**
      * NOTE
      * 로컬 스토리지 비어있을 때 한번만 호출)
-     *
      * @param chatRoomId
      * @param principal
      * @return
@@ -81,10 +82,10 @@ public class ChatRoomController {
         @PathVariable Long chatRoomId,
         Principal principal
     ) {
-        Member member = memberService.findByTelNum(principal.getName());
+        Member member = memberReader.findTelNum(principal.getName());
         validUnivCert.checkUnivCert(member);
         return ResponseEntity.ok(
-            chatMessageService.findAllChatRoomMessage(chatRoomService.findRoom(chatRoomId),
+            chatMessageService.findAllChatRoomMessage(chatRoomReader.findChatRoom(chatRoomId),
                 principal));
     }
 
@@ -92,6 +93,8 @@ public class ChatRoomController {
     public ResponseEntity<Boolean> isAgreed(@PathVariable Long chatRoomId) {
         return ResponseEntity.ok(chatRoomService.getAgreedStatus(chatRoomId));
     }
+
+
 
     public static PageRequest pageGenerate(PageRequestDto dto) {
         int page = dto.page();

@@ -2,14 +2,14 @@ package io.festival.distance.authuniversity.service.univmail;
 
 import static io.festival.distance.authuniversity.domain.University.getDomainByName;
 import static io.festival.distance.domain.member.entity.UnivCert.SUCCESS;
-import static io.festival.distance.exception.ErrorCode.NOT_CORRECT_AUTHENTICATION_NUMBER;
+import static io.festival.distance.global.exception.ErrorCode.NOT_CORRECT_AUTHENTICATION_NUMBER;
 
 import io.festival.distance.authuniversity.config.mail.SendMailService;
 import io.festival.distance.authuniversity.config.mail.dto.UnivMailDto;
 import io.festival.distance.authuniversity.dto.CertificateDto;
 import io.festival.distance.domain.member.entity.Member;
-import io.festival.distance.domain.member.service.MemberService;
-import io.festival.distance.exception.DistanceException;
+import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
+import io.festival.distance.global.exception.DistanceException;
 import java.text.MessageFormat;
 import javax.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -22,17 +22,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthenticateMail {
 
     private final SendMailService sendMailService;
-    private final MemberService memberService;
+    private final MemberReader memberReader;
 
     public String sendNumber(String schoolEmail) throws MessagingException { //실 서비스
-        String formattedEmail = formatEmail(schoolEmail);
-        UnivMailDto univMailDto = makeCertificationNumber(formattedEmail);
+        UnivMailDto univMailDto = makeCertificationNumber(schoolEmail);
         sendEmail(univMailDto); //메일 전송
         return univMailDto.tempPw();
-    }
-
-    public String formatEmail(String schoolEmail) {
-        return MessageFormat.format("{0}@{1}.ac.kr", schoolEmail, getDomainByName(schoolEmail));
     }
 
     public UnivMailDto makeCertificationNumber(String formattedEmail) {
@@ -64,7 +59,7 @@ public class AuthenticateMail {
 
     @Transactional
     public void updateMemberAuthenticationState(String telNum, String schoolEmail) {
-        Member member = memberService.findByTelNum(telNum);
+        Member member = memberReader.findTelNum(telNum);
         member.updateAuthUniv(SUCCESS);
         member.updateEmail(schoolEmail);
     }

@@ -1,8 +1,10 @@
 package io.festival.distance.domain.member.validsignup;
 
-import io.festival.distance.domain.member.service.MemberService;
-import io.festival.distance.exception.DistanceException;
-import io.festival.distance.exception.ErrorCode;
+
+import static io.festival.distance.global.exception.ErrorCode.NOT_CORRECT_PASSWORD;
+
+import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
+import io.festival.distance.global.exception.DistanceException;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,13 +14,13 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ValidPassword {
 
-    private final MemberService memberService;
+    private final MemberReader memberReader;
     private final PasswordEncoder encoder;
 
     public void duplicateCheckPassword(Principal principal, String checkPassword) {
-        String password = memberService.findByTelNum(principal.getName()).getPassword();
+        String password = memberReader.findTelNum(principal.getName()).getPassword();
         if (!encoder.matches(checkPassword, password)) {
-            throw new DistanceException(ErrorCode.NOT_CORRECT_PASSWORD);
+            throw new DistanceException(NOT_CORRECT_PASSWORD);
         }
     }
 }

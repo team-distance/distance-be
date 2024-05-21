@@ -1,13 +1,14 @@
 package io.festival.distance.domain.admin.adminfestival.artist.service;
 
-import static io.festival.distance.exception.ErrorCode.NOT_EXIST_MEMBER;
+
+import static io.festival.distance.global.exception.ErrorCode.NOT_EXIST_ARTIST;
 
 import io.festival.distance.domain.admin.adminfestival.artist.dto.ArtistRequest;
 import io.festival.distance.domain.admin.adminfestival.artist.dto.ArtistResponse;
 import io.festival.distance.domain.admin.adminfestival.artist.entity.Artist;
 import io.festival.distance.domain.admin.adminfestival.artist.repository.ArtistRepository;
+import io.festival.distance.global.exception.DistanceException;
 import io.festival.distance.infra.s3.dto.S3Response;
-import io.festival.distance.exception.DistanceException;
 import io.festival.distance.infra.s3.service.S3DeleteImage;
 import io.festival.distance.infra.s3.service.S3UploadImage;
 import java.util.List;
@@ -61,7 +62,7 @@ public class ArtistService {
     @Transactional(readOnly = true)
     public Artist findArtist(Long artistId) {
         return artistRepository.findById(artistId)
-            .orElseThrow(() -> new DistanceException(NOT_EXIST_MEMBER));
+            .orElseThrow(() -> new DistanceException(NOT_EXIST_ARTIST));
     }
 
     public void deleteArtistImage(String artistFileName) {

@@ -1,12 +1,13 @@
 package io.festival.distance.domain.admin.adminfestival.foodtruck.service;
 
-import static io.festival.distance.exception.ErrorCode.NOT_EXIST_MEMBER;
+
+import static io.festival.distance.global.exception.ErrorCode.NOT_EXIST_FOOD_TRUCK;
 
 import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.FoodTruckRequest;
 import io.festival.distance.domain.admin.adminfestival.foodtruck.dto.FoodTruckResponse;
 import io.festival.distance.domain.admin.adminfestival.foodtruck.entity.FoodTruck;
 import io.festival.distance.domain.admin.adminfestival.foodtruck.repository.FoodTruckRepository;
-import io.festival.distance.exception.DistanceException;
+import io.festival.distance.global.exception.DistanceException;
 import io.festival.distance.infra.s3.dto.S3Response;
 import io.festival.distance.infra.s3.service.S3DeleteImage;
 import io.festival.distance.infra.s3.service.S3UploadImage;
@@ -38,7 +39,7 @@ public class FoodTruckService {
     @Transactional(readOnly = true)
     public FoodTruck findFoodTruck(Long truckId) {
         return foodTruckRepository.findById(truckId)
-            .orElseThrow(() -> new DistanceException(NOT_EXIST_MEMBER));
+            .orElseThrow(() -> new DistanceException(NOT_EXIST_FOOD_TRUCK));
     }
 
     @Transactional(readOnly = true)

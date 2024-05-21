@@ -1,13 +1,10 @@
 package io.festival.distance.domain.conversation.chatroom.validroomcount;
 
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
+import io.festival.distance.domain.conversation.chatroom.service.serviceimpl.ChatRoomReader;
 import io.festival.distance.domain.conversation.chatroom.service.ChatRoomService;
-import io.festival.distance.domain.conversation.roommember.entity.RoomMember;
 import io.festival.distance.domain.conversation.roommember.repository.RoomMemberRepository;
 import io.festival.distance.domain.member.entity.Member;
-import io.festival.distance.exception.DistanceException;
-import io.festival.distance.exception.ErrorCode;
-import java.util.OptionalLong;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
@@ -19,6 +16,7 @@ import java.util.Optional;
 public class ValidExistRoom {
     private final RoomMemberRepository roomMemberRepository;
     private final ChatRoomService chatRoomService;
+    private final ChatRoomReader chatRoomReader;
 
     public Optional<Long> ExistRoom(Member me, Member opponent) { //기존에 있는 방으로 들어갈 때
         return roomMemberRepository.findAllByMember(me)
@@ -43,7 +41,7 @@ public class ValidExistRoom {
     public Long existOpponentChatRoom(Optional<Long> reEnterRoomId, Member me, Member opponent) {
         if(reEnterRoomId.isPresent()){
             Long chatRoomId= reEnterRoomId.get();
-            ChatRoom chatRoom = chatRoomService.findRoom(chatRoomId);
+            ChatRoom chatRoom = chatRoomReader.findChatRoom(chatRoomId);
             chatRoom.roomActive();
             chatRoomService.saveRoomMember(me,chatRoom, opponent);
             return chatRoomId;

@@ -1,11 +1,11 @@
 package io.festival.distance.infra.s3.service;
 
-import static io.festival.distance.exception.ErrorCode.FAILED_TO_IMAGE_UPLOAD;
+import static io.festival.distance.infra.s3.exception.S3ErrorCode.FAILED_TO_IMAGE_UPLOAD;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import io.festival.distance.infra.s3.dto.S3Response;
-import io.festival.distance.exception.DistanceException;
+import io.festival.distance.infra.s3.exception.S3Exception;
 import java.io.IOException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +38,7 @@ public class S3UploadImage {
                 .fileName(fileName)
                 .build();
         } catch (IOException e) {
-            throw new DistanceException(FAILED_TO_IMAGE_UPLOAD);
+            throw new S3Exception(FAILED_TO_IMAGE_UPLOAD);
         }
     }
 }

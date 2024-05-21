@@ -16,6 +16,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.checkerframework.checker.units.qual.C;
+import org.springframework.stereotype.Component;
 
 @Entity
 @Table(name = "member")
@@ -76,9 +78,11 @@ public class Member extends BaseTimeEntity {
     private Integer reportCount;
 
     @Enumerated(STRING)
+    @Column(name = "auth_univ")
     private UnivCert authUniv;
 
     @Enumerated(STRING)
+    @Column(name = "authority")
     private Authority authority;
 
     public void memberInfoUpdate(MemberInfoDto memberInfoDto) {
@@ -101,7 +105,7 @@ public class Member extends BaseTimeEntity {
     public void clientTokenUpdate(String clientToken) {
         this.clientToken = clientToken;
     }
-    public void updateReport() {
+    public void increaseReport() {
         this.reportCount += 1;
     }
     public void disableAccount() {

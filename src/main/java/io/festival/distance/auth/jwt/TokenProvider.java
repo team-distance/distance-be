@@ -1,13 +1,11 @@
 package io.festival.distance.auth.jwt;
 
 import io.festival.distance.auth.refresh.RefreshRepository;
-import io.festival.distance.exception.ChatRoomException;
-import io.festival.distance.exception.DistanceException;
-import io.festival.distance.exception.ErrorCode;
+import io.festival.distance.global.exception.DistanceException;
+import io.festival.distance.global.exception.ErrorCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -133,7 +131,13 @@ public class TokenProvider implements InitializingBean {
         } catch (ExpiredJwtException e) {
             log.error(EXPIRED_JWT);
             if(type.equals("REFRESH")){
-                refreshRepository.deleteByRefreshToken(token);
+                log.info(token);
+               if(refreshRepository.existsByRefreshToken(token)) {
+                    refreshRepository.deleteByRefreshToken(token);
+                    log.info("Refresh token delete success!!");
+                } else {
+                    log.info("No refresh token found to delete.");
+                }
             }
             throw new DistanceException(ErrorCode.EXPIRED_JWT);
         }

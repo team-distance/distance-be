@@ -38,6 +38,7 @@ public class ChatMessage extends BaseTimeEntity { //채팅 메시지
     private int unreadCount;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "sender_type")
     private SenderType senderType;
 
     @JoinColumn(name = "chatroom_id")

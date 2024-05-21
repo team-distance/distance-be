@@ -8,13 +8,14 @@ import static io.festival.distance.domain.firebase.service.FcmService.SET_SENDER
 import io.festival.distance.domain.firebase.service.FcmService;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.entity.UnivCert;
-import io.festival.distance.domain.member.service.MemberService;
+import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
+import io.festival.distance.domain.member.service.serviceimpl.MemberUpdater;
 import io.festival.distance.domain.studentcard.dto.AdminRequest;
 import io.festival.distance.domain.studentcard.dto.ImageResponse;
 import io.festival.distance.domain.studentcard.entity.StudentCard;
-import io.festival.distance.domain.studentcard.repository.StudentCardRepository;
-import io.festival.distance.exception.DistanceException;
-import io.festival.distance.exception.ErrorCode;
+import io.festival.distance.domain.studentcard.service.serviceimpl.StudentCardCreator;
+import io.festival.distance.domain.studentcard.service.serviceimpl.StudentCardReader;
+import io.festival.distance.domain.studentcard.service.serviceimpl.StudentCardUpdater;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -26,46 +27,39 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class StudentService {
 
-    private final StudentCardRepository studentCardRepository;
-    private final MemberService memberService;
+    private final MemberReader memberReader;
+    private final MemberUpdater memberUpdater;
+    private final StudentCardCreator studentCardCreator;
+    private final StudentCardReader studentCardReader;
+    private final StudentCardUpdater studentCardUpdater;
     private final FcmService fcmService;
     @Transactional
     public void sendImage(MultipartFile file, String telNum) throws IOException {
-        Member member = memberService.findByTelNum(telNum);
+        Member member = memberReader.findTelNum(telNum);
         byte[] imageData = file.getBytes();
-        StudentCard studentCard = StudentCard.builder()
-            .member(member)
-            .imageData(imageData)
-            .build();
-        studentCardRepository.save(studentCard);
-        member.updateAuthUniv(UnivCert.SUCCESS);
+        StudentCard studentCard = studentCardCreator.getStudentCard(member, imageData);
+        studentCardCreator.create(studentCard);
+        memberUpdater.updateUniv(member, UnivCert.PENDING);
     }
 
     @Transactional(readOnly = true)
     public List<ImageResponse> getImage() {
-        return studentCardRepository.findAll()
-            .stream()
-            .map(ImageResponse::toEntity)
-            .toList();
+        return studentCardReader.getImageList();
     }
 
     @Transactional
     public void approve(Long studentCardId) {
-        StudentCard studentCard = getStudentCard(studentCardId);
-        studentCardRepository.delete(studentCard);
+        StudentCard studentCard = studentCardReader.getStudentCard(studentCardId);
+        Member member = memberReader.findTelNum(studentCard.getMember().getTelNum());
+        memberUpdater.updateUniv(member,UnivCert.SUCCESS);
+        studentCardUpdater.update(studentCard);
     }
 
     @Transactional
     public void reject(Long studentCardId, AdminRequest adminRequest) {
-        StudentCard studentCard = getStudentCard(studentCardId);
-        Member member = studentCard.getMember();
-        member.updateAuthUniv(UnivCert.valueOf(adminRequest.type()));
+        StudentCard studentCard = studentCardReader.getStudentCard(studentCardId);
+        Member member = studentCardReader.getMember(studentCard);
+        memberUpdater.updateUniv(member, UnivCert.valueOf(adminRequest.type()));
         fcmService.createFcm(member,SET_SENDER_NAME,REJECT_STUDENT_CARD, STUDENT_CARD);
-        studentCardRepository.delete(studentCard);
-    }
-
-    private StudentCard getStudentCard(Long studentCardId) {
-        return studentCardRepository.findById(studentCardId)
-            .orElseThrow(() -> new DistanceException(ErrorCode.NOT_EXIST_STUDENT_CARD));
     }
 }

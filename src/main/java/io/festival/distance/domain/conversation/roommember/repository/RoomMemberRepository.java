@@ -12,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface RoomMemberRepository extends JpaRepository<RoomMember, Long> {
 
-    RoomMember findByMemberAndChatRoom(Member member, ChatRoom chatRoom);
+    Optional<RoomMember> findByMemberAndChatRoom(Member member, ChatRoom chatRoom);
 
     List<RoomMember> findAllByMember(Member member);
 
@@ -26,6 +26,8 @@ public interface RoomMemberRepository extends JpaRepository<RoomMember, Long> {
 
     boolean existsByChatRoomAndMemberAndMyRoomName(ChatRoom chatRoom, Member member,
         String myRoomName);
+
+    boolean existsByChatRoomAndMember(ChatRoom chatRoom, Member member);
 
     Optional<RoomMember> findByMemberAndMyRoomName(Member member, String myRoomName);
 
