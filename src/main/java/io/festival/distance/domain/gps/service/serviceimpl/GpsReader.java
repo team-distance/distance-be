@@ -72,6 +72,9 @@ public class GpsReader {
                 gpsValidator::isActivatedMember
             )
             .filter(
+                user -> gpsValidator.isSameSchool(centerUser,user)
+            )
+            .filter(
                 gpsValidator::hasValidLocation
             )
             .filter(
