@@ -21,7 +21,7 @@ public class StudentCardReader {
 
     @Transactional(readOnly = true)
     public List<StudentCard> getStudentCardList() {
-        return studentCardRepository.findAll();
+        return studentCardRepository.findAllStudentCard();
     }
 
     @Transactional(readOnly = true)
