@@ -1,5 +1,6 @@
 package io.festival.distance.infra.sse.service;
 
+import io.festival.distance.domain.conversation.waiting.service.ChatWaitingService;
 import io.festival.distance.infra.sse.repository.SseRepository;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ public class SseService {
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
 
     private final SseRepository sseRepository;
+    private final ChatWaitingService chatWaitingService;
 
     /**
      * 클라이언트가 구독을 위해 호출하는 메서드.
@@ -23,7 +25,7 @@ public class SseService {
      */
     public SseEmitter subscribe(Long memberId) {
         SseEmitter emitter = createEmitter(memberId);
-        sendToClient(memberId, "EventStream Created. [memberId=" + memberId + "]");
+        sendToClient(memberId,chatWaitingService.countingWaitingRoom(memberId));
         return emitter;
     }
 

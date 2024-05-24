@@ -22,13 +22,12 @@ public class SseController {
     private final ChatWaitingService chatWaitingService;
 
     @GetMapping(value = "/subscribe/{memberId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public ResponseEntity<SseEmitter>  subscribe(@PathVariable Long memberId) {
+    public ResponseEntity<SseEmitter> subscribe(@PathVariable Long memberId) {
         return ResponseEntity.ok(sseService.subscribe(memberId));
     }
 
     @PostMapping("/send-data/{memberId}")
     public void sendData(@PathVariable Long memberId) {
-        System.out.println("sse실행!!!!");
         sseService.notify(memberId, chatWaitingService.countingWaitingRoom(memberId));
     }
 }
