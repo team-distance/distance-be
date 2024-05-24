@@ -17,9 +17,8 @@ public class ChatWaitingEventListener {
     @EventListener
     public void onChatWaitingAdded(ChatWaitingAddedEvent event) {
         Long memberId = event.memberId();
-        System.out.println("memberId = " + memberId);
         ChatWaitingCountDto chatWaitingCountDto = chatWaitingService.countingWaitingRoom(memberId);
-        // sseService.notify(memberId, chatWaitingService.countingWaitingRoom(memberId));
+        sseService.notify(memberId, chatWaitingService.countingWaitingRoom(memberId));
         notificationService.sendNotification("/topic/waitingRoom",chatWaitingCountDto);
     }
 }
