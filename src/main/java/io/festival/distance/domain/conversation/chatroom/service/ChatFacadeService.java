@@ -38,7 +38,7 @@ public class ChatFacadeService {
 
     private static final String ACTIVE="ACTIVE";
 
-    @Transactional(noRollbackFor = ChatRoomException.class)
+    @Transactional(noRollbackFor = { ChatRoomException.class,DistanceException.class})
     public Long generateRoom(ChatRoomDto chatRoomDto, Principal principal, boolean flag) {
         Member opponent = memberRepository.findById(chatRoomDto.getMemberId())
             .orElseThrow(() -> new DistanceException(NOT_EXIST_MEMBER)); //상대방 7
