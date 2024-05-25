@@ -32,6 +32,7 @@ public class SseController {
             log.info("유효하지 않는 토큰값입니다");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        log.info("Valid Token For member");
         return ResponseEntity.ok(sseService.subscribe(memberId));
     }
 
