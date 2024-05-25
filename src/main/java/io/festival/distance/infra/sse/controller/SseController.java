@@ -4,6 +4,7 @@ import io.festival.distance.auth.jwt.TokenProvider;
 import io.festival.distance.domain.conversation.waiting.service.ChatWaitingService;
 import io.festival.distance.infra.sse.service.SseService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RestController
 @RequestMapping("/api/notify")
 @RequiredArgsConstructor
+@Slf4j
 @CrossOrigin
 public class SseController {
     private final SseService sseService;
@@ -27,6 +29,7 @@ public class SseController {
     @GetMapping(value = "/subscribe/{memberId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> subscribe(@PathVariable Long memberId, @RequestParam("token") String token) {
         if (!jwtTokenProvider.validateToken(token,"ACCESS")) {
+            log.info("유효하지 않는 토큰값입니다");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         return ResponseEntity.ok(sseService.subscribe(memberId));
