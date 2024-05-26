@@ -33,7 +33,7 @@ public class SseController {
         @PathVariable Long memberId,
         @RequestParam("token") String token
     ) {
-        token = token.replace("Bearer%20","");
+        token = token.replace("Bearer ","");
         token = URLDecoder.decode(token, StandardCharsets.UTF_8);
         if (!jwtTokenProvider.validateToken(token,"ACCESS")) {
             log.info("유효하지 않는  큰값입니다");
