@@ -3,6 +3,8 @@ package io.festival.distance.infra.sse.controller;
 import io.festival.distance.auth.jwt.TokenProvider;
 import io.festival.distance.domain.conversation.waiting.service.ChatWaitingService;
 import io.festival.distance.infra.sse.service.SseService;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,9 +29,14 @@ public class SseController {
     private final ChatWaitingService chatWaitingService;
     private final TokenProvider jwtTokenProvider;
     @GetMapping(value = "/subscribe/{memberId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public ResponseEntity<SseEmitter> subscribe(@PathVariable Long memberId, @RequestParam("token") String token) {
+    public ResponseEntity<SseEmitter> subscribe(
+        @PathVariable Long memberId,
+        @RequestParam("token") String token
+    ) {
+        token = token.replace("Bearer%20","");
+        token = URLDecoder.decode(token, StandardCharsets.UTF_8);
         if (!jwtTokenProvider.validateToken(token,"ACCESS")) {
-            log.info("유효하지 않는 토큰값입니다");
+            log.info("유효하지 않는  큰값입니다");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         log.info("Valid Token For member");
