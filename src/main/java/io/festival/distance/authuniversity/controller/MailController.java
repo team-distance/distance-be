@@ -7,6 +7,7 @@ import io.festival.distance.authuniversity.service.univmail.AuthenticateMail;
 import io.festival.distance.authuniversity.service.univmail.SendSchoolDomain;
 import io.festival.distance.authuniversity.usecase.UnivUseCase;
 import java.security.Principal;
+import java.util.List;
 import javax.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class MailController {
      * 학교 이름 선택시 해당 도메인 값 return
      */
     @GetMapping("/check/univ-domain")
-    public ResponseEntity<String> checkDomain(Principal principal) {
+    public ResponseEntity<List<String>> checkDomain(Principal principal) {
         return ResponseEntity.ok(sendSchoolDomain.sendDomain(principal.getName()));
     }
 
