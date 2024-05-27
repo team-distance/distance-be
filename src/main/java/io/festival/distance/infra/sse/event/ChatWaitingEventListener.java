@@ -19,6 +19,6 @@ public class ChatWaitingEventListener {
         Long memberId = event.memberId();
         ChatWaitingCountDto chatWaitingCountDto = chatWaitingService.countingWaitingRoom(memberId);
         sseService.notify(memberId, chatWaitingService.countingWaitingRoom(memberId));
-        notificationService.sendNotification("/topic/waitingRoom",chatWaitingCountDto);
+        //notificationService.sendNotification("/topic/waitingRoom",chatWaitingCountDto);
     }
 }
