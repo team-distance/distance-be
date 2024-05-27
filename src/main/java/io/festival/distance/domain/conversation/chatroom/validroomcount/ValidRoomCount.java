@@ -19,11 +19,11 @@ public class ValidRoomCount {
 
     @Transactional(noRollbackFor = DistanceException.class)
     public void checkRoom(Member opponent, Member me,boolean flag){
-        if(validMyRoomCount.checkMyRoom(me)>=1L){
+        if(validMyRoomCount.checkMyRoom(me)>=5L){
             throw new DistanceException(TOO_MANY_MY_CHATROOM);
         }
 
-        if (validOpponentRoom.checkOpponentRoom(opponent) >= 1L) {
+        if (validOpponentRoom.checkOpponentRoom(opponent) >= 5L) {
             if (flag) {
                 chatWaitingService.saveWaitingRoom(opponent, me);
                 System.out.println("sdsdsds");
