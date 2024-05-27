@@ -30,16 +30,16 @@ public class SseController {
     private final TokenProvider jwtTokenProvider;
     @GetMapping(value = "/subscribe/{memberId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> subscribe(
-        @PathVariable Long memberId,
-        @RequestParam("token") String token
+        @PathVariable Long memberId
+        //@RequestParam("token") String token
     ) {
-        token = token.replace("Bearer ","");
+       /* token = token.replace("Bearer ","");
         token = URLDecoder.decode(token, StandardCharsets.UTF_8);
         if (!jwtTokenProvider.validateToken(token,"ACCESS")) {
             log.info("유효하지 않는  큰값입니다");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        log.info("Valid Token For member");
+        log.info("Valid Token For member");*/
         return ResponseEntity.ok(sseService.subscribe(memberId));
     }
 
