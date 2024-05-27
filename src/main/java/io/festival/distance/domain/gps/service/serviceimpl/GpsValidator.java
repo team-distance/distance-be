@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class GpsValidator {
-    public static final double SEARCH_RANGE = 1000;
+    public static final double SEARCH_RANGE = 2000000000;
     public boolean verifyGps(Member me, Member opponent){
         return (
             me.getLatitude() == 0 || me.getLongitude() == 0 ||

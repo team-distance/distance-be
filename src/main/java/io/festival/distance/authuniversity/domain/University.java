@@ -14,7 +14,7 @@ public enum University {
     GACHON("가천대학교","gachon",false), KANGWON("강원대학교","kangwon",false), KONKUK("건국대학교","konkuk",false), KKU("건국대학교(글로컬)","kku",false),
     GTEC("경기과학기술대학교","gtec",false),KYONGGI("경기대학교","kyonggi",false), KNU("경북대학교","knu",false), GINUE("경인교육대학교","ginue",false),
     KHU("경희대학교","khu",false), KAYWON("계원예술대학교","kaywon",false), KOREA("고려대학교","korea",false), KW("광운대학교","kw",false),
-    KOOKMIN("국민대학교","kookmin",false),DANKOOK("단국대학교","dankook",false), DUKSUNG("덕성여자대학교","duksung",true), DONGGUK("동국대학교","dongguk.edu",false),
+    KOOKMIN("국민대학교","kookmin",false),DANKOOK("단국대학교","dankook",false), DUKSUNG("덕성여자대학교","duksung",true), DONGGUK("동국대학교","dongguk.edu,dgu.ac.kr",false),
     DONGGUKK("동국대학교(경주)","dongguk.ac",false), DONGDUK("동덕여자대학교","dongduk",true),MJU("명지대학교","mju",false), MJC("명지전문대학교","mjc",false),
     SOGANG("서강대학교","sogang",false),SKUNIV("서경대학교","skuniv",false), SEOULTECH("서울과학기술대학교","seoultech",false), SNUE("서울교육대학교","snue",false),
     SNU("서울대학교","snu",false), UOS("서울시립대학교","uos",false), SWU("서울여자대학교","swu",true), SKKU("성균관대학교","skku",false),
