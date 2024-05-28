@@ -4,11 +4,13 @@ import io.festival.distance.domain.conversation.waiting.service.ChatWaitingServi
 import io.festival.distance.infra.sse.repository.SseRepository;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SseService {
 
     // 기본 타임아웃 설정
@@ -24,7 +26,9 @@ public class SseService {
      * @return SseEmitter - 서버에서 보낸 이벤트 Emitter
      */
     public SseEmitter subscribe(Long memberId) {
+        log.info("subscribe started");
         SseEmitter emitter = createEmitter(memberId);
+        log.info("success emitter Create");
         sendToClient(memberId,chatWaitingService.countingWaitingRoom(memberId));
         return emitter;
     }
