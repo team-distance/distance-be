@@ -23,14 +23,16 @@ public class MemberIpService {
     @Transactional
     public void saveIp(HttpServletRequest request){
         String memberIpAddr= ipGenerator.generateMemberIp(request);
-        if(ipReader.getMemberIpCount(memberIpAddr)>3){
-            throw new DistanceException(ErrorCode.TOO_MANY_REQUEST);
-        }
 
         if(!ipValidator.isExistMemberIp(memberIpAddr)){
             ipSaver.saveMemberIp(memberIpAddr);
         } else{
             ipUpdater.increaseIpCount(memberIpAddr);
         }
+
+        if(ipReader.getMemberIpCount(memberIpAddr)>3){
+            throw new DistanceException(ErrorCode.TOO_MANY_REQUEST);
+        }
+
     }
 }
