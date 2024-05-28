@@ -30,6 +30,7 @@ public class SseService {
         SseEmitter emitter = createEmitter(memberId);
         log.info("success emitter Create");
         sendToClient(memberId,chatWaitingService.countingWaitingRoom(memberId));
+        log.info("success send to client");
         return emitter;
     }
 
@@ -51,11 +52,15 @@ public class SseService {
      */
     private void sendToClient(Long memberId, Object data) {
         SseEmitter emitter = sseRepository.get(memberId);
+        log.info("sentToClient come");
         if (emitter != null) {
             try {
                 emitter.send(SseEmitter.event().name("waitingCount").data(data));
+                log.info("success emitter send");
             } catch (IOException exception) {
+                log.info("come catch");
                 sseRepository.deleteById(memberId);
+                log.info("failed sse");
                 emitter.completeWithError(exception);
             }
         }

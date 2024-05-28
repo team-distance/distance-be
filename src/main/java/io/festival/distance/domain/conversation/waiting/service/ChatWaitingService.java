@@ -18,12 +18,14 @@ import io.festival.distance.infra.sse.event.ChatWaitingAddedEvent;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ChatWaitingService {
 
     private final ChatWaitingRepository chatWaitingRepository;
@@ -80,7 +82,7 @@ public class ChatWaitingService {
         Member member = memberRepository.findById(loginId)
             .orElseThrow(() -> new DistanceException(NOT_EXIST_MEMBER));
         Integer count = chatWaitingRepository.countByLoveReceiver(member);
-
+        log.info("come countWaitingRoom Method");
         return ChatWaitingCountDto.builder()
             .waitingCount(count)
             .build();
