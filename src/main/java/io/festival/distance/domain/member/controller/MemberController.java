@@ -14,6 +14,7 @@ import io.festival.distance.domain.member.usecase.MemberUseCase;
 import io.festival.distance.domain.member.usecase.SendSmsUseCase;
 import io.festival.distance.domain.member.validsignup.ValidPassword;
 import java.security.Principal;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -123,8 +124,11 @@ public class MemberController {
      * 메시지 전송
      */
     @PostMapping("/send/sms")
-    public ResponseEntity<Void> sendSms(@RequestBody TelNumRequest telNumRequest) {
-        authenticateNum = sendSmsUseCase.execute(telNumRequest);
+    public ResponseEntity<Void> sendSms(
+        @RequestBody TelNumRequest telNumRequest,
+        HttpServletRequest request
+    ) {
+        authenticateNum = sendSmsUseCase.execute(telNumRequest,request);
         return ResponseEntity.ok().build();
     }
 

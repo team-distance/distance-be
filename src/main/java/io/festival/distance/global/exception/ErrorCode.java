@@ -32,6 +32,8 @@ public enum ErrorCode {
     NOT_EXIST_ARTIST(HttpStatusCode.BAD_REQUEST.getStatus(),"존재하지 않는 가수입니다!"),
     NOT_EXIST_FOOD_TRUCK(HttpStatusCode.BAD_REQUEST.getStatus(),"존재하지 않는 푸드트럭입니다!"),
     NOT_EXIST_MENU(HttpStatusCode.BAD_REQUEST.getStatus(),"존재하지 않는 메뉴입니다!"),
+    NOT_EXIST_MEMBER_IP(HttpStatusCode.BAD_REQUEST.getStatus(),"존재하지 않는 IP입니다!"),
+    TOO_MANY_REQUEST(HttpStatusCode.BAD_REQUEST.getStatus(),"하루 요청 수를 넘어갔습니다!"),
     NOT_EXIST_SCHOOL(HttpStatusCode.BAD_REQUEST.getStatus(), "존재하지 않는 대학교입니다!");
 
     private final int status;
