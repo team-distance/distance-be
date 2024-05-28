@@ -9,6 +9,7 @@ import io.festival.distance.authuniversity.usecase.UnivUseCase;
 import java.security.Principal;
 import java.util.List;
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -43,9 +44,10 @@ public class MailController {
      * 이메일 전송
      */
     @PostMapping("/send/email")
-    public ResponseEntity<Void> sendEmail(@RequestBody EmailDto emailDto)
+    public ResponseEntity<Void> sendEmail(@RequestBody EmailDto emailDto,
+        HttpServletRequest request)
         throws MessagingException {
-        certificationNumber = univUseCase.execute(emailDto.schoolEmail());
+        certificationNumber = univUseCase.execute(emailDto.schoolEmail(),request);
         return ResponseEntity.ok().build();
     }
 
