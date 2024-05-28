@@ -2,14 +2,12 @@ package io.festival.distance.authuniversity.controller;
 
 import io.festival.distance.authuniversity.dto.CertificateDto;
 import io.festival.distance.authuniversity.dto.EmailDto;
-import io.festival.distance.authuniversity.dto.SchoolNameDto;
 import io.festival.distance.authuniversity.service.univmail.AuthenticateMail;
 import io.festival.distance.authuniversity.service.univmail.SendSchoolDomain;
 import io.festival.distance.authuniversity.usecase.UnivUseCase;
 import java.security.Principal;
 import java.util.List;
 import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -44,10 +42,9 @@ public class MailController {
      * 이메일 전송
      */
     @PostMapping("/send/email")
-    public ResponseEntity<Void> sendEmail(@RequestBody EmailDto emailDto,
-        HttpServletRequest request)
+    public ResponseEntity<Void> sendEmail(@RequestBody EmailDto emailDto)
         throws MessagingException {
-        certificationNumber = univUseCase.execute(emailDto.schoolEmail(),request);
+        certificationNumber = univUseCase.execute(emailDto.schoolEmail());
         return ResponseEntity.ok().build();
     }
 
