@@ -29,7 +29,7 @@ public class SseService {
         log.info("subscribe started");
         SseEmitter emitter = createEmitter(memberId);
         log.info("success emitter Create");
-        sendToClient(memberId,"start Server-Sent-Event!");
+        //sendToClient(memberId,"start Server-Sent-Event!");
         sendToClient(memberId,chatWaitingService.countingWaitingRoom(memberId));
         log.info("success send to client");
         log.info("emitter>>> " + emitter);
@@ -57,6 +57,7 @@ public class SseService {
         log.info("sentToClient come");
         if (emitter != null) {
             try {
+                emitter.send(SseEmitter.event().name("dummyData").data("start event stream"));
                 emitter.send(SseEmitter.event().name("waitingCount").data(data));
                 log.info("success emitter send");
             } catch (IOException exception) {
