@@ -31,6 +31,7 @@ public class SseService {
         log.info("success emitter Create");
         sendToClient(memberId,chatWaitingService.countingWaitingRoom(memberId));
         log.info("success send to client");
+        log.info("emitter>>> " + emitter);
         return emitter;
     }
 
