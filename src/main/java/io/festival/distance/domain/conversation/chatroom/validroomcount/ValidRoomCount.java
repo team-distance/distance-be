@@ -8,6 +8,7 @@ import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.global.exception.DistanceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -16,6 +17,7 @@ public class ValidRoomCount {
     private final ValidOpponentRoom validOpponentRoom;
     private final ChatWaitingService chatWaitingService;
 
+    @Transactional(noRollbackFor = DistanceException.class)
     public void checkRoom(Member opponent, Member me,boolean flag){
         if(validMyRoomCount.checkMyRoom(me)>=5L){
             throw new DistanceException(TOO_MANY_MY_CHATROOM);
@@ -24,6 +26,7 @@ public class ValidRoomCount {
         if (validOpponentRoom.checkOpponentRoom(opponent) >= 5L) {
             if (flag) {
                 chatWaitingService.saveWaitingRoom(opponent, me);
+                System.out.println("sdsdsds");
             }
             throw new DistanceException(TOO_MANY_OPPONENT_CHATROOM);
         }

@@ -70,6 +70,7 @@ public class SecurityConfig {
             .antMatchers("/api/food-truck/**").permitAll()
             .antMatchers("/api/truck-menu/**").permitAll()
             .antMatchers("/api/refresh").permitAll()
+            .antMatchers("/api/notify/**").permitAll()
             .antMatchers("/ws/**","/wss/**", "/meet/**").permitAll()
             .antMatchers("/swagger-resources/**",
                 "/swagger-ui.html",

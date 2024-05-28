@@ -1,5 +1,6 @@
 package io.festival.distance.domain.firebase.service;
 
+import com.amazonaws.services.kms.model.DisabledException;
 import com.google.firebase.messaging.BatchResponse;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.MulticastMessage;
@@ -76,7 +77,7 @@ public class FcmService {
         sendNotificationForMessage(REJECT_STUDENT_CARD);
     }
 
-    @Transactional
+    @Transactional(noRollbackFor = DisabledException.class)
     public void createFcm(Member opponent, String title, String message, FcmType fcmType) {
         if (fcmValidator.duplicateFcm(opponent, title)) {
             MemberFcmDto dto = fcmDtoCreator.createDto(opponent,title,message,fcmType);

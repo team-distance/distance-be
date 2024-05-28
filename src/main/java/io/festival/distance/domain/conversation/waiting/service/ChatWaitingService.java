@@ -14,6 +14,7 @@ import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.repository.MemberRepository;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.global.exception.DistanceException;
+import io.festival.distance.infra.sse.event.ChatWaitingAddedEvent;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,7 @@ public class ChatWaitingService {
      * @param opponent
      * @param me
      */
-    @Transactional
+    @Transactional(noRollbackFor = DistanceException.class)
     public void saveWaitingRoom(Member opponent, Member me) {
         if (!chatWaitingRepository.existsByLoveSenderAndLoveReceiver(me, opponent)) {
             ChatWaiting chatWaiting = ChatWaiting.builder()
@@ -45,12 +46,11 @@ public class ChatWaitingService {
                 .loveSender(me) //내가 좋아요
                 .myRoomName(me.getNickName())
                 .build();
-            Long waitingId = chatWaitingRepository.save(chatWaiting).getWaitingId();
-            System.out.println("waitingId = " + waitingId);
+            chatWaitingRepository.save(chatWaiting);
 
-           fcmService.createFcm(opponent, SET_SENDER_NAME, ADD_WAITING_ROOM_MESSAGE,WAITING);
-            //aep.publishEvent(new ChatWaitingAddedEvent(opponent.getMemberId()));
-            //aep.publishEvent(new ChatWaitingAddedEvent(me.getMemberId()));
+            fcmService.createFcm(opponent, SET_SENDER_NAME, ADD_WAITING_ROOM_MESSAGE,WAITING);
+            aep.publishEvent(new ChatWaitingAddedEvent(opponent.getMemberId()));
+            aep.publishEvent(new ChatWaitingAddedEvent(me.getMemberId()));
         }
     }
 
