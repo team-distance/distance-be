@@ -4,11 +4,13 @@ import io.festival.distance.domain.conversation.waiting.service.ChatWaitingServi
 import io.festival.distance.infra.sse.repository.SseRepository;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SseService {
 
     // 기본 타임아웃 설정
@@ -24,8 +26,13 @@ public class SseService {
      * @return SseEmitter - 서버에서 보낸 이벤트 Emitter
      */
     public SseEmitter subscribe(Long memberId) {
+        log.info("subscribe started");
         SseEmitter emitter = createEmitter(memberId);
+        log.info("success emitter Create");
+        //sendToClient(memberId,"start Server-Sent-Event!");
         sendToClient(memberId,chatWaitingService.countingWaitingRoom(memberId));
+        log.info("success send to client");
+        log.info("emitter>>> " + emitter);
         return emitter;
     }
 
@@ -47,11 +54,16 @@ public class SseService {
      */
     private void sendToClient(Long memberId, Object data) {
         SseEmitter emitter = sseRepository.get(memberId);
+        log.info("sentToClient come");
         if (emitter != null) {
             try {
+                emitter.send(SseEmitter.event().name("dummyData").data("start event stream"));
                 emitter.send(SseEmitter.event().name("waitingCount").data(data));
+                log.info("success emitter send");
             } catch (IOException exception) {
+                log.info("come catch");
                 sseRepository.deleteById(memberId);
+                log.info("failed sse");
                 emitter.completeWithError(exception);
             }
         }

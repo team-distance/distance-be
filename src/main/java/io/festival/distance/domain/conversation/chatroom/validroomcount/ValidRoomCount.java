@@ -26,7 +26,6 @@ public class ValidRoomCount {
         if (validOpponentRoom.checkOpponentRoom(opponent) >= 5L) {
             if (flag) {
                 chatWaitingService.saveWaitingRoom(opponent, me);
-                System.out.println("sdsdsds");
             }
             throw new DistanceException(TOO_MANY_OPPONENT_CHATROOM);
         }

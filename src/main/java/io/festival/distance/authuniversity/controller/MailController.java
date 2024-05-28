@@ -2,7 +2,6 @@ package io.festival.distance.authuniversity.controller;
 
 import io.festival.distance.authuniversity.dto.CertificateDto;
 import io.festival.distance.authuniversity.dto.EmailDto;
-import io.festival.distance.authuniversity.dto.SchoolNameDto;
 import io.festival.distance.authuniversity.service.univmail.AuthenticateMail;
 import io.festival.distance.authuniversity.service.univmail.SendSchoolDomain;
 import io.festival.distance.authuniversity.usecase.UnivUseCase;

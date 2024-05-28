@@ -40,6 +40,7 @@ public class SseController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         log.info("Valid Token For member");*/
+        log.info("start sse");
         return ResponseEntity.ok(sseService.subscribe(memberId));
     }
 
