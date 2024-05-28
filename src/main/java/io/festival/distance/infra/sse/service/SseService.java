@@ -29,6 +29,7 @@ public class SseService {
         log.info("subscribe started");
         SseEmitter emitter = createEmitter(memberId);
         log.info("success emitter Create");
+        sendToClient(memberId,"start Server-Sent-Event!");
         sendToClient(memberId,chatWaitingService.countingWaitingRoom(memberId));
         log.info("success send to client");
         log.info("emitter>>> " + emitter);
