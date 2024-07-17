@@ -10,10 +10,6 @@ services:
       - "./.env"
     environment:
       - TZ=Asis/Seoul
-    depends_on:
-      - db
-    links:
-      - db
     networks:
       - distance-networked
     restart: always
@@ -43,9 +39,5 @@ services:
         - distance-networked
       entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
-
 networks:
   distance-networked:
-
-volumes:
-  mysql-data:
