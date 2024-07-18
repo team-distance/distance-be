@@ -1,3 +1,4 @@
+/*
 package io.festival.distance.infra.jpa.config;
 
 import javax.sql.DataSource;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MasterDataSource {
+
     public static final String DISTANCE_MASTER_DATASOURCE = "distanceMasterDataSource";
     @Value("${spring.datasource.master.hikari.driver-class-name}")
     private String masterDriverClassName;
@@ -31,3 +33,4 @@ public class MasterDataSource {
             .build();
     }
 }
+*/
