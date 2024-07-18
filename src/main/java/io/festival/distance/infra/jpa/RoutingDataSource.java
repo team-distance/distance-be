@@ -1,4 +1,3 @@
-/*
 package io.festival.distance.infra.jpa;
 
 import lombok.extern.slf4j.Slf4j;
@@ -13,4 +12,3 @@ public class RoutingDataSource extends AbstractRoutingDataSource {
         return isReadOnly ? "slave" : "master";
     }
 }
-*/

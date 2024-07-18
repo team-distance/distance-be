@@ -1,4 +1,3 @@
-/*
 package io.festival.distance.infra.jpa;
 
 import java.util.Properties;
@@ -60,4 +59,4 @@ public class JpaConfiguration {
         jpaTransactionManager.setEntityManagerFactory(entityManagerFactory.getObject());
         return jpaTransactionManager;
     }
-}*/
+}

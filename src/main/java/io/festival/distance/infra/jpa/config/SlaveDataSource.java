@@ -1,4 +1,3 @@
-/*
 package io.festival.distance.infra.jpa.config;
 
 
@@ -33,4 +32,3 @@ public class SlaveDataSource {
             .build();
     }
 }
-*/
