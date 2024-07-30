@@ -88,7 +88,7 @@ public enum University {
 
     public static List<University> getUniversity(String school){
         return Arrays.stream(University.values())
-            .filter(university -> university.getName().contains(school))
+            .filter(university -> university.getName().startsWith(school))
             .collect(Collectors.toList());
     }
 }
