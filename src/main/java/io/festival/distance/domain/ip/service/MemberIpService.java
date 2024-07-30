@@ -30,7 +30,7 @@ public class MemberIpService {
             ipUpdater.increaseIpCount(memberIpAddr);
         }
 
-        if(ipReader.getMemberIpCount(memberIpAddr)>3){
+        if(ipReader.getMemberIpCount(memberIpAddr)>100){
             throw new DistanceException(ErrorCode.TOO_MANY_REQUEST);
         }
 
