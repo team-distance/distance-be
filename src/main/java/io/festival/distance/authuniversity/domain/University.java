@@ -4,9 +4,12 @@ package io.festival.distance.authuniversity.domain;
 import static io.festival.distance.global.exception.ErrorCode.NOT_EXIST_SCHOOL;
 
 import io.festival.distance.global.exception.DistanceException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.Getter;
 
 @Getter
@@ -81,5 +84,11 @@ public enum University {
             }
         }
         throw new DistanceException(NOT_EXIST_SCHOOL);
+    }
+
+    public static List<University> getUniversity(String school){
+        return Arrays.stream(University.values())
+            .filter(university -> university.getName().contains(school))
+            .collect(Collectors.toList());
     }
 }
