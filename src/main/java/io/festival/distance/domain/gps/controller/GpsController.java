@@ -46,7 +46,7 @@ public class GpsController {
     @PostMapping("/matching")
     public ResponseEntity<MatchResponseDto> matching(
 		Principal principal,
-        SearchRequest searchRequest
+        @RequestBody SearchRequest searchRequest
 	) {
         if (Objects.isNull(principal)) {
             return ResponseEntity.ok(gpsService.matchNonLoginUser());
