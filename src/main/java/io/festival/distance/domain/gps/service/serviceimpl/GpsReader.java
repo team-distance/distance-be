@@ -42,6 +42,7 @@ public class GpsReader {
     public MatchResponseDto getLoginUserMatchList(
         Member centerUser, SearchRequest searchRequest
     ) {
+        System.out.println("search request type: "+searchRequest.isPermitOtherSchool());
         List<MatchUserDto> userDtoList = memberReader.findMemberList()
             .stream()
             .filter(
