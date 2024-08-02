@@ -65,9 +65,7 @@ public enum University {
     }
 
     public final static Map<University,University> UNIV_MAP=createUnmodifiableMap();
-    /** TODO
-     *  Custom Exception 변경
-     */
+
     public static String getDomainByName(String name) { //순천향대학교 -> sch 반환
         for (Map.Entry<University, University> entry : UNIV_MAP.entrySet()) {
             if (entry.getKey().getName().equals(name)) {
