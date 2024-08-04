@@ -10,6 +10,7 @@ import io.festival.distance.domain.studentcouncil.entity.StudentCouncil;
 import io.festival.distance.domain.studentcouncil.service.serviceimpl.CouncilCreator;
 import io.festival.distance.domain.studentcouncil.service.serviceimpl.CouncilDeleter;
 import io.festival.distance.domain.studentcouncil.service.serviceimpl.CouncilReader;
+import io.festival.distance.domain.studentcouncil.service.serviceimpl.CouncilUpdater;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class CouncilService {
     private final CouncilCreator councilCreator;
     private final CouncilReader councilReader;
     private final CouncilDeleter councilDeleter;
+    private final CouncilUpdater councilUpdater;
 
     public void create(String telNum, ContentRequest contentRequest, List<MultipartFile> files) {
         Member member = memberReader.findTelNum(telNum); //총학계정
@@ -50,13 +52,13 @@ public class CouncilService {
         councilDeleter.delete(studentCouncil);
     }
 
-   /* public Long updateContent(
+    public void updateContent(
         Long studentCouncilId,
         String telNum,
         ContentRequest contentRequest,
         List<MultipartFile> files
     ) {
         StudentCouncil studentCouncil = councilReader.findStudentCouncil(studentCouncilId);
-
-    }*/
+        councilUpdater.update(contentRequest,files,studentCouncil);
+    }
 }

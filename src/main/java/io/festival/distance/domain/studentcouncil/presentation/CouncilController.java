@@ -66,27 +66,25 @@ public class CouncilController {
         return ResponseEntity.ok(councilService.findContent(studentCouncilId));
     }
 
-   /* *//**
+    /**
      * TODO
      * 수정 API(제목, 위치(선택적), 내용, 날짜(선택적), 이미지(선택적))
-     *//*
+     */
     @PatchMapping("/{studentCouncilId}")
-    public ResponseEntity<Long> modifyContent(
+    public ResponseEntity<Void> modifyContent(
         @PathVariable Long studentCouncilId,
         @RequestPart(value = "contentRequest") ContentRequest contentRequest,
         @RequestPart(value = "files",required = false) List<MultipartFile> files,
         Principal principal
     ) {
-        return ResponseEntity.ok(
-            councilService.updateContent(
-                studentCouncilId,
-                principal.getName(),
-                contentRequest,
-                files
-            )
+        councilService.updateContent(
+            studentCouncilId,
+            principal.getName(),
+            contentRequest,
+            files
         );
-    }*/
-
+        return ResponseEntity.ok().build();
+    }
 
     /**
      * NOTE

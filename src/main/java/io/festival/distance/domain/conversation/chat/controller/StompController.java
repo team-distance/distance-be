@@ -61,10 +61,6 @@ public class StompController {
             // 채팅방 새션 조회
             List<ChatRoomSession> sessionByChatRoom = chatRoomSessionService
                 .findSessionByChatRoom(chatRoom); //2개가 나올 듯?
-            System.out.println("처음 세션 개수 :"+ sessionByChatRoom.size());
-            for (int i = 0; i < sessionByChatRoom.size(); i++) {
-                System.out.println("세션 아이디: "+sessionByChatRoom.get(i).getSessionId());
-            }
             /**
              *  채팅방을 나가는 경우
              */
