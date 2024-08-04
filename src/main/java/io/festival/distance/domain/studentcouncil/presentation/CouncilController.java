@@ -87,6 +87,46 @@ public class CouncilController {
     }
 
     /**
+     * TODO
+     * 수정 API(제목, 위치(선택적), 내용, 날짜(선택적), 이미지(선택적))
+     */
+    @PatchMapping("/{studentCouncilId}/v2")
+    public ResponseEntity<Void> modifyContentV2(
+        @PathVariable Long studentCouncilId,
+        @RequestPart(value = "{contentRequest}") ContentRequest contentRequest,
+        @RequestPart(value = "files",required = false) List<MultipartFile> files,
+        Principal principal
+    ) {
+        councilService.updateContentV2(
+            studentCouncilId,
+            principal.getName(),
+            contentRequest,
+            files
+        );
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * TODO
+     * 수정 API(제목, 위치(선택적), 내용, 날짜(선택적), 이미지(선택적))
+     */
+    @PatchMapping("/{studentCouncilId}/v3")
+    public ResponseEntity<Void> modifyContentV3(
+        @PathVariable Long studentCouncilId,
+        @RequestPart(value = "contentRequest") ContentRequest contentRequest,
+        @RequestPart(value = "files",required = false) List<MultipartFile> files,
+        Principal principal
+    ) {
+        councilService.updateContentV3(
+            studentCouncilId,
+            principal.getName(),
+            contentRequest,
+            files
+        );
+        return ResponseEntity.ok().build();
+    }
+
+    /**
      * NOTE
      * 총학 게시글 삭제 API
      */

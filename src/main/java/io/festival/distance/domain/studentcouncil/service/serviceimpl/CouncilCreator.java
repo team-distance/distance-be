@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class CouncilCreator {
     private final CouncilSaver councilSaver;
 
-    public void create(ContentRequest contentRequest, Member member){
+    public StudentCouncil create(ContentRequest contentRequest, Member member){
         StudentCouncil studentCouncil = StudentCouncil.builder()
             .title(contentRequest.title())
             .content(contentRequest.content())
@@ -21,5 +21,6 @@ public class CouncilCreator {
             .member(member)
             .build();
         councilSaver.save(studentCouncil);
+        return studentCouncil;
     }
 }

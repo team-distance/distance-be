@@ -30,9 +30,9 @@ public class CouncilService {
 
     public void create(String telNum, ContentRequest contentRequest, List<MultipartFile> files) {
         Member member = memberReader.findTelNum(telNum); //총학계정
-        councilCreator.create(contentRequest, member);
-        councilGpsCreator.create(contentRequest.councilGpsRequestList());
-        councilImageCreator.create(files);
+        StudentCouncil studentCouncil = councilCreator.create(contentRequest, member);
+        councilGpsCreator.create(contentRequest.councilGpsRequestList(),studentCouncil);
+        councilImageCreator.create(files,studentCouncil);
     }
 
     public List<ContentResponse> findContents(String telNum, String school) {
@@ -52,7 +52,29 @@ public class CouncilService {
         councilDeleter.delete(studentCouncil);
     }
 
+    // 기존이미지 전부 삭제 후 새롭게 등록
     public void updateContent(
+        Long studentCouncilId,
+        String telNum,
+        ContentRequest contentRequest,
+        List<MultipartFile> files
+    ) {
+        StudentCouncil studentCouncil = councilReader.findStudentCouncil(studentCouncilId);
+        councilUpdater.update(contentRequest,files,studentCouncil);
+    }
+
+    //
+    public void updateContentV2(
+        Long studentCouncilId,
+        String telNum,
+        ContentRequest contentRequest,
+        List<MultipartFile> files
+    ) {
+        StudentCouncil studentCouncil = councilReader.findStudentCouncil(studentCouncilId);
+        councilUpdater.update(contentRequest,files,studentCouncil);
+    }
+
+    public void updateContentV3(
         Long studentCouncilId,
         String telNum,
         ContentRequest contentRequest,
