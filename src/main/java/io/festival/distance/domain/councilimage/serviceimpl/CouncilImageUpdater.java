@@ -5,6 +5,7 @@ import io.festival.distance.infra.s3.service.S3DeleteImage;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Component
@@ -16,6 +17,7 @@ public class CouncilImageUpdater {
     private final CouncilImageDeleter councilImageDeleter;
     private final CouncilImageCreator councilImageCreator;
 
+    @Transactional
     public void deleteImage(StudentCouncil studentCouncil) {
         councilImageReader.findImageEntity(studentCouncil)
             .forEach(councilImage -> {
@@ -24,6 +26,7 @@ public class CouncilImageUpdater {
         councilImageDeleter.delete(studentCouncil);
     }
 
+    @Transactional
     public void update(List<MultipartFile> files, StudentCouncil studentCouncil) {
         deleteImage(studentCouncil);
         councilImageCreator.create(files,studentCouncil);

@@ -33,6 +33,9 @@ public class CouncilImage {
     @Column(name = "file_name")
     private String fileName;
 
+    @Column(name = "is_used")
+    private Boolean isUsed;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "council_id")
     private StudentCouncil studentCouncil;

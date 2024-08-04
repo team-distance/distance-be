@@ -22,6 +22,7 @@ public class CouncilImageCreator {
             CouncilImage councilImage = CouncilImage.builder()
                 .fileName(s3Response.fileName())
                 .imageUrl(s3Response.imageUrl())
+                .isUsed(true)
                 .studentCouncil(studentCouncil)
                 .build();
             councilImages.add(councilImage);

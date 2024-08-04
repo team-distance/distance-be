@@ -15,7 +15,7 @@ public class CouncilImageReader {
     private final CouncilImageRepository councilImageRepository;
     @Transactional(readOnly = true)
     public List<CouncilImageResponse> findImageList(StudentCouncil studentCouncil){
-        return councilImageRepository.findAllByStudentCouncil(studentCouncil)
+        return councilImageRepository.findAllByStudentCouncilAndIsUsedTrue(studentCouncil)
             .stream()
             .map(CouncilImageResponse::toCouncilImageResponse)
             .toList();
@@ -23,6 +23,6 @@ public class CouncilImageReader {
 
     @Transactional(readOnly = true)
     public List<CouncilImage> findImageEntity(StudentCouncil studentCouncil){
-        return councilImageRepository.findAllByStudentCouncil(studentCouncil);
+        return councilImageRepository.findAllByStudentCouncilAndIsUsedTrue(studentCouncil);
     }
 }

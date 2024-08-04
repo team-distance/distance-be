@@ -93,7 +93,7 @@ public class CouncilController {
     @PatchMapping("/{studentCouncilId}/v2")
     public ResponseEntity<Void> modifyContentV2(
         @PathVariable Long studentCouncilId,
-        @RequestPart(value = "{contentRequest}") ContentRequest contentRequest,
+        @RequestPart(value = "contentRequest") ContentRequest contentRequest,
         @RequestPart(value = "files",required = false) List<MultipartFile> files,
         Principal principal
     ) {

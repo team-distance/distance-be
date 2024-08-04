@@ -7,5 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CouncilImageRepository extends JpaRepository<CouncilImage,Long> {
     List<CouncilImage> findAllByStudentCouncil(StudentCouncil studentCouncil);
+    List<CouncilImage> findAllByStudentCouncilAndIsUsedTrue(StudentCouncil studentCouncil);
     void deleteAllByStudentCouncil(StudentCouncil studentCouncil);
 }
