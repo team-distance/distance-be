@@ -26,6 +26,6 @@ public class CouncilImageUpdater {
 
     public void update(List<MultipartFile> files, StudentCouncil studentCouncil) {
         deleteImage(studentCouncil);
-        councilImageCreator.create(files);
+        councilImageCreator.create(files,studentCouncil);
     }
 }
