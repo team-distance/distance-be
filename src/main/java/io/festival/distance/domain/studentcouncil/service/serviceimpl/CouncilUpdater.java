@@ -6,12 +6,14 @@ import io.festival.distance.domain.studentcouncil.dto.request.ContentRequest;
 import io.festival.distance.domain.studentcouncil.entity.StudentCouncil;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class CouncilUpdater {
     private final CouncilImageUpdater councilImageUpdater;
     private final CouncilGpsUpdater councilGpsUpdater;
@@ -22,8 +24,11 @@ public class CouncilUpdater {
         List<MultipartFile> files,
         StudentCouncil studentCouncil
     ) {
+        double startTime = System.currentTimeMillis();
         studentCouncil.updateContent(contentRequest);
         councilGpsUpdater.update(contentRequest.councilGpsRequestList(),studentCouncil);
         councilImageUpdater.update(files,studentCouncil);
+        double endTime = System.currentTimeMillis();
+        log.info("Execution Time : "+ (endTime - startTime)+"ms");
     }
 }
