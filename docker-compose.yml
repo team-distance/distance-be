@@ -8,6 +8,7 @@ services:
       - "6379:6379"
     networks:
       - distance-networked
+    restart: always
 
   app:
     image: junseok1204/distance-0.0.1-snapshot
