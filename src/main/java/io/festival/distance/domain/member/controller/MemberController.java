@@ -42,7 +42,8 @@ public class MemberController {
     private String authenticateNum;
 
 
-    /** NOTE
+    /**
+     * NOTE
      * 회원가입 API
      */
     @PostMapping("/signup")
@@ -79,8 +80,10 @@ public class MemberController {
         return ResponseEntity.ok(memberService.memberProfile(principal.getName()));
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 채팅방에서 상대방 프로필 조회
+     *
      * @param memberId 상대방 Id
      */
     @GetMapping("/profile/{memberId}")
@@ -91,7 +94,8 @@ public class MemberController {
         return ResponseEntity.ok(memberService.getMemberProfile(memberId));
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 멤버 프로필 수정
      */
     @PatchMapping("/profile/update")
@@ -100,7 +104,8 @@ public class MemberController {
         return ResponseEntity.ok(memberService.modifyProfile(principal.getName(), memberInfoDto));
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 멤버 ID값 반환
      */
     @GetMapping("/id")
@@ -108,7 +113,8 @@ public class MemberController {
         return ResponseEntity.ok(memberReader.findTelNum(principal.getName()).getMemberId());
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 사용자 전화번호 조회 (10번 티키타카 한 경우)
      */
     @GetMapping("/tel-num")
@@ -120,7 +126,8 @@ public class MemberController {
             memberService.findTelNum(memberId, principal.getName(), chatRoomId));
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 메시지 전송
      */
     @PostMapping("/send/sms")
@@ -128,23 +135,27 @@ public class MemberController {
         @RequestBody TelNumRequest telNumRequest,
         HttpServletRequest request
     ) {
-        authenticateNum = sendSmsUseCase.execute(telNumRequest,request);
+        authenticateNum = sendSmsUseCase.execute(telNumRequest, request);
         return ResponseEntity.ok().build();
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 메시지 인증번호 인증
+     *
      * @param checkAuthenticateNum 사용자가 입력한 인증번호
      */
     @PostMapping("/authenticate")
     public ResponseEntity<Void> authenticateNum(
         @RequestBody CheckAuthenticateNum checkAuthenticateNum) {
-        memberService.verifyAuthenticateNum(checkAuthenticateNum, authenticateNum);
+        memberService.verifyAuthenticateNum(checkAuthenticateNum);
         return ResponseEntity.ok().build();
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 멤버가 대학인증을 했는지 안했는지 여부
+     *
      * @param principal 현재 로그인한 객체
      * @return 인증되어있다면 true, 안되어있으면 false
      */
@@ -153,8 +164,10 @@ public class MemberController {
         return ResponseEntity.ok(memberService.verifyUniv(principal.getName()));
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * logout
+     *
      * @param principal 현재 로그인한 객체
      */
     @GetMapping("/logout")
@@ -163,8 +176,10 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 비밀번호 확인
+     *
      * @param accountRequestDto 사용자가 입력한 비밀번호
      * @param principal         현재 로그인한 객체
      */
@@ -175,7 +190,8 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    /** NOTE
+    /**
+     * NOTE
      * 비밀번로 변경 API
      */
     @PostMapping("/change/password")
