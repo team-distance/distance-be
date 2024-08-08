@@ -45,6 +45,8 @@ dependencies {
 	implementation 'com.slack.api:slack-api-client:1.29.0'
 	implementation 'org.springframework.boot:spring-boot-starter-cache'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
 }
 
 tasks.named('test') {

@@ -1,27 +1,23 @@
 spring:
   datasource:
-    master:
-      hikari:
-        driver-class-name: ${SPRING_DATASOURCE_DRIVER}
-        username: ${SPRING_DATASOURCE_USERNAME}
-        password: ${SPRING_DATASOURCE_PASSWORD}
-        jdbc-url: ${SPRING_DATASOURCE_MASTER_URL}
-    slave:
-      hikari:
-        driver-class-name: ${SPRING_DATASOURCE_DRIVER}
-        username: ${SPRING_DATASOURCE_USERNAME}
-        password: ${SPRING_DATASOURCE_PASSWORD}
-        jdbc-url: ${SPRING_DATASOURCE_SLAVE_URL}
+    url: jdbc:mysql://localhost:3306/distance?characterEncoding\=UTF-8&useSSL\=false&serverTimezone\=UTC&&allowPublicKeyRetrieval\=true
+    username: root
+    password: wnstjr6522
+    driver-class-name: com.mysql.cj.jdbc.Driver
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
   jpa:
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
         format_sql: true
+        ##use_sql_comments: true
+        ##generate_statistics: true
         default_batch_fetch_size: 100
         dialect: org.hibernate.dialect.MySQL8Dialect
   mail:
@@ -48,7 +44,7 @@ logging.level:
 jwt:
   header: ${JWT_HEADER}
   secret: ${JWT_SECRET_KEY}
-  token-validity-in-seconds: ${JWT_EXPIRATION}
+  token-validity-in-seconds: 86400
   refresh-token-validity-in-seconds: ${JWT_REFRESH}
 
 fcm:
