@@ -4,6 +4,8 @@ import io.festival.distance.domain.councilgps.serviceimpl.CouncilGpsUpdater;
 import io.festival.distance.domain.councilimage.serviceimpl.CouncilImageUpdater;
 import io.festival.distance.domain.studentcouncil.dto.request.ContentRequest;
 import io.festival.distance.domain.studentcouncil.entity.StudentCouncil;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +25,7 @@ public class CouncilUpdater {
         ContentRequest contentRequest,
         List<MultipartFile> files,
         StudentCouncil studentCouncil
-    ) {
+    ) throws IOException, NoSuchAlgorithmException {
         double startTime = System.currentTimeMillis();
         studentCouncil.updateContent(contentRequest);
         councilGpsUpdater.update(contentRequest.councilGpsRequestList(),studentCouncil);

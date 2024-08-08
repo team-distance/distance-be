@@ -12,6 +12,7 @@ public record ContentResponse(
     Long councilId,
     String title,
     String content,
+    String school,
     LocalDate startDt,
     LocalDate endDt,
     List<CouncilGpsResponse> councilGpsResponses,
@@ -27,6 +28,7 @@ public record ContentResponse(
             .councilId(studentCouncil.getCouncilId())
             .title(studentCouncil.getTitle())
             .content(studentCouncil.getContent())
+            .school(studentCouncil.getSchool())
             .startDt(studentCouncil.getStartDt())
             .endDt(studentCouncil.getEndDt())
             .councilGpsResponses(councilGpsResponses)

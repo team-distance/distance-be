@@ -3,6 +3,8 @@ package io.festival.distance.domain.studentcouncil.presentation;
 import io.festival.distance.domain.studentcouncil.dto.request.ContentRequest;
 import io.festival.distance.domain.studentcouncil.dto.response.ContentResponse;
 import io.festival.distance.domain.studentcouncil.service.CouncilService;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -76,48 +78,8 @@ public class CouncilController {
         @RequestPart(value = "contentRequest") ContentRequest contentRequest,
         @RequestPart(value = "files",required = false) List<MultipartFile> files,
         Principal principal
-    ) {
+    ) throws IOException, NoSuchAlgorithmException {
         councilService.updateContent(
-            studentCouncilId,
-            principal.getName(),
-            contentRequest,
-            files
-        );
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * TODO
-     * 수정 API(제목, 위치(선택적), 내용, 날짜(선택적), 이미지(선택적))
-     */
-    @PatchMapping("/{studentCouncilId}/v2")
-    public ResponseEntity<Void> modifyContentV2(
-        @PathVariable Long studentCouncilId,
-        @RequestPart(value = "contentRequest") ContentRequest contentRequest,
-        @RequestPart(value = "files",required = false) List<MultipartFile> files,
-        Principal principal
-    ) {
-        councilService.updateContentV2(
-            studentCouncilId,
-            principal.getName(),
-            contentRequest,
-            files
-        );
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * TODO
-     * 수정 API(제목, 위치(선택적), 내용, 날짜(선택적), 이미지(선택적))
-     */
-    @PatchMapping("/{studentCouncilId}/v3")
-    public ResponseEntity<Void> modifyContentV3(
-        @PathVariable Long studentCouncilId,
-        @RequestPart(value = "contentRequest") ContentRequest contentRequest,
-        @RequestPart(value = "files",required = false) List<MultipartFile> files,
-        Principal principal
-    ) {
-        councilService.updateContentV3(
             studentCouncilId,
             principal.getName(),
             contentRequest,

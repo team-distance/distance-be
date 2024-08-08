@@ -11,6 +11,8 @@ import io.festival.distance.domain.studentcouncil.service.serviceimpl.CouncilCre
 import io.festival.distance.domain.studentcouncil.service.serviceimpl.CouncilDeleter;
 import io.festival.distance.domain.studentcouncil.service.serviceimpl.CouncilReader;
 import io.festival.distance.domain.studentcouncil.service.serviceimpl.CouncilUpdater;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -58,28 +60,7 @@ public class CouncilService {
         String telNum,
         ContentRequest contentRequest,
         List<MultipartFile> files
-    ) {
-        StudentCouncil studentCouncil = councilReader.findStudentCouncil(studentCouncilId);
-        councilUpdater.update(contentRequest,files,studentCouncil);
-    }
-
-    //
-    public void updateContentV2(
-        Long studentCouncilId,
-        String telNum,
-        ContentRequest contentRequest,
-        List<MultipartFile> files
-    ) {
-        StudentCouncil studentCouncil = councilReader.findStudentCouncil(studentCouncilId);
-        councilUpdater.update(contentRequest,files,studentCouncil);
-    }
-
-    public void updateContentV3(
-        Long studentCouncilId,
-        String telNum,
-        ContentRequest contentRequest,
-        List<MultipartFile> files
-    ) {
+    ) throws IOException, NoSuchAlgorithmException {
         StudentCouncil studentCouncil = councilReader.findStudentCouncil(studentCouncilId);
         councilUpdater.update(contentRequest,files,studentCouncil);
     }

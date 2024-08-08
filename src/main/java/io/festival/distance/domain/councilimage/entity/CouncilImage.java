@@ -36,7 +36,14 @@ public class CouncilImage {
     @Column(name = "is_used")
     private Boolean isUsed;
 
+    @Column(name = "image_hash")
+    private String imageHash;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "council_id")
     private StudentCouncil studentCouncil;
+
+    public void updateIsUsed(){
+        this.isUsed=false;
+    }
 }

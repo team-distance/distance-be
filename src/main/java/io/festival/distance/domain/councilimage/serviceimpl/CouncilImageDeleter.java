@@ -15,4 +15,9 @@ public class CouncilImageDeleter {
     public void delete(StudentCouncil studentCouncil){
         councilImageRepository.deleteAllByStudentCouncil(studentCouncil);
     }
+
+    @Transactional
+    public void deleteImage(String fileName){
+        councilImageRepository.deleteByFileName(fileName);
+    }
 }

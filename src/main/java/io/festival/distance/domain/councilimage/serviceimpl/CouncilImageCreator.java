@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class CouncilImageCreator {
     private final CouncilImageSaver councilImageSaver;
     private final S3UploadImage s3UploadImage;
+
     public void create(List<MultipartFile> files, StudentCouncil studentCouncil){
         List<CouncilImage> councilImages = new ArrayList<>();
         for (MultipartFile file : files) {
@@ -22,6 +23,7 @@ public class CouncilImageCreator {
             CouncilImage councilImage = CouncilImage.builder()
                 .fileName(s3Response.fileName())
                 .imageUrl(s3Response.imageUrl())
+                .imageHash(s3Response.imageHash())
                 .isUsed(true)
                 .studentCouncil(studentCouncil)
                 .build();

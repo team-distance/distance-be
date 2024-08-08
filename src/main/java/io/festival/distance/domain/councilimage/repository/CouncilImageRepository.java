@@ -9,4 +9,5 @@ public interface CouncilImageRepository extends JpaRepository<CouncilImage,Long>
     List<CouncilImage> findAllByStudentCouncil(StudentCouncil studentCouncil);
     List<CouncilImage> findAllByStudentCouncilAndIsUsedTrue(StudentCouncil studentCouncil);
     void deleteAllByStudentCouncil(StudentCouncil studentCouncil);
+    void deleteByFileName(String fileName);
 }
