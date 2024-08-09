@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true">
-  <property name="LOG_PATH" value="distance-logs"/>
+  <property name="LOG_PATH" value="log"/>
   <property name="LOG_FILE_NAME" value="distance-server"/>
 
   <!-- 패턴 설정 -->
