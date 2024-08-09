@@ -1,17 +1,10 @@
 spring:
   datasource:
-    master:
-      hikari:
-        driver-class-name: ${SPRING_DATASOURCE_DRIVER}
-        username: ${SPRING_DATASOURCE_USERNAME}
-        password: ${SPRING_DATASOURCE_PASSWORD}
-        jdbc-url: ${SPRING_DATASOURCE_MASTER_URL}
-    slave:
-      hikari:
-        driver-class-name: ${SPRING_DATASOURCE_DRIVER}
-        username: ${SPRING_DATASOURCE_USERNAME}
-        password: ${SPRING_DATASOURCE_PASSWORD}
-        jdbc-url: ${SPRING_DATASOURCE_SLAVE_URL}
+    url: jdbc:mysql://localhost:3306/distance?characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC&&allowPublicKeyRetrieval=true
+    username: root
+    password: wnstjr6522
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -81,3 +74,10 @@ cloud:
 slack:
   webhook:
     url: ${SLACK_URL}
+
+management:
+  endpoints:
+    web:
+      base-path: /api/actuator
+      exposure:
+        include: "prometheus"

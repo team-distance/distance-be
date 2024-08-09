@@ -36,8 +36,9 @@ dependencies {
 	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
 	runtimeOnly  group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
 	runtimeOnly  group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
-	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
-	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
+
+
 	implementation 'com.google.firebase:firebase-admin:9.2.0'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'net.nurigo:sdk:4.3.0'
@@ -46,6 +47,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-cache'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'io.micrometer:micrometer-registry-prometheus'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
 }
 
