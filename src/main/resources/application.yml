@@ -88,3 +88,8 @@ management:
       base-path: /api/actuator
       exposure:
         include: "prometheus"
+
+server:
+  tomcat:
+    mbeanregistry:
+      enabled: true
