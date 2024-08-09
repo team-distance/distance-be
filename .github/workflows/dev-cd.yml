@@ -87,3 +87,4 @@ jobs:
             sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/distance-0.0.1-snapshot
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/distance-0.0.1-snapshot
             sudo docker-compose -f ${{ secrets.DEV_DOCKER_COMPOSE_PATH }} up -d
+            sudo docker-compose -f ${{ secrets.DEV_DOCKER_COMPOSE_MONITORING_PATH }} up -d
