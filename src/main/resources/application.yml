@@ -1,16 +1,21 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/distance?characterEncoding=UTF-8&useSSL=false&serverTimezone=UTC&&allowPublicKeyRetrieval=true
-    username: root
-    password: wnstjr6522
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
+    master:
+      hikari:
+        driver-class-name: ${SPRING_DATASOURCE_DRIVER}
+        username: ${SPRING_DATASOURCE_USERNAME}
+        password: ${SPRING_DATASOURCE_PASSWORD}
+        jdbc-url: ${SPRING_DATASOURCE_MASTER_URL}
+    slave:
+      hikari:
+        driver-class-name: ${SPRING_DATASOURCE_DRIVER}
+        username: ${SPRING_DATASOURCE_USERNAME}
+        password: ${SPRING_DATASOURCE_PASSWORD}
+        jdbc-url: ${SPRING_DATASOURCE_SLAVE_URL}
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-  redis:
-    host: ${REDIS_HOST}
-    port: ${REDIS_PORT}
+
   jpa:
     hibernate:
       ddl-auto: update
