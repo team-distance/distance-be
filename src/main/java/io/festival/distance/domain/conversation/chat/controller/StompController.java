@@ -9,8 +9,8 @@ import io.festival.distance.domain.conversation.chat.entity.SenderType;
 import io.festival.distance.domain.conversation.chat.service.ChatMessageService;
 import io.festival.distance.domain.conversation.chat.valid.CheckMessageLength;
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
-import io.festival.distance.domain.conversation.chatroom.service.serviceimpl.ChatRoomReader;
 import io.festival.distance.domain.conversation.chatroom.service.ChatRoomService;
+import io.festival.distance.domain.conversation.chatroom.service.serviceimpl.ChatRoomReader;
 import io.festival.distance.domain.conversation.chatroomsession.entity.ChatRoomSession;
 import io.festival.distance.domain.conversation.chatroomsession.service.ChatRoomSessionService;
 import io.festival.distance.domain.conversation.roommember.service.RoomMemberService;
@@ -18,7 +18,6 @@ import io.festival.distance.domain.firebase.service.FcmService;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.global.exception.DistanceException;
-import io.festival.distance.infra.s3.dto.S3Response;
 import io.festival.distance.infra.s3.service.S3UploadImage;
 import java.util.List;
 import java.util.Objects;
@@ -32,9 +31,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -57,8 +54,7 @@ public class StompController {
     @Transactional
     public ResponseEntity<?> sendMessage(
         @DestinationVariable Long roomId,
-        @RequestPart(value = "chatMessageDto") ChatMessageDto chatMessageDto,
-        @RequestPart(value = "file", required = false) MultipartFile file
+        @RequestBody ChatMessageDto chatMessageDto
     ) {
         try {
             checkMessageLength.validMessageLength(chatMessageDto.getChatMessage());
@@ -67,14 +63,14 @@ public class StompController {
             // 채팅방 새션 조회
             List<ChatRoomSession> sessionByChatRoom = chatRoomSessionService
                 .findSessionByChatRoom(chatRoom); //2개가 나올 듯?
-
+/*
             //이미지 전송
             if (chatMessageDto.getPublishType().equals("IMAGE")) {
-                S3Response s3Response = s3UploadImage.saveImage(file);
-                chatMessageDto.updateMessage(s3Response.imageUrl());
+                //S3Response s3Response = s3UploadImage.saveImage(file);
+                //chatMessageDto.updateMessage(s3Response.imageUrl());
                 return getResponse(roomId, chatMessageDto, chatRoom,
                     sessionByChatRoom);
-            }
+            }*/
             /**
              *  채팅방을 나가는 경우
              */
