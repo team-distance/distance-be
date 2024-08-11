@@ -57,8 +57,8 @@ public class StompController {
     @Transactional
     public ResponseEntity<?> sendMessage(
         @DestinationVariable Long roomId,
-        @RequestPart ChatMessageDto chatMessageDto,
-        @RequestPart(required = false) MultipartFile file
+        @RequestPart(value = "chatMessageDto") ChatMessageDto chatMessageDto,
+        @RequestPart(value = "file", required = false) MultipartFile file
     ) {
         try {
             checkMessageLength.validMessageLength(chatMessageDto.getChatMessage());
@@ -69,7 +69,7 @@ public class StompController {
                 .findSessionByChatRoom(chatRoom); //2개가 나올 듯?
 
             //이미지 전송
-            if(chatMessageDto.getPublishType().equals("IMAGE")){
+            if (chatMessageDto.getPublishType().equals("IMAGE")) {
                 S3Response s3Response = s3UploadImage.saveImage(file);
                 chatMessageDto.updateMessage(s3Response.imageUrl());
                 return getResponse(roomId, chatMessageDto, chatRoom,
@@ -79,7 +79,7 @@ public class StompController {
              *  채팅방을 나가는 경우
              */
             if (chatMessageDto.getPublishType().equals(LEAVE)) {
-                if(chatRoom.getRoomStatus().equals(IN_ACTIVE)){
+                if (chatRoom.getRoomStatus().equals(IN_ACTIVE)) {
                     roomMemberService.goOutRoom(roomId, chatMessageDto.getReceiverId());
                     return null;
                 }
@@ -96,13 +96,14 @@ public class StompController {
                 Long messageId = chatMessageService.createMessage(chatRoom, messageDto,
                     SenderType.SYSTEM);
 
-                 sessionByChatRoom = chatRoomSessionService
-                     .findSessionByChatRoom(chatRoom); //2개가 나올 듯?
+                sessionByChatRoom = chatRoomSessionService
+                    .findSessionByChatRoom(chatRoom); //2개가 나올 듯?
                 if (!sessionByChatRoom.isEmpty()) {
                     for (ChatRoomSession chatRoomSession : sessionByChatRoom) {
                         Long memberId = chatRoomSession.getMemberId();
-                        if(Objects.equals(memberId, chatMessageDto.getSenderId())){
-                            roomMemberService.updateLastMessage(memberId, messageId, roomId); //가장 최근에 읽은 메시지 수정
+                        if (Objects.equals(memberId, chatMessageDto.getSenderId())) {
+                            roomMemberService.updateLastMessage(memberId, messageId,
+                                roomId); //가장 최근에 읽은 메시지 수정
                         }
                     }
                 }
