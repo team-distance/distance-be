@@ -1,4 +1,4 @@
-package io.festival.distance.domain.conversation.chatroom.dto.response;
+package io.festival.distance.domain.conversation.chatimage.dto.response;
 
 import lombok.Builder;
 
