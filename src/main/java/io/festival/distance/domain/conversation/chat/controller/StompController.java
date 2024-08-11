@@ -18,6 +18,8 @@ import io.festival.distance.domain.firebase.service.FcmService;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.global.exception.DistanceException;
+import io.festival.distance.infra.s3.dto.S3Response;
+import io.festival.distance.infra.s3.service.S3UploadImage;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +32,9 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -45,6 +49,7 @@ public class StompController {
     private final FcmService fcmService;
     private final MemberReader memberReader;
     private final ChatRoomReader chatRoomReader;
+    private final S3UploadImage s3UploadImage;
     private static final String LEAVE = "LEAVE";
 
     @MessageMapping("/chat/{roomId}") //app/chat/{roomId}로 요청이 들어왔을 때 -> 발신
@@ -52,7 +57,8 @@ public class StompController {
     @Transactional
     public ResponseEntity<?> sendMessage(
         @DestinationVariable Long roomId,
-        @RequestBody ChatMessageDto chatMessageDto
+        @RequestPart ChatMessageDto chatMessageDto,
+        @RequestPart(required = false) MultipartFile file
     ) {
         try {
             checkMessageLength.validMessageLength(chatMessageDto.getChatMessage());
@@ -61,6 +67,14 @@ public class StompController {
             // 채팅방 새션 조회
             List<ChatRoomSession> sessionByChatRoom = chatRoomSessionService
                 .findSessionByChatRoom(chatRoom); //2개가 나올 듯?
+
+            //이미지 전송
+            if(chatMessageDto.getPublishType().equals("IMAGE")){
+                S3Response s3Response = s3UploadImage.saveImage(file);
+                chatMessageDto.updateMessage(s3Response.imageUrl());
+                return getResponse(roomId, chatMessageDto, chatRoom,
+                    sessionByChatRoom);
+            }
             /**
              *  채팅방을 나가는 경우
              */
