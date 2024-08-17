@@ -82,8 +82,8 @@ jobs:
           port: ${{ secrets.AWS_PORT }}
           script: |
             sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
-            sudo chmod +x ./infra_deploy.sh
-            sudo ./infra_deploy.sh
-            sudo chmod +x ./deploy.sh
-            sudo ./deploy.sh
+            sudo chmod +x ./distance-remote-dev/infra_deploy.sh
+            sudo ./distance-remote-dev/infra_deploy.sh
+            sudo chmod +x ./distance-remote-dev/deploy.sh
+            sudo ./distance-remote-dev/deploy.sh
             sudo docker image prune -f
