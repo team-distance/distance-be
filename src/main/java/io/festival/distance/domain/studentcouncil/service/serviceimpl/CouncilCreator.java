@@ -17,7 +17,7 @@ public class CouncilCreator {
             .content(contentRequest.content())
             .startDt(contentRequest.startDt())
             .endDt(contentRequest.endDt())
-            .school(contentRequest.school())
+            .school(member.getSchool())
             .member(member)
             .build();
         councilSaver.save(studentCouncil);

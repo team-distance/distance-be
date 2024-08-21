@@ -4,6 +4,7 @@ import io.festival.distance.domain.councilgps.dto.response.CouncilGpsResponse;
 import io.festival.distance.domain.councilimage.dto.response.CouncilImageResponse;
 import io.festival.distance.domain.studentcouncil.entity.StudentCouncil;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;
 
@@ -15,6 +16,8 @@ public record ContentResponse(
     String school,
     LocalDate startDt,
     LocalDate endDt,
+    LocalDateTime createDt,
+    LocalDateTime modifyDt,
     List<CouncilGpsResponse> councilGpsResponses,
     List<CouncilImageResponse> councilImageResponses
 ) {
@@ -31,6 +34,8 @@ public record ContentResponse(
             .school(studentCouncil.getSchool())
             .startDt(studentCouncil.getStartDt())
             .endDt(studentCouncil.getEndDt())
+            .createDt(studentCouncil.getCreateDt())
+            .modifyDt(studentCouncil.getModifyDt())
             .councilGpsResponses(councilGpsResponses)
             .councilImageResponses(councilImageResponses)
             .build();

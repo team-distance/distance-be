@@ -36,7 +36,8 @@ public enum ErrorCode {
     TOO_MANY_REQUEST(HttpStatusCode.BAD_REQUEST.getStatus(),"하루 요청 수를 넘어갔습니다!"),
     NOT_EXIST_SCHOOL(HttpStatusCode.BAD_REQUEST.getStatus(), "존재하지 않는 대학교입니다!"),
     NOT_EXIST_CONTENT(HttpStatusCode.BAD_REQUEST.getStatus(), "존재하지 않는 게시글입니다!"),
-    EXPIRATION_AUTHENTICATE_NUMBER(HttpStatusCode.GONE.getStatus(), "만료된 요청번호입니다!");
+    EXPIRATION_AUTHENTICATE_NUMBER(HttpStatusCode.GONE.getStatus(), "만료된 요청번호입니다!"),
+    NOT_AUTHENTICATE_COUNCIL(HttpStatusCode.FORBIDDEN.getStatus(), "해당 학교 관리자가 아닙니다.");
     private final int status;
     private final String message;
 }

@@ -9,7 +9,6 @@ public record ContentRequest(
     String content,
     LocalDate startDt,
     LocalDate endDt,
-    String school,
     List<CouncilGpsRequest> councilGpsRequestList
 ) {
 

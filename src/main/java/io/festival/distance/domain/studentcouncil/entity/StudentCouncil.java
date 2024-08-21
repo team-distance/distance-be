@@ -55,6 +55,5 @@ public class StudentCouncil extends BaseTimeEntity {
         this.content = contentRequest.content();
         this.startDt = contentRequest.startDt();
         this.endDt = contentRequest.endDt();
-        this.school = contentRequest.school();
     }
 }

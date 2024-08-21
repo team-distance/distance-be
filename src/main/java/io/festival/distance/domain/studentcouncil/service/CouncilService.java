@@ -6,11 +6,13 @@ import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.domain.studentcouncil.dto.request.ContentRequest;
 import io.festival.distance.domain.studentcouncil.dto.response.ContentResponse;
+import io.festival.distance.domain.studentcouncil.dto.response.CouncilResponse;
 import io.festival.distance.domain.studentcouncil.entity.StudentCouncil;
 import io.festival.distance.domain.studentcouncil.service.serviceimpl.CouncilCreator;
 import io.festival.distance.domain.studentcouncil.service.serviceimpl.CouncilDeleter;
 import io.festival.distance.domain.studentcouncil.service.serviceimpl.CouncilReader;
 import io.festival.distance.domain.studentcouncil.service.serviceimpl.CouncilUpdater;
+import io.festival.distance.domain.studentcouncil.service.serviceimpl.CouncilValidator;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -29,6 +31,7 @@ public class CouncilService {
     private final CouncilReader councilReader;
     private final CouncilDeleter councilDeleter;
     private final CouncilUpdater councilUpdater;
+    private final CouncilValidator councilValidator;
 
     public void create(String telNum, ContentRequest contentRequest, List<MultipartFile> files) {
         Member member = memberReader.findTelNum(telNum); //총학계정
@@ -37,7 +40,7 @@ public class CouncilService {
         councilImageCreator.create(files,studentCouncil);
     }
 
-    public List<ContentResponse> findContents(String telNum, String school) {
+    public CouncilResponse findContents(String telNum, String school) {
         if (school == null) {
             Member member = memberReader.findTelNum(telNum);
             return councilReader.findList(member.getSchool());
@@ -49,8 +52,10 @@ public class CouncilService {
         return councilReader.findOne(studentCouncilId);
     }
 
-    public void deleteContent(Long studentCouncilId) {
+    public void deleteContent(Long studentCouncilId,String telNum) {
+        Member member = memberReader.findTelNum(telNum);
         StudentCouncil studentCouncil = councilReader.findStudentCouncil(studentCouncilId);
+        councilValidator.isWriter(member, studentCouncil.getMember());
         councilDeleter.delete(studentCouncil);
     }
 

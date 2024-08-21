@@ -2,6 +2,7 @@ package io.festival.distance.domain.studentcouncil.presentation;
 
 import io.festival.distance.domain.studentcouncil.dto.request.ContentRequest;
 import io.festival.distance.domain.studentcouncil.dto.response.ContentResponse;
+import io.festival.distance.domain.studentcouncil.dto.response.CouncilResponse;
 import io.festival.distance.domain.studentcouncil.service.CouncilService;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -38,7 +39,7 @@ public class CouncilController {
     public ResponseEntity<Void> createContent(
         Principal principal,
         @RequestPart(value = "contentRequest") ContentRequest contentRequest,
-        @RequestPart(value = "files",required = false) List<MultipartFile> files
+        @RequestPart(value = "files", required = false) List<MultipartFile> files
     ) {
         councilService.create(
             principal.getName(),
@@ -52,7 +53,7 @@ public class CouncilController {
      * 총학 게시글 리스트 조회 API
      */
     @GetMapping
-    public ResponseEntity<List<ContentResponse>> showContents(
+    public ResponseEntity<CouncilResponse> showContents(
         @RequestParam(value = "school", required = false) String school,
         Principal principal
     ) {
@@ -76,7 +77,7 @@ public class CouncilController {
     public ResponseEntity<Void> modifyContent(
         @PathVariable Long studentCouncilId,
         @RequestPart(value = "contentRequest") ContentRequest contentRequest,
-        @RequestPart(value = "files",required = false) List<MultipartFile> files,
+        @RequestPart(value = "files", required = false) List<MultipartFile> files,
         Principal principal
     ) throws IOException, NoSuchAlgorithmException {
         councilService.updateContent(
@@ -93,8 +94,11 @@ public class CouncilController {
      * 총학 게시글 삭제 API
      */
     @DeleteMapping("/{studentCouncilId}")
-    public ResponseEntity<Void> deleteContent(@PathVariable Long studentCouncilId) {
-        councilService.deleteContent(studentCouncilId);
+    public ResponseEntity<Void> deleteContent(
+        @PathVariable Long studentCouncilId,
+        Principal principal
+    ) {
+        councilService.deleteContent(studentCouncilId,principal.getName());
         return ResponseEntity.ok().build();
     }
 }
