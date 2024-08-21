@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CouncilValidator {
     public void isWriter(Member writer, Member member){
-        if(!writer.getTelNum().equals(member.getTelNum())){
+        if(!writer.getSchool().equals(member.getSchool())){
             throw new DistanceException(ErrorCode.NOT_AUTHENTICATE_COUNCIL);
         }
     }
