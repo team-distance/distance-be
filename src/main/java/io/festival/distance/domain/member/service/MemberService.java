@@ -158,7 +158,8 @@ public class MemberService {
         AuthenticateNumber authenticateNumber = redisCreator.create(
             telNumRequest.telNum(),
             num,
-            EXPIRE_TIME);
+            EXPIRE_TIME
+        );
         redisSaver.save(authenticateNumber);
         smsUtil.sendOne(telNumRequest, num);
         return num;
