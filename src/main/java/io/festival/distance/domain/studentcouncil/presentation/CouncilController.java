@@ -39,12 +39,15 @@ public class CouncilController {
     public ResponseEntity<Void> createContent(
         Principal principal,
         @RequestPart(value = "contentRequest") ContentRequest contentRequest,
-        @RequestPart(value = "files", required = false) List<MultipartFile> files
+        @RequestPart(value = "files", required = false) List<MultipartFile> files,
+        @RequestPart(value = "priority")List<Integer> priority
     ) {
         councilService.create(
             principal.getName(),
             contentRequest,
-            files);
+            files,
+            priority
+        );
         return ResponseEntity.ok().build();
     }
 

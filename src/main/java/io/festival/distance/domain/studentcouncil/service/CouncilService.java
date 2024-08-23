@@ -16,6 +16,7 @@ import io.festival.distance.domain.studentcouncil.service.serviceimpl.CouncilVal
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import javax.persistence.criteria.CriteriaBuilder.In;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,11 +34,16 @@ public class CouncilService {
     private final CouncilUpdater councilUpdater;
     private final CouncilValidator councilValidator;
 
-    public void create(String telNum, ContentRequest contentRequest, List<MultipartFile> files) {
+    public void create(
+        String telNum,
+        ContentRequest contentRequest,
+        List<MultipartFile> files,
+        List<Integer> priority
+    ) {
         Member member = memberReader.findTelNum(telNum); //총학계정
         StudentCouncil studentCouncil = councilCreator.create(contentRequest, member);
         councilGpsCreator.create(contentRequest.councilGpsRequestList(),studentCouncil);
-        councilImageCreator.create(files,studentCouncil);
+        councilImageCreator.create(files,studentCouncil,priority);
     }
 
     public CouncilResponse findContents(String telNum, String school) {

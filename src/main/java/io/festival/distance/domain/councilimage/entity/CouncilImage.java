@@ -39,6 +39,9 @@ public class CouncilImage {
     @Column(name = "image_hash")
     private String imageHash;
 
+    @Column(name = "priority")
+    private Integer priority;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "council_id")
     private StudentCouncil studentCouncil;
