@@ -70,9 +70,10 @@ public class CouncilService {
         Long studentCouncilId,
         String telNum,
         ContentRequest contentRequest,
-        List<MultipartFile> files
+        List<MultipartFile> files,
+        List<Integer> priority
     ) throws IOException, NoSuchAlgorithmException {
         StudentCouncil studentCouncil = councilReader.findStudentCouncil(studentCouncilId);
-        councilUpdater.update(contentRequest,files,studentCouncil);
+        councilUpdater.update(contentRequest,files,priority,studentCouncil);
     }
 }

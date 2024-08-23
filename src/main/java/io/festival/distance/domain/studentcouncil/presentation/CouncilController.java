@@ -81,13 +81,15 @@ public class CouncilController {
         @PathVariable Long studentCouncilId,
         @RequestPart(value = "contentRequest") ContentRequest contentRequest,
         @RequestPart(value = "files", required = false) List<MultipartFile> files,
+        @RequestPart(value = "priority") List<Integer> priority,
         Principal principal
     ) throws IOException, NoSuchAlgorithmException {
         councilService.updateContent(
             studentCouncilId,
             principal.getName(),
             contentRequest,
-            files
+            files,
+            priority
         );
         return ResponseEntity.ok().build();
     }

@@ -23,7 +23,11 @@ public class CouncilImageUpdater {
     private final S3UploadImage s3UploadImage;
 
     @Transactional
-    public void update(List<MultipartFile> files, StudentCouncil studentCouncil)
+    public void update(
+        List<MultipartFile> files,
+        List<Integer> priority,
+        StudentCouncil studentCouncil
+        )
         throws IOException, NoSuchAlgorithmException {
         List<CouncilImage> imageList = councilImageReader.findImageEntity(studentCouncil);
 
@@ -48,6 +52,6 @@ public class CouncilImageUpdater {
             imageToDelete.updateIsUsed();
         }
         filesToUpload.addAll(fileHashMap.values());
-        councilImageCreator.create(filesToUpload, studentCouncil);
+        councilImageCreator.create(filesToUpload, studentCouncil,priority);
     }
 }

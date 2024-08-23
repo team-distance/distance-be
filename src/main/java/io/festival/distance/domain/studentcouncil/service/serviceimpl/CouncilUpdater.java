@@ -24,12 +24,13 @@ public class CouncilUpdater {
     public void update(
         ContentRequest contentRequest,
         List<MultipartFile> files,
+        List<Integer> priority,
         StudentCouncil studentCouncil
     ) throws IOException, NoSuchAlgorithmException {
         double startTime = System.currentTimeMillis();
         studentCouncil.updateContent(contentRequest);
         councilGpsUpdater.update(contentRequest.councilGpsRequestList(),studentCouncil);
-        councilImageUpdater.update(files,studentCouncil);
+        councilImageUpdater.update(files,priority,studentCouncil);
         double endTime = System.currentTimeMillis();
         log.info("Execution Time : "+ (endTime - startTime)+"ms");
     }
