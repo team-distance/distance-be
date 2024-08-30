@@ -202,4 +202,13 @@ public enum University {
         }
         throw new DistanceException(NOT_EXIST_SCHOOL);
     }
+
+    public static University getEnumByName(String school) {
+        for (University university : University.values()) {
+            if (university.getName().equals(school)) {
+                return university;
+            }
+        }
+        throw new DistanceException(NOT_EXIST_SCHOOL);
+    }
 }

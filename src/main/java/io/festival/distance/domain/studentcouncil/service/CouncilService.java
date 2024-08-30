@@ -13,10 +13,10 @@ import io.festival.distance.domain.studentcouncil.service.serviceimpl.CouncilDel
 import io.festival.distance.domain.studentcouncil.service.serviceimpl.CouncilReader;
 import io.festival.distance.domain.studentcouncil.service.serviceimpl.CouncilUpdater;
 import io.festival.distance.domain.studentcouncil.service.serviceimpl.CouncilValidator;
+import io.festival.distance.infra.redis.statistics.StatisticsUpdater;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import javax.persistence.criteria.CriteriaBuilder.In;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,7 +33,7 @@ public class CouncilService {
     private final CouncilDeleter councilDeleter;
     private final CouncilUpdater councilUpdater;
     private final CouncilValidator councilValidator;
-
+    private final StatisticsUpdater statisticsUpdater;
     public void create(
         String telNum,
         ContentRequest contentRequest,
@@ -55,6 +55,7 @@ public class CouncilService {
     }
 
     public ContentResponse findContent(Long studentCouncilId) {
+        statisticsUpdater.update(studentCouncilId);
         return councilReader.findOne(studentCouncilId);
     }
 

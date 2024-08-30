@@ -1,5 +1,8 @@
 package io.festival.distance.domain.admin.service;
 
+import static io.festival.distance.authuniversity.domain.University.getDomainByName;
+import static io.festival.distance.authuniversity.domain.University.getEnumByName;
+
 import io.festival.distance.domain.admin.dto.AdminSignUpDto;
 import io.festival.distance.domain.member.entity.Authority;
 import io.festival.distance.domain.member.entity.Member;
@@ -15,11 +18,12 @@ public class AdminService {
     private final PasswordEncoder encoder;
 
     public Long createAdmin(AdminSignUpDto adminSignUpDto) {
+        String schoolDomain = getEnumByName(adminSignUpDto.school()).toString();
         Member member = Member.builder()
             .password(encoder.encode(adminSignUpDto.password()))
             .gender("관리자")
             .telNum(adminSignUpDto.telNum())
-            .authority(Authority.ROLE_ADMIN)
+            .authority("ROLE_COUNCIL_"+schoolDomain)
             .mbti("ISFJ")
             .nickName("관리자")
             .memberCharacter("운영자")

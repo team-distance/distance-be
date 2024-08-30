@@ -46,6 +46,9 @@ public class StudentCouncil extends BaseTimeEntity {
     @Column(name = "school")
     private String school;
 
+    @Column(name = "authority")
+    private String authority;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;

@@ -1,5 +1,9 @@
 package io.festival.distance.domain.member.service.serviceimpl;
 
+import static io.festival.distance.authuniversity.domain.University.UNIV_MAP;
+import static io.festival.distance.authuniversity.domain.University.getDomainByName;
+
+import io.festival.distance.authuniversity.domain.University;
 import io.festival.distance.domain.member.dto.MemberSignDto;
 import io.festival.distance.domain.member.entity.Authority;
 import io.festival.distance.domain.member.entity.Member;
@@ -32,7 +36,7 @@ public class MemberCreator {
             .password(memberUpdater.modifyPassword(signDto.password()))
             .gender(signDto.gender())
             .telNum(signDto.telNum())
-            .authority(Authority.ROLE_USER)
+            .authority("ROLE_USER")
             .mbti(signDto.mbti())
             .department(signDto.department())
             .college(signDto.college())

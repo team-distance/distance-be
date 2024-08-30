@@ -24,10 +24,10 @@ import io.festival.distance.domain.memberhobby.service.HobbyUpdater;
 import io.festival.distance.domain.membertag.service.TagCreator;
 import io.festival.distance.domain.membertag.service.TagUpdater;
 import io.festival.distance.global.exception.DistanceException;
-import io.festival.distance.infra.redis.AuthenticateNumber;
-import io.festival.distance.infra.redis.RedisCreator;
-import io.festival.distance.infra.redis.RedisReader;
-import io.festival.distance.infra.redis.RedisSaver;
+import io.festival.distance.infra.redis.authenticate.AuthenticateNumber;
+import io.festival.distance.infra.redis.authenticate.AuthenticateRedisCreator;
+import io.festival.distance.infra.redis.authenticate.AuthenticateRedisReader;
+import io.festival.distance.infra.redis.authenticate.AuthenticateRedisSaver;
 import io.festival.distance.infra.sms.SmsUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -57,9 +57,9 @@ public class MemberService {
     private final SmsUtil smsUtil;
     private final RoomMemberProcessor roomMemberProcessor;
 
-    private final RedisReader redisReader;
-    private final RedisSaver redisSaver;
-    private final RedisCreator redisCreator;
+    private final AuthenticateRedisReader authenticateRedisReader;
+    private final AuthenticateRedisSaver authenticateRedisSaver;
+    private final AuthenticateRedisCreator authenticateRedisCreator;
 
     /**
      * NOTE
@@ -133,7 +133,7 @@ public class MemberService {
 
     public void verifyAuthenticateNum(CheckAuthenticateNum checkAuthenticateNum) {
         AuthenticateNumber authenticateNumber
-            = redisReader.findAuthenticateNumber(checkAuthenticateNum.telNum());
+            = authenticateRedisReader.findAuthenticateNumber(checkAuthenticateNum.telNum());
         if (!memberVerifier.verifyNumber(checkAuthenticateNum.authenticateNum(),
             authenticateNumber.getAuthenticationNumber())) {
             throw new DistanceException(NOT_CORRECT_AUTHENTICATION_NUMBER);
@@ -155,12 +155,12 @@ public class MemberService {
      */
     public String sendSms(TelNumRequest telNumRequest) {
         String num = getTempPassword(CHAR_SET_AUTHENTICATE_NUMBER);
-        AuthenticateNumber authenticateNumber = redisCreator.create(
+        AuthenticateNumber authenticateNumber = authenticateRedisCreator.create(
             telNumRequest.telNum(),
             num,
             EXPIRE_TIME
         );
-        redisSaver.save(authenticateNumber);
+        authenticateRedisSaver.save(authenticateNumber);
         smsUtil.sendOne(telNumRequest, num);
         return num;
     }

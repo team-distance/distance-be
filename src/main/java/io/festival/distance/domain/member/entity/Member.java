@@ -81,9 +81,8 @@ public class Member extends BaseTimeEntity {
     @Column(name = "auth_univ")
     private UnivCert authUniv;
 
-    @Enumerated(STRING)
     @Column(name = "authority")
-    private Authority authority;
+    private String authority;
 
     public void memberInfoUpdate(MemberInfoDto memberInfoDto) {
         this.mbti = memberInfoDto.mbti();
