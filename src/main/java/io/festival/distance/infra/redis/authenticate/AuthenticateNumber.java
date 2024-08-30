@@ -1,4 +1,4 @@
-package io.festival.distance.infra.redis;
+package io.festival.distance.infra.redis.authenticate;
 
 import javax.persistence.Id;
 import lombok.AllArgsConstructor;
