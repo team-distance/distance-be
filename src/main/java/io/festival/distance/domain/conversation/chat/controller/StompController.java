@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin
-public class StompController {
+public class  StompController {
 
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
@@ -63,14 +63,6 @@ public class StompController {
             // 채팅방 새션 조회
             List<ChatRoomSession> sessionByChatRoom = chatRoomSessionService
                 .findSessionByChatRoom(chatRoom); //2개가 나올 듯?
-/*
-            //이미지 전송
-            if (chatMessageDto.getPublishType().equals("IMAGE")) {
-                //S3Response s3Response = s3UploadImage.saveImage(file);
-                //chatMessageDto.updateMessage(s3Response.imageUrl());
-                return getResponse(roomId, chatMessageDto, chatRoom,
-                    sessionByChatRoom);
-            }*/
             /**
              *  채팅방을 나가는 경우
              */
