@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.http.protocol.ResponseServer;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,11 +33,11 @@ public class StatisticsController {
     public ResponseEntity<StatisticsResponse> getDailyStatistics(
         @PathVariable Long councilId,
         @RequestParam(value = "type") String type,
-        @RequestParam(value ="date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+        @RequestParam(value = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
         Principal principal
     ) {
         return ResponseEntity.ok(
-            statisticsService.checkStatistics(councilId, principal.getName(),type,date)
+            statisticsService.checkStatistics(councilId, principal.getName(), type, date)
         );
     }
 
@@ -47,14 +48,29 @@ public class StatisticsController {
     @GetMapping
     public ResponseEntity<StatisticsResponse> getTotalStatistics(
         @RequestParam(value = "type") String type,
-        @RequestParam(value ="date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+        @RequestParam(value = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
         Principal principal
-    ){
-        return ResponseEntity.ok(statisticsService.checkTotalStatistics(type,date,principal.getName()));
+    ) {
+        return ResponseEntity.ok(
+            statisticsService.checkTotalStatistics(type, date, principal.getName()));
     }
 
+    /**
+     * NOTE
+     * 총학이 올린 게시글에 대한 전체 조회 수
+     */
     @GetMapping("/total")
-    public ResponseEntity<CountResponse> getTotalCount(Principal principal){
+    public ResponseEntity<CountResponse> getTotalCount(Principal principal) {
         return ResponseEntity.ok(statisticsService.calculateTotalCount(principal.getName()));
+    }
+
+    @GetMapping("/total/{councilId}")
+    public ResponseEntity<CountResponse> getTotalCountByCouncil(
+        @PathVariable Long councilId,
+        Principal principal
+    ) {
+        return ResponseEntity.ok(
+            statisticsService.calculateTotalCountByCouncil(councilId)
+        );
     }
 }

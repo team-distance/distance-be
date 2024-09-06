@@ -14,6 +14,7 @@ import io.festival.distance.domain.statistics.repository.StatisticsRepository;
 import io.festival.distance.domain.statistics.service.serviceimpl.StatisticsValidator;
 import io.festival.distance.domain.studentcouncil.entity.StudentCouncil;
 import io.festival.distance.domain.studentcouncil.service.serviceimpl.CouncilReader;
+import io.festival.distance.infra.redis.statistics.Statistics;
 import io.festival.distance.infra.redis.statistics.StatisticsReader;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -65,7 +66,7 @@ public class StatisticsService {
             statisticsRepository.findByDateAndStudentCouncil(LocalDate.now(), studentCouncil)
                 .or(() -> {
                     CouncilStatistics councilStatistics = CouncilStatistics.builder()
-                        .count(0)
+                        .count(1)
                         .date(LocalDate.now())
                         .studentCouncil(studentCouncil)
                         .role(member.getAuthority())
@@ -118,6 +119,14 @@ public class StatisticsService {
         Integer totalCount = statisticsReader.findTotalCount(member.getAuthority());
         return CountResponse.builder()
             .total(totalCount)
+            .build();
+    }
+
+    public CountResponse calculateTotalCountByCouncil(Long councilId) {
+        StudentCouncil studentCouncil = councilReader.findStudentCouncil(councilId);
+        Integer totalCountByCouncil = statisticsReader.findTotalCountByCouncil(studentCouncil);
+        return CountResponse.builder()
+            .total(totalCountByCouncil)
             .build();
     }
 }

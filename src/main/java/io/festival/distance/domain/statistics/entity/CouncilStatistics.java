@@ -42,8 +42,8 @@ public class CouncilStatistics {
     @JoinColumn(name = "council_id")
     private StudentCouncil studentCouncil;
 
-    public void updateCount(int count){
-        this.count =count;
+    public void updateCount(int count) {
+        this.count += count;
     }
 }
 
