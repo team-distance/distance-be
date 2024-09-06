@@ -18,7 +18,6 @@ import io.festival.distance.domain.firebase.service.FcmService;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.global.exception.DistanceException;
-import io.festival.distance.infra.s3.service.S3UploadImage;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +45,6 @@ public class  StompController {
     private final FcmService fcmService;
     private final MemberReader memberReader;
     private final ChatRoomReader chatRoomReader;
-    private final S3UploadImage s3UploadImage;
     private static final String LEAVE = "LEAVE";
 
     @MessageMapping("/chat/{roomId}") //app/chat/{roomId}로 요청이 들어왔을 때 -> 발신
@@ -113,7 +111,7 @@ public class  StompController {
                 return getResponse(roomId, chatMessageDto, chatRoom, sessionByChatRoom);
             }
 
-            // 나머지 일반적인 경우
+            // 나머지 일반적인 경우 (USER, IMAGE)
             return getResponse(roomId, chatMessageDto, chatRoom,
                 sessionByChatRoom);
 
