@@ -43,6 +43,7 @@ public class CouncilStatistics {
     private StudentCouncil studentCouncil;
 
     public void updateCount(int count) {
+        System.out.println("UPDATE!!!!!!!");
         this.count += count;
     }
 }

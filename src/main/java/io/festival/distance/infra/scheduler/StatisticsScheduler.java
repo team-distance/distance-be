@@ -29,21 +29,21 @@ public class StatisticsScheduler {
             .forEach(it -> {
                 if(it == null) return;
                 StudentCouncil studentCouncil = councilReader.findStudentCouncil(it.getId());
-                Optional<CouncilStatistics> statistics =
+                CouncilStatistics statistics =
                     statisticsRepository.findByDateAndStudentCouncil(LocalDate.now(),
                             studentCouncil)
-                        .or(() -> {
+                        .orElseGet(() -> {
                             CouncilStatistics councilStatistics = CouncilStatistics.builder()
                                 .count(1)
                                 .date(LocalDate.now())
                                 .studentCouncil(studentCouncil)
                                 .build();
                             statisticsRepository.save(councilStatistics);
-                            return Optional.of(councilStatistics);
+                            return councilStatistics;
                         });
-                System.out.println("statistics.get().getCount() = " + statistics.get().getCount());
-                statistics.ifPresent(stat -> stat.updateCount(it.getCount()));
-                System.out.println("statistics.get().getCount() = " + statistics.get().getCount());
+                System.out.println("statistics.get().getCount() = " + statistics.getCount());
+                statistics.updateCount(it.getCount());
+                System.out.println("statistics.get().getCount() = " + statistics.getCount());
                 statisticsDeleter.delete(it.getId());
             });
     }
