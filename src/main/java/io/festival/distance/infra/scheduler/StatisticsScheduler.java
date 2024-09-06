@@ -41,7 +41,9 @@ public class StatisticsScheduler {
                             statisticsRepository.save(councilStatistics);
                             return Optional.of(councilStatistics);
                         });
+                System.out.println("statistics.get().getCount() = " + statistics.get().getCount());
                 statistics.ifPresent(stat -> stat.updateCount(it.getCount()));
+                System.out.println("statistics.get().getCount() = " + statistics.get().getCount());
                 statisticsDeleter.delete(it.getId());
             });
     }
