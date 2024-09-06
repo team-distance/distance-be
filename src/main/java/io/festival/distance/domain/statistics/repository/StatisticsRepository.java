@@ -33,4 +33,8 @@ public interface StatisticsRepository extends JpaRepository<CouncilStatistics, L
         LocalDate date,
         StudentCouncil studentCouncil
     );
+
+    @Query("select sum (c.count) from CouncilStatistics c "
+        + "where c.role = :role")
+    Integer getByCount(@Param(value = "role") String role);
 }

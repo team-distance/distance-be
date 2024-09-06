@@ -35,6 +35,9 @@ public class CouncilStatistics {
     @Column(name = "date")
     private LocalDate date;
 
+    @Column(name = "role")
+    private String role;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "council_id")
     private StudentCouncil studentCouncil;

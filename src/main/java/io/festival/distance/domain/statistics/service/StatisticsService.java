@@ -7,6 +7,7 @@ import static io.festival.distance.utils.DateUtil.getStartOfWeek;
 
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
+import io.festival.distance.domain.statistics.dto.response.CountResponse;
 import io.festival.distance.domain.statistics.dto.response.StatisticsResponse;
 import io.festival.distance.domain.statistics.entity.CouncilStatistics;
 import io.festival.distance.domain.statistics.repository.StatisticsRepository;
@@ -14,11 +15,8 @@ import io.festival.distance.domain.statistics.service.serviceimpl.StatisticsVali
 import io.festival.distance.domain.studentcouncil.entity.StudentCouncil;
 import io.festival.distance.domain.studentcouncil.service.serviceimpl.CouncilReader;
 import io.festival.distance.infra.redis.statistics.StatisticsReader;
-import java.security.Principal;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,6 +68,7 @@ public class StatisticsService {
                         .count(0)
                         .date(LocalDate.now())
                         .studentCouncil(studentCouncil)
+                        .role(member.getAuthority())
                         .build();
                     statisticsRepository.save(councilStatistics);
                     return Optional.of(councilStatistics);
@@ -112,5 +111,13 @@ public class StatisticsService {
         return statisticsRepository.findByDateBetween(startDate, endDate, member.getAuthority())
             .map(it -> StatisticsResponse.fromCount(startDate,it))
             .orElse(StatisticsResponse.fromCount(startDate,0));
+    }
+
+    public CountResponse calculateTotalCount(String telNum) {
+        Member member = memberReader.findTelNum(telNum);
+        Integer totalCount = statisticsReader.findTotalCount(member.getAuthority());
+        return CountResponse.builder()
+            .total(totalCount)
+            .build();
     }
 }

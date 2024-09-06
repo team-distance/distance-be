@@ -1,10 +1,12 @@
 package io.festival.distance.domain.statistics.controller;
 
+import io.festival.distance.domain.statistics.dto.response.CountResponse;
 import io.festival.distance.domain.statistics.dto.response.StatisticsResponse;
 import io.festival.distance.domain.statistics.service.StatisticsService;
 import java.security.Principal;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
+import org.apache.http.protocol.ResponseServer;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -49,5 +51,10 @@ public class StatisticsController {
         Principal principal
     ){
         return ResponseEntity.ok(statisticsService.checkTotalStatistics(type,date,principal.getName()));
+    }
+
+    @GetMapping("/total")
+    public ResponseEntity<CountResponse> getTotalCount(Principal principal){
+        return ResponseEntity.ok(statisticsService.calculateTotalCount(principal.getName()));
     }
 }
