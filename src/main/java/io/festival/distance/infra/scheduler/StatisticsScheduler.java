@@ -1,13 +1,7 @@
 package io.festival.distance.infra.scheduler;
 
-import io.festival.distance.domain.statistics.entity.CouncilStatistics;
-import io.festival.distance.domain.statistics.repository.StatisticsRepository;
-import io.festival.distance.domain.studentcouncil.entity.StudentCouncil;
-import io.festival.distance.domain.studentcouncil.service.serviceimpl.CouncilReader;
-import io.festival.distance.infra.redis.statistics.StatisticsDeleter;
+import io.festival.distance.domain.statistics.service.serviceimpl.StatisticsUpdater;
 import io.festival.distance.infra.redis.statistics.StatisticsReader;
-import java.time.LocalDate;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -18,33 +12,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class StatisticsScheduler {
 
     private final StatisticsReader statisticsReader;
-    private final StatisticsRepository statisticsRepository;
-    private final CouncilReader councilReader;
-    private final StatisticsDeleter statisticsDeleter;
-
+    private final StatisticsUpdater statisticsUpdater;
     @Transactional
     @Scheduled(fixedRate = 30000)
     public void schedulerByDate() {
         statisticsReader.findAll()
             .forEach(it -> {
                 if(it == null) return;
-                StudentCouncil studentCouncil = councilReader.findStudentCouncil(it.getId());
-                CouncilStatistics statistics =
-                    statisticsRepository.findByDateAndStudentCouncil(LocalDate.now(),
-                            studentCouncil)
-                        .orElseGet(() -> {
-                            CouncilStatistics councilStatistics = CouncilStatistics.builder()
-                                .count(1)
-                                .date(LocalDate.now())
-                                .studentCouncil(studentCouncil)
-                                .build();
-                            statisticsRepository.save(councilStatistics);
-                            return councilStatistics;
-                        });
-                System.out.println("statistics.get().getCount() = " + statistics.getCount());
-                statistics.updateCount(it.getCount());
-                System.out.println("statistics.get().getCount() = " + statistics.getCount());
-                statisticsDeleter.delete(it.getId());
+                statisticsUpdater.update(it.getId(),it.getCount());
             });
     }
 }
