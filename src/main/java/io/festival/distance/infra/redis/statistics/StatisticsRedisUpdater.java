@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class StatisticsUpdater {
+public class StatisticsRedisUpdater {
     private final StatisticsReader statisticsReader;
     private final StatisticsSaver statisticsSaver;
     public void update(Long councilId){
