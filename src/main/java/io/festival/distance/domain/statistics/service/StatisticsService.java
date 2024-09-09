@@ -57,12 +57,13 @@ public class StatisticsService {
         Integer count = statisticsReader.findStatistics(councilId).getCount();
 
         // NOTE -> 오늘 자 조회수 업데이트 로직
-        statisticsUpdater.update(councilId,count);
+        statisticsUpdater.update(councilId, count);
 
         // NOTE -> 최종 조회수 측정
         if ("daily".equals(type)) {
             // 날짜 범위 내의 각 날짜를 처리 (countWeek 만큼만 날짜 생성)
-            result.endDate().minusDays(countWeek-1).datesUntil(result.endDate().plusDays(1))  // 종료일 포함
+            result.endDate().minusDays(countWeek - 1)
+                .datesUntil(result.endDate().plusDays(1))  // 종료일 포함
                 .forEach(currentDate -> {
                     int statisticsCount = statisticsRepository.findByStudentCouncilAndDateBetween(
                         studentCouncil, currentDate, currentDate
@@ -92,21 +93,61 @@ public class StatisticsService {
             }
 
         }
-        return toResult(studentCouncil.getTitle(),studentCouncil.getCreateDt(),statisticsResponses);
+        return toResult(studentCouncil.getTitle(), studentCouncil.getCreateDt(),
+            statisticsResponses);
     }
 
 
-    public StatisticsResponse checkTotalStatistics(String type, LocalDate date, String telNum) {
+    public StatisticsResponses checkTotalStatistics(
+        String type,
+        LocalDate date,
+        Integer count,
+        String telNum
+    ) {
         Member member = memberReader.findTelNum(telNum);
-        StatisticsTypeCheck result = result(date, type);
+        StatisticsTypeCheck result = StatisticsTypeCheck.resultByCount(date, type, count);
+        StatisticsResponses statisticsResponses = StatisticsResponses.builder()
+            .responsesList(new ArrayList<>())
+            .build();
+        if ("daily".equals(type)) {
+            // 날짜 범위 내의 각 날짜를 처리 (countWeek 만큼만 날짜 생성)
+            result.endDate().minusDays(count - 1)
+                .datesUntil(result.endDate().plusDays(1))  // 종료일 포함
+                .forEach(currentDate -> {
+                    int statisticsCount = statisticsRepository.findByDateBetween(
+                        currentDate, currentDate,member.getAuthority()
+                    ).orElse(0);  // 각 날짜별 조회수
+                    statisticsResponses.addResponse(
+                        StatisticsResponse.toStatisticsResponse(currentDate, statisticsCount)
+                    );
+                });
+        } else {
+            // 주간 또는 월간 처리: 범위 내 전체 데이터를 한 번에 처리
+            for (LocalDate currentStart = result.startDate();
+                !currentStart.isAfter(result.endDate());
+                currentStart = "weekly".equals(type) ? currentStart.plusWeeks(1)
+                    : currentStart.plusMonths(1)) {
 
-        return statisticsRepository.findByDateBetween(
+                LocalDate currentEnd = "weekly".equals(type)
+                    ? currentStart.plusDays(6)  // 주간은 7일 범위
+                    : currentStart.with(TemporalAdjusters.lastDayOfMonth());  // 월간은 그 달의 마지막 날까지
+
+                int statisticsCount = statisticsRepository.findByDateBetween(
+                    currentStart, currentEnd,member.getAuthority()
+                ).orElse(0);  // 주간/월간 조회수
+                statisticsResponses.addResponse(
+                    StatisticsResponse.toStatisticsResponse(currentStart, statisticsCount)
+                );
+            }
+        }
+        return statisticsResponses;
+       /* return statisticsRepository.findByDateBetween(
                 result.startDate(),
                 result.endDate(),
                 member.getAuthority()
             )
             .map(it -> StatisticsResponse.fromCount(result.startDate(), it))
-            .orElse(StatisticsResponse.fromCount(result.startDate(), 0));
+            .orElse(StatisticsResponse.fromCount(result.startDate(), 0));*/
     }
 
     public CountResponse calculateTotalCount(String telNum) {
@@ -126,7 +167,7 @@ public class StatisticsService {
     }
 
     public List<BestStatisticsResponse> findBestCouncil() {
-        return statisticsRepository.getBestStatisticsCouncil(PageRequest.of(0,3))
+        return statisticsRepository.getBestStatisticsCouncil(PageRequest.of(0, 3))
             .stream()
             .map(BestStatisticsResponse::toBestStatisticsResponse)
             .collect(Collectors.toList());

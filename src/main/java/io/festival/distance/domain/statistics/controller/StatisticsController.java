@@ -36,9 +36,9 @@ public class StatisticsController {
         @PathVariable Long councilId,
         @RequestParam(value = "type") String type,
         @RequestParam(value = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-        Principal principal,
-        @RequestParam(value = "count") Integer count
-    ) {
+        @RequestParam(value = "count") Integer count,
+        Principal principal
+        ) {
         return ResponseEntity.ok(
             statisticsService.checkStatistics(councilId, principal.getName(), type, date, count)
         );
@@ -49,13 +49,14 @@ public class StatisticsController {
      * 전체 조회 수 조회
      */
     @GetMapping
-    public ResponseEntity<StatisticsResponse> getTotalStatistics(
+    public ResponseEntity<StatisticsResponses> getTotalStatistics(
         @RequestParam(value = "type") String type,
         @RequestParam(value = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+        @RequestParam(value = "count") Integer count,
         Principal principal
     ) {
         return ResponseEntity.ok(
-            statisticsService.checkTotalStatistics(type, date, principal.getName()));
+            statisticsService.checkTotalStatistics(type, date, count, principal.getName()));
     }
 
     /**
