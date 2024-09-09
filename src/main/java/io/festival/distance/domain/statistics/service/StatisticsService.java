@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,7 +62,7 @@ public class StatisticsService {
         // NOTE -> 최종 조회수 측정
         if ("daily".equals(type)) {
             // 날짜 범위 내의 각 날짜를 처리 (countWeek 만큼만 날짜 생성)
-            result.endDate().minusDays(countWeek - 1).datesUntil(result.endDate().plusDays(1))  // 종료일 포함
+            result.endDate().minusDays(countWeek-1).datesUntil(result.endDate().plusDays(1))  // 종료일 포함
                 .forEach(currentDate -> {
                     int statisticsCount = statisticsRepository.findByStudentCouncilAndDateBetween(
                         studentCouncil, currentDate, currentDate
