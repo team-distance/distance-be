@@ -17,11 +17,11 @@ public record StatisticsTypeCheck(LocalDate startDate, LocalDate endDate) {
         return switch (type) {
             case "daily" -> new StatisticsTypeCheck(date.minusDays(countWeek), date);
             case "weekly" -> new StatisticsTypeCheck(
-                DateUtil.getStartOfWeek(date.minusWeeks(countWeek)),
+                DateUtil.getStartOfWeek(date.minusWeeks(countWeek-1)),
                 DateUtil.getEndOfWeek(date)
             );
             case "monthly" -> new StatisticsTypeCheck(
-                DateUtil.getStartOfMonth(date.minusMonths(countWeek)),
+                DateUtil.getStartOfMonth(date.minusMonths(countWeek-1)),
                 DateUtil.getEndOfMonth(date)
             );
             default -> throw new DistanceException(ErrorCode.INVALID_TYPE);
