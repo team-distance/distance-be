@@ -22,7 +22,7 @@ public class GpsValidator {
     }
 
     public boolean isActivatedMember(Member centerUser){
-        return centerUser.isActivated() && centerUser.getAuthority().equals(Authority.ROLE_USER);
+        return centerUser.isActivated() && centerUser.getAuthority().equals("ROLE_USER");
     }
 
     public boolean isWomenSchool(Member centerUser, Member member){
