@@ -34,7 +34,7 @@ public class MemberReader {
             .orElseThrow(() -> new DistanceException(NOT_EXIST_MEMBER));
     }
 
-    public Member findNickName(String nickName){
+    public Member findNickName(String nickName) {
         return memberRepository.findByNickName(nickName)
             .orElseThrow(() -> new DistanceException(NOT_EXIST_MEMBER));
     }
@@ -56,7 +56,21 @@ public class MemberReader {
     }
 
     @Transactional(readOnly = true)
-    public List<Member> findMemberList(){
+    public List<Member> findMemberList() {
         return memberRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Member> findMemberListBySchool(String school) {
+        return memberRepository.findAllBySchool(school);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Member> findRandomMember(
+        String character,
+        String school,
+        String gender
+    ) {
+        return memberRepository.findAllBySchoolAndMemberCharacter(school, character,gender);
     }
 }
