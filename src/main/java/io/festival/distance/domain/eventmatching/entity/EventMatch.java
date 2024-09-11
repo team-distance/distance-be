@@ -50,4 +50,7 @@ public class EventMatch {
     @Column(name = "is_send")
     private Boolean isSend;
 
+    public void update(){
+        this.isSend = true;
+    }
 }

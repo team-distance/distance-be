@@ -69,5 +69,16 @@ public class SmsUtil {
         return message;
     }
 
+
+    public void sendEventMessage(String telNum,String nickname){
+        Message message = new Message();
+        message.setFrom(findNumber);
+        message.setTo(telNum);
+        message.setText("[Distance] \n"
+            + nickname+"님과 매칭되었어요.\n"
+            + "링크를 클릭해 대화를 시작해보세요!\n"
+            + "https://dis-tance.com/event-matching");
+         this.findMessageService.sendOne(new SingleMessageSendingRequest(message));
+    }
 }
 

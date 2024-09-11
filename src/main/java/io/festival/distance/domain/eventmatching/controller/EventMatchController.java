@@ -56,4 +56,10 @@ public class EventMatchController {
     public ResponseEntity<List<EventMatchListResponse>> getEventMatchingList(){
         return ResponseEntity.ok(eventMatchService.findAllMatingEvent());
     }
+
+    @PostMapping("/send")
+    public ResponseEntity<Void> sendEventMessage(){
+        eventMatchService.sendAllEventMessage();
+        return ResponseEntity.ok().build();
+    }
 }

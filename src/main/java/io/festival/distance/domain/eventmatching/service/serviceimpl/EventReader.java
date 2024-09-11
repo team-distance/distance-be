@@ -21,4 +21,9 @@ public class EventReader {
     public List<EventMatch> findAllEvent(){
         return eventMatchRepository.findAll();
     }
+
+    @Transactional(readOnly = true)
+    public List<EventMatch> findAllNotSend(){
+         return eventMatchRepository.findAllEventMatching();
+    }
 }
