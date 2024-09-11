@@ -37,7 +37,6 @@ public class GpsDtoCreator {
                     )
                     .nickName(user.nickName())
                     .school(user.school())
-                    .telNum(user.telNum())
                     .reportCount(user.reportCount())
                     .build())
             .limit(4)
