@@ -65,6 +65,7 @@ public class SecurityConfig {
             .antMatchers("/api/admin/signup").permitAll()
             .antMatchers("/api/member/send/sms").permitAll()
             .antMatchers("/api/member/authenticate").permitAll()
+            .antMatchers("/api/member/change/password").permitAll()
             .antMatchers("/api/gps/matching").permitAll()
             .antMatchers("/api/performance/**").permitAll()
             .antMatchers("/api/food-truck/**").permitAll()
@@ -76,7 +77,7 @@ public class SecurityConfig {
                 "/swagger-ui.html",
                 "/v2/api-docs",
                 "/webjars/**").permitAll()
-            .anyRequest().authenticated()
+            .anyRequest().permitAll()
 
             .and()
             .apply(

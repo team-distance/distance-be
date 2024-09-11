@@ -36,6 +36,8 @@ public class GpsDtoCreator {
                         memberReader.getMemberProfileDto(memberReader.findTelNum(user.telNum()))
                     )
                     .nickName(user.nickName())
+                    .school(user.school())
+                    .reportCount(user.reportCount())
                     .build())
             .limit(4)
             .toList();

@@ -9,8 +9,8 @@ import io.festival.distance.domain.conversation.chat.entity.SenderType;
 import io.festival.distance.domain.conversation.chat.service.ChatMessageService;
 import io.festival.distance.domain.conversation.chat.valid.CheckMessageLength;
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
-import io.festival.distance.domain.conversation.chatroom.service.serviceimpl.ChatRoomReader;
 import io.festival.distance.domain.conversation.chatroom.service.ChatRoomService;
+import io.festival.distance.domain.conversation.chatroom.service.serviceimpl.ChatRoomReader;
 import io.festival.distance.domain.conversation.chatroomsession.entity.ChatRoomSession;
 import io.festival.distance.domain.conversation.chatroomsession.service.ChatRoomSessionService;
 import io.festival.distance.domain.conversation.roommember.service.RoomMemberService;
@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin
-public class StompController {
+public class  StompController {
 
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
@@ -61,15 +61,11 @@ public class StompController {
             // 채팅방 새션 조회
             List<ChatRoomSession> sessionByChatRoom = chatRoomSessionService
                 .findSessionByChatRoom(chatRoom); //2개가 나올 듯?
-            System.out.println("처음 세션 개수 :"+ sessionByChatRoom.size());
-            for (int i = 0; i < sessionByChatRoom.size(); i++) {
-                System.out.println("세션 아이디: "+sessionByChatRoom.get(i).getSessionId());
-            }
             /**
              *  채팅방을 나가는 경우
              */
             if (chatMessageDto.getPublishType().equals(LEAVE)) {
-                if(chatRoom.getRoomStatus().equals(IN_ACTIVE)){
+                if (chatRoom.getRoomStatus().equals(IN_ACTIVE)) {
                     roomMemberService.goOutRoom(roomId, chatMessageDto.getReceiverId());
                     return null;
                 }
@@ -86,13 +82,14 @@ public class StompController {
                 Long messageId = chatMessageService.createMessage(chatRoom, messageDto,
                     SenderType.SYSTEM);
 
-                 sessionByChatRoom = chatRoomSessionService
-                     .findSessionByChatRoom(chatRoom); //2개가 나올 듯?
+                sessionByChatRoom = chatRoomSessionService
+                    .findSessionByChatRoom(chatRoom); //2개가 나올 듯?
                 if (!sessionByChatRoom.isEmpty()) {
                     for (ChatRoomSession chatRoomSession : sessionByChatRoom) {
                         Long memberId = chatRoomSession.getMemberId();
-                        if(Objects.equals(memberId, chatMessageDto.getSenderId())){
-                            roomMemberService.updateLastMessage(memberId, messageId, roomId); //가장 최근에 읽은 메시지 수정
+                        if (Objects.equals(memberId, chatMessageDto.getSenderId())) {
+                            roomMemberService.updateLastMessage(memberId, messageId,
+                                roomId); //가장 최근에 읽은 메시지 수정
                         }
                     }
                 }
@@ -114,7 +111,7 @@ public class StompController {
                 return getResponse(roomId, chatMessageDto, chatRoom, sessionByChatRoom);
             }
 
-            // 나머지 일반적인 경우
+            // 나머지 일반적인 경우 (USER, IMAGE)
             return getResponse(roomId, chatMessageDto, chatRoom,
                 sessionByChatRoom);
 

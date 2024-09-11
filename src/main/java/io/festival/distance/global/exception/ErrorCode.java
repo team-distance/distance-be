@@ -34,7 +34,12 @@ public enum ErrorCode {
     NOT_EXIST_MENU(HttpStatusCode.BAD_REQUEST.getStatus(),"존재하지 않는 메뉴입니다!"),
     NOT_EXIST_MEMBER_IP(HttpStatusCode.BAD_REQUEST.getStatus(),"존재하지 않는 IP입니다!"),
     TOO_MANY_REQUEST(HttpStatusCode.BAD_REQUEST.getStatus(),"하루 요청 수를 넘어갔습니다!"),
-    NOT_EXIST_SCHOOL(HttpStatusCode.BAD_REQUEST.getStatus(), "존재하지 않는 대학교입니다!");
+    NOT_EXIST_SCHOOL(HttpStatusCode.BAD_REQUEST.getStatus(), "존재하지 않는 대학교입니다!"),
+    NOT_EXIST_CONTENT(HttpStatusCode.BAD_REQUEST.getStatus(), "존재하지 않는 게시글입니다!"),
+    EXPIRATION_AUTHENTICATE_NUMBER(HttpStatusCode.GONE.getStatus(), "만료된 요청번호입니다!"),
+    NOT_AUTHENTICATE_COUNCIL(HttpStatusCode.FORBIDDEN.getStatus(), "해당 학교 관리자가 아닙니다."),
+    INVALID_TYPE(HttpStatusCode.BAD_REQUEST.getStatus(), "유효하지 않는 type입니다!"),
+    ALREADY_EXIST_MEMBER(HttpStatusCode.BAD_REQUEST.getStatus(),"이미 이벤트에 참여했습니다!");
 
     private final int status;
     private final String message;

@@ -9,6 +9,7 @@ public enum HttpStatusCode {
     CREATED(201),
     OK(200),
     CONFLICT(409),
+    GONE(410),
     BAD_REQUEST(400),
     UNAUTHORIZED(401),
     FORBIDDEN(403),

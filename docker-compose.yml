@@ -1,6 +1,15 @@
 version: '3.1'
 
 services:
+  redis:
+    image: redis:latest
+    container_name: redis-container
+    ports:
+      - "6379:6379"
+    networks:
+      - distance-networked
+    restart: always
+
   app:
     image: junseok1204/distance-0.0.1-snapshot
     container_name: app-container
@@ -10,10 +19,6 @@ services:
       - "./.env"
     environment:
       - TZ=Asis/Seoul
-    depends_on:
-      - db
-    links:
-      - db
     networks:
       - distance-networked
     restart: always
@@ -43,9 +48,5 @@ services:
         - distance-networked
       entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
-
 networks:
   distance-networked:
-
-volumes:
-  mysql-data:

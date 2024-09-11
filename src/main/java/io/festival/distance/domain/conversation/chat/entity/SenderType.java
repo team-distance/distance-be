@@ -11,8 +11,11 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum SenderType {
-    USER("USER"), SYSTEM("SYSTEM"),
-    CALL_REQUEST("CALL_REQUEST"), CALL_RESPONSE("CALL_RESPONSE");
+    USER("USER"),
+    SYSTEM("SYSTEM"),
+    CALL_REQUEST("CALL_REQUEST"),
+    CALL_RESPONSE("CALL_RESPONSE"),
+    IMAGE("IMAGE");
 
     private final String senderType;
 

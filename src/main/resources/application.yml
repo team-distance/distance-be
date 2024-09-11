@@ -15,7 +15,9 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
   jpa:
     hibernate:
       ddl-auto: update
@@ -79,3 +81,19 @@ cloud:
 slack:
   webhook:
     url: ${SLACK_URL}
+
+management:
+  endpoints:
+    web:
+      base-path: /api/actuator
+      exposure:
+        include: "prometheus,health"
+
+server:
+  tomcat:
+    mbeanregistry:
+      enabled: true
+
+logging:
+  level:
+    root: INFO

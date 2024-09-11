@@ -22,7 +22,7 @@ public class ChatMessageResponseDto {
     private Long senderId;
     private Long messageId;
     private int unreadCount;
-    private boolean checkTiKiTaKa;
+    private Long checkTiKiTaKa;
     private LocalDateTime sendDt;
 
     public ChatMessageResponseDto(ChatMessage message) {

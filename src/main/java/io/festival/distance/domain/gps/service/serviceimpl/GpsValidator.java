@@ -22,7 +22,7 @@ public class GpsValidator {
     }
 
     public boolean isActivatedMember(Member centerUser){
-        return centerUser.isActivated() && centerUser.getAuthority().equals(Authority.ROLE_USER);
+        return centerUser.isActivated() && centerUser.getAuthority().equals("ROLE_USER");
     }
 
     public boolean isWomenSchool(Member centerUser, Member member){
@@ -35,7 +35,7 @@ public class GpsValidator {
         return centerUser.getLongitude() != 0 || centerUser.getLatitude() != 0;
     }
 
-    public boolean isWithinSearchRange(Member centerUser, Member member){
+    public boolean isWithinSearchRange(Member centerUser, Member member, Double searchRange){
         double userLongitude = member.getLongitude();
         double userLatitude = member.getLatitude();
         double distance = calculateDistance(
@@ -44,6 +44,6 @@ public class GpsValidator {
             userLatitude,
             userLongitude
         );
-        return 0 < distance && distance <= SEARCH_RANGE;
+        return 0 < distance && distance <= searchRange;
     }
 }

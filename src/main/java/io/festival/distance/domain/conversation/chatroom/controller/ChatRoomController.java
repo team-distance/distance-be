@@ -6,8 +6,8 @@ import io.festival.distance.domain.conversation.chatroom.dto.ChatRoomDto;
 import io.festival.distance.domain.conversation.chatroom.dto.ChatRoomInfoDto;
 import io.festival.distance.domain.conversation.chatroom.dto.PageRequestDto;
 import io.festival.distance.domain.conversation.chatroom.service.ChatFacadeService;
-import io.festival.distance.domain.conversation.chatroom.service.serviceimpl.ChatRoomReader;
 import io.festival.distance.domain.conversation.chatroom.service.ChatRoomService;
+import io.festival.distance.domain.conversation.chatroom.service.serviceimpl.ChatRoomReader;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.domain.member.validlogin.ValidUnivCert;
@@ -36,7 +36,6 @@ public class ChatRoomController {
     private final ValidUnivCert validUnivCert;
     private final MemberReader memberReader;
     private final ChatRoomReader chatRoomReader;
-
     @PostMapping("/create")
     public ResponseEntity<Long> createRoom(@RequestBody ChatRoomDto chatRoomDto,
         Principal principal) {
@@ -93,8 +92,6 @@ public class ChatRoomController {
     public ResponseEntity<Boolean> isAgreed(@PathVariable Long chatRoomId) {
         return ResponseEntity.ok(chatRoomService.getAgreedStatus(chatRoomId));
     }
-
-
 
     public static PageRequest pageGenerate(PageRequestDto dto) {
         int page = dto.page();

@@ -9,13 +9,17 @@ public record MatchUserDto(
     long memberId,
     String nickName,
     String telNum,
+    String school,
+    Integer reportCount,
     MemberProfileDto memberProfileDto
 ) {
 
     public static MatchUserDto fromMember(Member member, MemberProfileDto memberProfile) {
         return MatchUserDto.builder()
             .memberId(member.getMemberId())
+            .reportCount(member.getReportCount())
             .nickName(member.getNickName())
+            .school(member.getSchool())
             .memberProfileDto(memberProfile)
             .telNum(member.getTelNum())
             .build();

@@ -5,7 +5,8 @@ import lombok.Builder;
 @Builder
 public record S3Response(
     String imageUrl,
-    String fileName
+    String fileName,
+    String imageHash
 ) {
 
 }
