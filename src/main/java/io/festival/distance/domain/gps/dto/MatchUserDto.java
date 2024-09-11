@@ -10,7 +10,7 @@ public record MatchUserDto(
     String nickName,
     String telNum,
     String school,
-    int reportCount,
+    Integer reportCount,
     MemberProfileDto memberProfileDto
 ) {
 
