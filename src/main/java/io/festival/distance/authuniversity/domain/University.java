@@ -55,7 +55,7 @@ public enum University {
     INU("인천대학교", "inu", false, 37.375548, 126.632638),
     ITC("인하공전대학교", "itc", false, 37.449996, 126.649918),
     INHA("인하대학교", "inha", false, 37.450000, 126.653050),
-    JNU("전남대학교", "jnu", false, 35.176923, 126.906936),
+    JNU("전남대학교", "chonnam.edu,jnu", false, 35.176923, 126.906936),
     JBNU("전북대학교", "jbnu", false, 35.846119, 127.129106),
     CAU("중앙대학교", "cau", false, 37.505601, 126.957017),
     CHUNGBUK("충북대학교", "chungbuk", false, 36.629699, 127.456003),
