@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EventMatchRepository extends JpaRepository<EventMatch,Long> {
     Boolean existsByTelNum(String telNum);
+    EventMatch findByMemberId(Long memberId);
 }

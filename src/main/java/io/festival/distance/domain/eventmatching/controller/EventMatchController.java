@@ -1,8 +1,12 @@
 package io.festival.distance.domain.eventmatching.controller;
 
 import io.festival.distance.domain.eventmatching.dto.request.EventMatchRequest;
+import io.festival.distance.domain.eventmatching.dto.response.EventMatchListResponse;
 import io.festival.distance.domain.eventmatching.dto.response.EventMatchResponse;
 import io.festival.distance.domain.eventmatching.service.EventMatchService;
+import io.festival.distance.domain.gps.dto.MatchResponseDto;
+import io.festival.distance.domain.gps.dto.MatchUserDto;
+import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -41,5 +45,15 @@ public class EventMatchController {
     public ResponseEntity<Void> registerEvent(@RequestBody EventMatchRequest eventMatchRequest){
         eventMatchService.createEvent(eventMatchRequest);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<MatchUserDto> getOpponentProfile(Principal principal){
+        return ResponseEntity.ok(eventMatchService.findOpponentProfile(principal.getName()));
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<EventMatchListResponse>> getEventMatchingList(){
+        return ResponseEntity.ok(eventMatchService.findAllMatingEvent());
     }
 }
