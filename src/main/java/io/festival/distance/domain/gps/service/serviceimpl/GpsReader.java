@@ -84,14 +84,7 @@ public class GpsReader {
                 user -> gpsValidator.isWomenSchool(centerUser, user)
             )
             .map(
-                user -> MatchUserDto.builder()
-                    .memberId(user.getMemberId())
-                    .memberProfileDto(memberReader.getMemberProfileDto(user))
-                    .reportCount(user.getReportCount())
-                    .school(user.getSchool())
-                    .nickName(user.getNickName())
-                    .telNum(user.getTelNum())
-                    .build()
+                user -> MatchUserDto.fromMember(user,memberReader.getMemberProfileDto(user))
             )
             .collect(Collectors.toList());
         return getMatchResponseDto(userDtoList);
@@ -103,7 +96,7 @@ public class GpsReader {
         } catch (Exception e) {
             System.out.println("Exception during shuffle: " + e);
         }
-        List<MatchUserDto> userDtoList = gpsDtoCreator.getMatchUserDto(dtoList);
-        return gpsDtoCreator.getMatchResponseDto(userDtoList);
+        //List<MatchUserDto> userDtoList = gpsDtoCreator.getMatchUserDto(dtoList);
+        return gpsDtoCreator.getMatchResponseDto(dtoList);
     }
 }
