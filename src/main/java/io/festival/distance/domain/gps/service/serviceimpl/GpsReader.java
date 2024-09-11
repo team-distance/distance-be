@@ -96,7 +96,7 @@ public class GpsReader {
         } catch (Exception e) {
             System.out.println("Exception during shuffle: " + e);
         }
-        //List<MatchUserDto> userDtoList = gpsDtoCreator.getMatchUserDto(dtoList);
+        List<MatchUserDto> userDtoList = gpsDtoCreator.getMatchUserDto(dtoList);
         return gpsDtoCreator.getMatchResponseDto(dtoList);
     }
 }
