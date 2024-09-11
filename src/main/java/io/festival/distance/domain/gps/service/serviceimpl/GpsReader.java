@@ -97,6 +97,6 @@ public class GpsReader {
             System.out.println("Exception during shuffle: " + e);
         }
         List<MatchUserDto> userDtoList = gpsDtoCreator.getMatchUserDto(dtoList);
-        return gpsDtoCreator.getMatchResponseDto(dtoList);
+        return gpsDtoCreator.getMatchResponseDto(userDtoList);
     }
 }
