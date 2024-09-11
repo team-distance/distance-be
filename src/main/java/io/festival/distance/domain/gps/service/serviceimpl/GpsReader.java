@@ -29,9 +29,7 @@ public class GpsReader {
                 gpsValidator::isActivatedMember
             )
             .map(
-                user -> MatchUserDto.builder().memberId(user.getMemberId())
-                    .memberProfileDto(memberReader.getMemberProfileDto(user))
-                    .nickName(user.getNickName()).build()
+                user -> MatchUserDto.fromMember(user,memberReader.getMemberProfileDto(user))
             )
             .collect(Collectors.toList());
     }
@@ -89,6 +87,8 @@ public class GpsReader {
                 user -> MatchUserDto.builder()
                     .memberId(user.getMemberId())
                     .memberProfileDto(memberReader.getMemberProfileDto(user))
+                    .reportCount(user.getReportCount())
+                    .school(user.getSchool())
                     .nickName(user.getNickName())
                     .telNum(user.getTelNum())
                     .build()
