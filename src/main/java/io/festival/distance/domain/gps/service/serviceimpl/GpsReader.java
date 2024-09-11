@@ -47,7 +47,7 @@ public class GpsReader {
                 gpsValidator::isActivatedMember
             )
             .filter(
-                user -> !searchRequest.isPermitOtherSchool() || gpsValidator.isSameSchool(
+                user -> searchRequest.isPermitOtherSchool() || gpsValidator.isSameSchool(
                     centerUser, user)
             )
             .filter(
