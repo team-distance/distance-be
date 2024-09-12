@@ -1,5 +1,6 @@
 package io.festival.distance.domain.eventmatching.controller;
 
+import io.festival.distance.domain.eventmatching.dto.request.AdminUpdateRequest;
 import io.festival.distance.domain.eventmatching.dto.request.EventMatchRequest;
 import io.festival.distance.domain.eventmatching.dto.response.EventMatchListResponse;
 import io.festival.distance.domain.eventmatching.dto.response.EventMatchResponse;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -61,6 +63,12 @@ public class EventMatchController {
     @PostMapping("/send")
     public ResponseEntity<Void> sendEventMessage(){
         eventMatchService.sendAllEventMessage();
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping
+    public ResponseEntity<Void> updateEventMember(@RequestBody AdminUpdateRequest adminUpdateRequest){
+        eventMatchService.updateEventMatch(adminUpdateRequest);
         return ResponseEntity.ok().build();
     }
 }

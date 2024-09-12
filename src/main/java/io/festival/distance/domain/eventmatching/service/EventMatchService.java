@@ -1,11 +1,13 @@
 package io.festival.distance.domain.eventmatching.service;
 
+import io.festival.distance.domain.eventmatching.dto.request.AdminUpdateRequest;
 import io.festival.distance.domain.eventmatching.dto.request.EventMatchRequest;
 import io.festival.distance.domain.eventmatching.dto.response.EventMatchListResponse;
 import io.festival.distance.domain.eventmatching.dto.response.EventMatchResponse;
 import io.festival.distance.domain.eventmatching.entity.EventMatch;
 import io.festival.distance.domain.eventmatching.service.serviceimpl.EventReader;
 import io.festival.distance.domain.eventmatching.service.serviceimpl.EventSaver;
+import io.festival.distance.domain.eventmatching.service.serviceimpl.EventUpdater;
 import io.festival.distance.domain.eventmatching.service.serviceimpl.EventValidator;
 import io.festival.distance.domain.gps.dto.MatchUserDto;
 import io.festival.distance.domain.member.entity.Member;
@@ -24,6 +26,7 @@ public class EventMatchService {
     private final EventSaver eventSaver;
     private final EventReader eventReader;
     private final SmsUtil smsUtil;
+    private final EventUpdater eventUpdater;
     public List<EventMatchResponse> findByMemberBySchool(String school, String gender) {
         return memberReader.findMemberListBySchool(school,gender)
             .stream()
@@ -57,5 +60,11 @@ public class EventMatchService {
                 smsUtil.sendEventMessage(eventMatch.getTelNum(),eventMatch.getOpponentNickname());
                 eventMatch.update();
             });
+    }
+
+    public void updateEventMatch(AdminUpdateRequest adminUpdateRequest) {
+        EventMatch eventMatch = eventReader.findEventMatch(adminUpdateRequest.memberId());
+        Member opponent = memberReader.findMember(adminUpdateRequest.opponentId());
+        eventUpdater.update(eventMatch,opponent);
     }
 }
