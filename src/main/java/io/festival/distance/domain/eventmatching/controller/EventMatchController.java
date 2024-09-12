@@ -32,9 +32,10 @@ public class EventMatchController {
      */
     @GetMapping("/users")
     public ResponseEntity<List<EventMatchResponse>> getMemberList(
-        @RequestParam(value = "school") String school
+        @RequestParam(value = "school") String school,
+        @RequestParam(value = "gender") String gender
     ) {
-        return ResponseEntity.ok(eventMatchService.findByMemberBySchool(school));
+        return ResponseEntity.ok(eventMatchService.findByMemberBySchool(school,gender));
     }
 
     /**

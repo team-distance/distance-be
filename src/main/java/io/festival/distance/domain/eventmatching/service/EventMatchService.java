@@ -24,8 +24,8 @@ public class EventMatchService {
     private final EventSaver eventSaver;
     private final EventReader eventReader;
     private final SmsUtil smsUtil;
-    public List<EventMatchResponse> findByMemberBySchool(String school) {
-        return memberReader.findMemberListBySchool(school)
+    public List<EventMatchResponse> findByMemberBySchool(String school, String gender) {
+        return memberReader.findMemberListBySchool(school,gender)
             .stream()
             .map(EventMatchResponse::toEventMatchResponse)
             .toList();

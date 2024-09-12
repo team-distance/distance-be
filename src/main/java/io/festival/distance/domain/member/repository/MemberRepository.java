@@ -23,7 +23,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     void deleteByTelNum(String telNum);
 
-    List<Member> findAllBySchool(String school);
+    List<Member> findAllBySchoolAndGender(String school, String gender);
 
 
     @Query("select m from Member m "
