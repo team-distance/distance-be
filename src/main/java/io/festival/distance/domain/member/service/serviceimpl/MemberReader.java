@@ -61,8 +61,8 @@ public class MemberReader {
     }
 
     @Transactional(readOnly = true)
-    public List<Member> findMemberListBySchool(String school) {
-        return memberRepository.findAllBySchool(school);
+    public List<Member> findMemberListBySchool(String school, String gender) {
+        return memberRepository.findAllBySchoolAndGender(school,gender);
     }
 
     @Transactional(readOnly = true)
@@ -71,6 +71,6 @@ public class MemberReader {
         String school,
         String gender
     ) {
-        return memberRepository.findAllBySchoolAndMemberCharacter(school, character,gender);
+        return memberRepository.findAllBySchoolAndMemberCharacter(school, character, gender);
     }
 }

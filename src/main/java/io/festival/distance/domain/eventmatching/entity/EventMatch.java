@@ -1,5 +1,6 @@
 package io.festival.distance.domain.eventmatching.entity;
 
+import io.festival.distance.domain.member.entity.Member;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -52,5 +53,11 @@ public class EventMatch {
 
     public void update(){
         this.isSend = true;
+    }
+
+    public void updateMatching(Member member){
+        this.opponentId = member.getMemberId();
+        this.opponentNickname = member.getNickName();
+        this.opponentCharacter = member.getMemberCharacter();
     }
 }
