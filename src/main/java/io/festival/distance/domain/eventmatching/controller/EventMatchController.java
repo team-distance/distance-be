@@ -5,7 +5,6 @@ import io.festival.distance.domain.eventmatching.dto.request.EventMatchRequest;
 import io.festival.distance.domain.eventmatching.dto.response.EventMatchListResponse;
 import io.festival.distance.domain.eventmatching.dto.response.EventMatchResponse;
 import io.festival.distance.domain.eventmatching.service.EventMatchService;
-import io.festival.distance.domain.gps.dto.MatchResponseDto;
 import io.festival.distance.domain.gps.dto.MatchUserDto;
 import java.security.Principal;
 import java.util.List;
