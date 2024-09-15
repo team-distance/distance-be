@@ -6,7 +6,7 @@
 
 <div align="center">
 
-| **이준석** |
+| **이준석[backend]** |
 | :------: | 
 | [<img src="https://github.com/CafeCheckin/CafeCheckin/assets/56196986/422a81d3-b0b7-4b85-af31-a42a3c23c771" height=150 width=150> <br/> @JunRock](https://github.com/JunRock) |
 
