@@ -58,27 +58,35 @@ public class SecurityConfig {
             .formLogin().disable()
             .httpBasic().disable()
             .authorizeHttpRequests() // HttpServletRequest를 사용하는 요청들에 대한 접근제한을 설정
-            .antMatchers("/api/login").permitAll()
-            .antMatchers("/api/member/signup").permitAll()
-            .antMatchers("/h2-console/**").permitAll()
-            .antMatchers("/favicon.ico").permitAll()
-            .antMatchers("/api/admin/signup").permitAll()
-            .antMatchers("/api/member/send/sms").permitAll()
-            .antMatchers("/api/member/authenticate").permitAll()
-            .antMatchers("/api/member/change/password").permitAll()
-            .antMatchers("/api/gps/matching").permitAll()
-            .antMatchers("/api/performance/**").permitAll()
-            .antMatchers("/api/food-truck/**").permitAll()
-            .antMatchers("/api/truck-menu/**").permitAll()
-            .antMatchers("/api/refresh").permitAll()
-            .antMatchers("/api/notify/**").permitAll()
-            .antMatchers("/ws/**","/wss/**", "/meet/**").permitAll()
-            .antMatchers("/swagger-resources/**",
-                "/swagger-ui.html",
-                "/v2/api-docs",
-                "/webjars/**").permitAll()
-            .anyRequest().permitAll()
-
+            .antMatchers(
+                "/api/univ/send/email",
+                "/api/university",
+                "/api/admin/signup",
+                "/ws/**", "/wss/**", "/meet/**",
+                "/api/image",
+                "/api/chatroom/both-agreed/",
+                "/api/event-matching/users",
+                "/api/event-matching/list",
+                "/api/event-matching/send",
+                "/api/event-matching",
+                "/api/gps/matching",
+                "/api/gps/distance", "/api/gps/distance/",
+                "/api/member/signup",
+                "/api/member/send/sms",
+                "/api/member/authenticate",
+                "/api/member/change/password",
+                "/api/login",
+                "/api/statistics/trending",
+                "/h2-console/**",
+                "/favicon.ico",
+                "/api/performance/**",
+                "/api/food-truck/**",
+                "/api/truck-menu/**",
+                "/api/refresh",
+                "/api/notify/**",
+                "/swagger-resources/**", "/swagger-ui/**", "/v3/api-docs/**", "/webjars/**"
+            ).permitAll()
+            .anyRequest().authenticated()
             .and()
             .apply(
                 new JwtSecurityConfig(
