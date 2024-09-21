@@ -5,6 +5,8 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import io.festival.distance.domain.image.dto.response.S3UrlResponse;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +20,14 @@ public class S3PreSignedUrlProvider {
     private String bucket;
     private final AmazonS3Client amazonS3;
 
-    public S3UrlResponse generatePreSignedUrl(String fileName){
+    public List<S3UrlResponse> generatePreSignedUrl(List<String> fileNames){
+         return fileNames.stream()
+            .map(this::getGeneratePreSignedUrlRequest)
+             .map(S3UrlResponse::toS3UrlResponse)
+            .collect(Collectors.toList());
+    }
+
+    public String getGeneratePreSignedUrlRequest(String fileName) {
         Date expiration = new Date();
         long expTimeMillis = expiration.getTime();
         expTimeMillis += 1000 * 60 * 60; // 1시간
@@ -27,10 +36,6 @@ public class S3PreSignedUrlProvider {
             new GeneratePresignedUrlRequest(bucket, fileName)
                 .withMethod(HttpMethod.PUT) // PUT 요청
                 .withExpiration(expiration);
-        String string = amazonS3.generatePresignedUrl(generatePresignedUrlRequest).toString();
-        System.out.println(string);
-        return S3UrlResponse.toS3UrlResponse(
-            amazonS3.generatePresignedUrl(generatePresignedUrlRequest).toString()
-        );
+        return amazonS3.generatePresignedUrl(generatePresignedUrlRequest).toString();
     }
 }
