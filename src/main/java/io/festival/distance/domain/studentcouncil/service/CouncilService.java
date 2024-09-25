@@ -34,6 +34,7 @@ public class CouncilService {
     private final CouncilUpdater councilUpdater;
     private final CouncilValidator councilValidator;
     private final StatisticsRedisUpdater statisticsRedisUpdater;
+
     public void create(
         String telNum,
         ContentRequest contentRequest,
@@ -42,8 +43,8 @@ public class CouncilService {
     ) {
         Member member = memberReader.findTelNum(telNum); //총학계정
         StudentCouncil studentCouncil = councilCreator.create(contentRequest, member);
-        councilGpsCreator.create(contentRequest.councilGpsRequestList(),studentCouncil);
-        councilImageCreator.create(files,studentCouncil,priority);
+        councilGpsCreator.create(contentRequest.councilGpsRequestList(), studentCouncil);
+        councilImageCreator.create(files, studentCouncil, priority);
     }
 
     public CouncilResponse findContents(String telNum, String school) {
@@ -54,12 +55,15 @@ public class CouncilService {
         return councilReader.findList(school);
     }
 
-    public ContentResponse findContent(Long studentCouncilId) {
-        statisticsRedisUpdater.update(studentCouncilId);
+    public ContentResponse findContent(Long studentCouncilId, String telNum) {
+        Member member = memberReader.findTelNum(telNum);
+        if (member.getAuthority().equals("ROLE_USER")) {
+            statisticsRedisUpdater.update(studentCouncilId);
+        }
         return councilReader.findOne(studentCouncilId);
     }
 
-    public void deleteContent(Long studentCouncilId,String telNum) {
+    public void deleteContent(Long studentCouncilId, String telNum) {
         Member member = memberReader.findTelNum(telNum);
         StudentCouncil studentCouncil = councilReader.findStudentCouncil(studentCouncilId);
         councilValidator.isWriter(member, studentCouncil.getMember());
@@ -75,6 +79,6 @@ public class CouncilService {
         List<Integer> priority
     ) throws IOException, NoSuchAlgorithmException {
         StudentCouncil studentCouncil = councilReader.findStudentCouncil(studentCouncilId);
-        councilUpdater.update(contentRequest,files,priority,studentCouncil);
+        councilUpdater.update(contentRequest, files, priority, studentCouncil);
     }
 }

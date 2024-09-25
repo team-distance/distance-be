@@ -28,6 +28,7 @@ public class StatisticsUpdater {
                         .count(1)
                         .date(LocalDate.now())
                         .studentCouncil(studentCouncil)
+                        .role(studentCouncil.getAuthority())
                         .build();
                     statisticsRepository.save(councilStatistics);
                     return councilStatistics;

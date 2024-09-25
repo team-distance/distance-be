@@ -85,7 +85,8 @@ public class SecurityConfig {
                 "/api/refresh",
                 "/api/notify/**",
                 "/swagger-resources/**", "/swagger-ui/**", "/v3/api-docs/**", "/webjars/**",
-                "/api/actuator/prometheus"
+                "/api/actuator/prometheus",
+                "/api/presigned"
             ).permitAll()
             .anyRequest().authenticated()
             .and()

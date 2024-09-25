@@ -7,6 +7,7 @@ import io.festival.distance.domain.gps.dto.MatchResponseDto;
 import io.festival.distance.domain.gps.dto.request.SearchRequest;
 import io.festival.distance.domain.gps.service.serviceimpl.GpsProcessor;
 import io.festival.distance.domain.gps.service.GpsService;
+import io.festival.distance.domain.studentcouncil.dto.response.SchoolLocation;
 import java.security.Principal;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -62,5 +63,10 @@ public class GpsController {
     @GetMapping("/distance/{chatRoomId}")
     public ResponseEntity<DistanceResponse> getDistance(@PathVariable Long chatRoomId) {
         return ResponseEntity.ok(gpsService.callDistance(chatRoomId));
+    }
+
+    @GetMapping
+    public ResponseEntity<SchoolLocation> getMemberSchoolLocation(Principal principal){
+        return ResponseEntity.ok(gpsService.getLocation(principal.getName()));
     }
 }

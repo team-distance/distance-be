@@ -1,5 +1,7 @@
 package io.festival.distance.domain.gps.service;
 
+import static io.festival.distance.authuniversity.domain.University.getSchoolLocation;
+
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import io.festival.distance.domain.conversation.chatroom.service.serviceimpl.ChatRoomReader;
 import io.festival.distance.domain.gps.dto.DistanceResponse;
@@ -13,6 +15,7 @@ import io.festival.distance.domain.gps.service.serviceimpl.GpsReader;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.domain.member.service.serviceimpl.MemberUpdater;
+import io.festival.distance.domain.studentcouncil.dto.response.SchoolLocation;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -69,5 +72,10 @@ public class GpsService {
     public DistanceResponse callDistance(Long chatRoomId) {
         ChatRoom chatRoom = chatRoomReader.findChatRoom(chatRoomId);
         return DistanceResponse.fromEntity(chatRoom);
+    }
+
+    public SchoolLocation getLocation(String telNum) {
+        Member member = memberReader.findTelNum(telNum);
+        return getSchoolLocation(member.getSchool());
     }
 }

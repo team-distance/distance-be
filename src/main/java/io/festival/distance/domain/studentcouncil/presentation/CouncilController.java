@@ -10,6 +10,7 @@ import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,7 +41,7 @@ public class CouncilController {
         Principal principal,
         @RequestPart(value = "contentRequest") ContentRequest contentRequest,
         @RequestPart(value = "files", required = false) List<MultipartFile> files,
-        @RequestPart(value = "priority")List<Integer> priority
+        @RequestPart(value = "priority") List<Integer> priority
     ) {
         councilService.create(
             principal.getName(),
@@ -68,8 +69,11 @@ public class CouncilController {
      * 총학 게시글 세부조회 API
      */
     @GetMapping("/{studentCouncilId}")
-    public ResponseEntity<ContentResponse> showContent(@PathVariable Long studentCouncilId) {
-        return ResponseEntity.ok(councilService.findContent(studentCouncilId));
+    public ResponseEntity<ContentResponse> showContent(
+        @PathVariable Long studentCouncilId,
+        Principal principal
+    ) {
+        return ResponseEntity.ok(councilService.findContent(studentCouncilId,principal.getName()));
     }
 
     /**
@@ -103,7 +107,7 @@ public class CouncilController {
         @PathVariable Long studentCouncilId,
         Principal principal
     ) {
-        councilService.deleteContent(studentCouncilId,principal.getName());
+        councilService.deleteContent(studentCouncilId, principal.getName());
         return ResponseEntity.ok().build();
     }
 }
