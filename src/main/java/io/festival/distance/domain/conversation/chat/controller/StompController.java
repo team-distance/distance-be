@@ -1,10 +1,12 @@
 package io.festival.distance.domain.conversation.chat.controller;
 
+import static io.festival.distance.domain.conversation.chat.entity.SenderType.COME;
 import static io.festival.distance.domain.conversation.roommember.service.RoomMemberService.IN_ACTIVE;
 import static io.festival.distance.domain.firebase.entity.FcmType.MESSAGE;
 
 import io.festival.distance.domain.conversation.chat.dto.ChatMessageDto;
 import io.festival.distance.domain.conversation.chat.dto.ChatMessageResponseDto;
+import io.festival.distance.domain.conversation.chat.dto.ChatSystemResponse;
 import io.festival.distance.domain.conversation.chat.entity.SenderType;
 import io.festival.distance.domain.conversation.chat.service.ChatMessageService;
 import io.festival.distance.domain.conversation.chat.valid.CheckMessageLength;
@@ -61,6 +63,17 @@ public class  StompController {
             // 채팅방 새션 조회
             List<ChatRoomSession> sessionByChatRoom = chatRoomSessionService
                 .findSessionByChatRoom(chatRoom); //2개가 나올 듯?
+
+            if(chatMessageDto.getPublishType().equals(COME.getSenderType())){
+                return ResponseEntity.ok(
+                    ChatSystemResponse.builder()
+                        .roomStatus(chatRoom.getRoomStatus())
+                        .senderType(chatMessageDto.getPublishType())
+                        .senderId(chatMessageDto.getSenderId())
+                        .build()
+                );
+            }
+
             /**
              *  채팅방을 나가는 경우
              */
