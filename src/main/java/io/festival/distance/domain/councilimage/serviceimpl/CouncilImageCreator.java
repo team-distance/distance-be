@@ -47,10 +47,11 @@ public class CouncilImageCreator {
         StudentCouncil studentCouncil
     ) {
         List<CouncilImage> councilImages = new ArrayList<>();
+        System.out.println("s3UrlResponses = " + s3UrlResponses.get(1).s3Url());
         for (int i = 0; i < s3UrlResponses.size(); i++) {
             CouncilImage councilImage = CouncilImage.builder()
                 .fileName(s3UrlResponses.get(i).fileName())
-                .imageUrl(s3UrlResponses.get(i).s3Url())
+                .imageUrl("https://distance-buckets.s3.ap-northeast-2.amazonaws.com/" + s3UrlResponses.get(i).fileName())
                 .imageHash("Aaa")
                 .priority(priority.get(i))
                 .isUsed(true)
