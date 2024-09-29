@@ -42,17 +42,17 @@ public class CouncilController {
     @PostMapping
     public ResponseEntity<List<S3UrlResponse>> createContent(
         Principal principal,
-        @RequestBody ContentRequest contentRequest,
-        @RequestBody FileListRequest fileListRequest,
+        @RequestBody ContentRequest contentRequest
+        /*@RequestBody FileListRequest fileListRequest,
         //@RequestPart(value = "files", required = false) List<MultipartFile> files,
-        @RequestBody List<Integer> priority
+        @RequestBody List<Integer> priority*/
     ) {
         return ResponseEntity.ok(
             councilService.create(
             principal.getName(),
             contentRequest,
-            fileListRequest.toStringList(),
-            priority
+            contentRequest.fileListRequest().toStringList(),
+            contentRequest.priority()
             )
         );
     }
