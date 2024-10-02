@@ -52,6 +52,6 @@ public class CouncilImageUpdater {
             imageToDelete.updateIsUsed();
         }
         filesToUpload.addAll(fileHashMap.values());
-        councilImageCreator.create(filesToUpload, studentCouncil,priority);
+        //councilImageCreator.create(filesToUpload, studentCouncil,priority);
     }
 }
