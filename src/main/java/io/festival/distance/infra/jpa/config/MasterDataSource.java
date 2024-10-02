@@ -1,3 +1,4 @@
+/*
 package io.festival.distance.infra.jpa.config;
 
 import javax.sql.DataSource;
@@ -32,3 +33,4 @@ public class MasterDataSource {
             .build();
     }
 }
+*/

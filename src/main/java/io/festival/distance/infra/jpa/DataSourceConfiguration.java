@@ -1,3 +1,4 @@
+/*
 package io.festival.distance.infra.jpa;
 
 
@@ -35,4 +36,4 @@ public class DataSourceConfiguration {
     public DataSource dataSource(@Qualifier("routingDataSource") DataSource routingDataSource) {
         return new LazyConnectionDataSourceProxy(routingDataSource);
     }
-}
+}*/
