@@ -46,7 +46,6 @@ public class CouncilService {
         Member member = memberReader.findTelNum(telNum); //총학계정
         StudentCouncil studentCouncil = councilCreator.create(contentRequest, member);
         councilGpsCreator.create(contentRequest.councilGpsRequestList(), studentCouncil);
-        //councilImageCreator.create(files, studentCouncil, priority);
         List<S3UrlResponse> s3UrlResponses =
             s3PreSignedUrlProvider.generatePreSignedUrl(fileRequest);
         councilImageCreator.create(s3UrlResponses,priority,studentCouncil);

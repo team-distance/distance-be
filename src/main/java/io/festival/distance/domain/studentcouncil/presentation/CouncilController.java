@@ -1,6 +1,5 @@
 package io.festival.distance.domain.studentcouncil.presentation;
 
-import io.festival.distance.domain.image.dto.request.FileListRequest;
 import io.festival.distance.domain.image.dto.response.S3UrlResponse;
 import io.festival.distance.domain.studentcouncil.dto.request.ContentRequest;
 import io.festival.distance.domain.studentcouncil.dto.response.ContentResponse;
@@ -12,7 +11,6 @@ import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,9 +41,6 @@ public class CouncilController {
     public ResponseEntity<List<S3UrlResponse>> createContent(
         Principal principal,
         @RequestBody ContentRequest contentRequest
-        /*@RequestBody FileListRequest fileListRequest,
-        //@RequestPart(value = "files", required = false) List<MultipartFile> files,
-        @RequestBody List<Integer> priority*/
     ) {
         return ResponseEntity.ok(
             councilService.create(
