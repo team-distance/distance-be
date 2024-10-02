@@ -1,13 +1,14 @@
-/*
 package io.festival.distance.infra.jpa;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
+@Profile("prod")
 public class DataSourceCreator {
     public Map<Object,Object> createImmutableDataSource(
         DataSource masterDataSource,
@@ -29,4 +30,3 @@ public class DataSourceCreator {
         return routingDataSource;
     }
 }
-*/

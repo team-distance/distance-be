@@ -1,4 +1,3 @@
-/*
 package io.festival.distance.infra.jpa;
 
 
@@ -12,10 +11,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 
 @Configuration
 @RequiredArgsConstructor
+@Profile("prod")
 public class DataSourceConfiguration {
 
     private final DataSourceCreator dataSourceCreator;
@@ -36,4 +37,4 @@ public class DataSourceConfiguration {
     public DataSource dataSource(@Qualifier("routingDataSource") DataSource routingDataSource) {
         return new LazyConnectionDataSourceProxy(routingDataSource);
     }
-}*/
+}
