@@ -9,7 +9,6 @@ import io.festival.distance.domain.gps.dto.GpsDto;
 import io.festival.distance.domain.gps.dto.GpsResponseDto;
 import io.festival.distance.domain.gps.dto.MatchResponseDto;
 import io.festival.distance.domain.gps.dto.MatchUserDto;
-import io.festival.distance.domain.gps.dto.request.SearchRequest;
 import io.festival.distance.domain.gps.service.serviceimpl.GpsDtoCreator;
 import io.festival.distance.domain.gps.service.serviceimpl.GpsReader;
 import io.festival.distance.domain.member.entity.Member;
@@ -40,12 +39,16 @@ public class GpsService {
     @Transactional
     public GpsResponseDto updateMemberGps(String telNum, GpsDto gpsDto) {
         Member member = memberReader.findTelNum(telNum);
-        memberUpdater.updateGps(member,gpsDto);
+        memberUpdater.updateGps(member, gpsDto);
         return gpsDtoCreator.getGpsResponseDto(member);
     }
 
     @Transactional(readOnly = true)
-    public MatchResponseDto matchUser(String telNum, SearchRequest searchRequest) {
+    public MatchResponseDto matchUser(
+        String telNum,
+        Double searchRange,
+        Boolean isPermitOtherSchool
+    ) {
         Member centerUser = memberReader.findTelNum(telNum); //나
         double centerLongitude = centerUser.getLongitude();
         double centerLatitude = centerUser.getLatitude();
@@ -54,7 +57,11 @@ public class GpsService {
             return gpsReader.getNotFoundPositionMatchList(centerUser);
         }
         // activate, 거리 내에 있는 유저 필터링 -> 랜덤 4명 선택
-        return gpsReader.getLoginUserMatchList(centerUser,searchRequest);
+        return gpsReader.getLoginUserMatchList(
+            centerUser,
+            searchRange,
+            isPermitOtherSchool
+        );
     }
 
     @Transactional(readOnly = true)
