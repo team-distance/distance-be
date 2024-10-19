@@ -39,8 +39,8 @@ public enum ErrorCode {
     EXPIRATION_AUTHENTICATE_NUMBER(HttpStatusCode.GONE.getStatus(), "만료된 요청번호입니다!"),
     NOT_AUTHENTICATE_COUNCIL(HttpStatusCode.FORBIDDEN.getStatus(), "해당 학교 관리자가 아닙니다."),
     INVALID_TYPE(HttpStatusCode.BAD_REQUEST.getStatus(), "유효하지 않는 type입니다!"),
-    ALREADY_EXIST_MEMBER(HttpStatusCode.BAD_REQUEST.getStatus(),"이미 이벤트에 참여했습니다!");
-
+    ALREADY_EXIST_MEMBER(HttpStatusCode.CONFLICT.getStatus(),"이미 이벤트에 참여했습니다!"),
+    ALREADY_EXIST_RECOMMEND(HttpStatusCode.CONFLICT.getStatus(), "이미 추천인을 등록했습니다!");
     private final int status;
     private final String message;
 }

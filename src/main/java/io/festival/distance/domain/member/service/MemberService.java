@@ -23,6 +23,7 @@ import io.festival.distance.domain.memberhobby.service.HobbyCreator;
 import io.festival.distance.domain.memberhobby.service.HobbyUpdater;
 import io.festival.distance.domain.membertag.service.TagCreator;
 import io.festival.distance.domain.membertag.service.TagUpdater;
+import io.festival.distance.domain.recommender.service.RecommenderProcessor;
 import io.festival.distance.global.exception.DistanceException;
 import io.festival.distance.infra.redis.authenticate.AuthenticateNumber;
 import io.festival.distance.infra.redis.authenticate.AuthenticateRedisCreator;
@@ -60,18 +61,23 @@ public class MemberService {
     private final AuthenticateRedisReader authenticateRedisReader;
     private final AuthenticateRedisSaver authenticateRedisSaver;
     private final AuthenticateRedisCreator authenticateRedisCreator;
+    private final RecommenderProcessor recommenderProcessor;
 
     /**
      * NOTE
      * 회원가입
      */
-    @Transactional
     public Long createMember(MemberSignDto signDto) {
         Member member = memberCreator.getMember(signDto);
         memberCreator.createMember(member);
         hobbyCreator.createHobbies(member, signDto.memberHobbyDto());
         tagCreator.createTags(member, signDto.memberTagDto());
         memberCreator.memberNickNameUpdate(member);
+        signDto.referredTel().ifPresent(
+            recommenderTel ->{
+                recommenderProcessor.recommendGenerate(member.getMemberId(), recommenderTel);
+            }
+        );
         return member.getMemberId();
     }
 

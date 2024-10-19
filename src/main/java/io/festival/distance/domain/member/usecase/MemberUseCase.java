@@ -4,6 +4,7 @@ import io.festival.distance.domain.member.dto.MemberSignDto;
 import io.festival.distance.domain.member.service.MemberService;
 import io.festival.distance.domain.member.validsignup.ValidInfoDto;
 import io.festival.distance.domain.member.validsignup.ValidTelNum;
+import io.festival.distance.domain.recommender.service.RecommenderValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ public class MemberUseCase {
     private final MemberService memberService;
     private final ValidInfoDto validInfoDto;
     private final ValidTelNum validLoginId;
+    private final RecommenderValidator recommenderValidator;
     @Transactional
     public Long execute(MemberSignDto signDto){
         ValidMemberTelNum(signDto.telNum());

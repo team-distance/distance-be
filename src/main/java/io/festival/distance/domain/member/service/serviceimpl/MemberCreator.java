@@ -44,6 +44,7 @@ public class MemberCreator {
             .memberCharacter(signDto.memberCharacter())
             .nickName(signDto.department())
             .reportCount(0)
+            .roomCount(0)
             .authUniv(UnivCert.FAILED_1)
             .activated(true)
             .build();
