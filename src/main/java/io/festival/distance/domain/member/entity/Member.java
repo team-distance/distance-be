@@ -120,5 +120,8 @@ public class Member extends BaseTimeEntity {
         this.schoolEmail=schoolEmail;
     }
 
-    public void updateRoomCount() { this.roomCount++;}
+    public void updateRoomCount() {
+        if(this.roomCount<5)
+            this.roomCount++;
+    }
 }
