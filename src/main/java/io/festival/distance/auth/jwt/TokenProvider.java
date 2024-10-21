@@ -119,6 +119,12 @@ public class TokenProvider implements InitializingBean {
 
     // 토큰의 유효성 검증을 수행
     public boolean validateToken(String token,String type) {
+        Claims claims = Jwts.parserBuilder()
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
+        String subject = claims.getSubject();
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
@@ -132,8 +138,8 @@ public class TokenProvider implements InitializingBean {
             log.error(EXPIRED_JWT);
             if(type.equals("REFRESH")){
                 log.info(token);
-               if(refreshRepository.existsByRefreshToken(token)) {
-                    refreshRepository.deleteByRefreshToken(token);
+               if(refreshRepository.existsBySubject(subject)) {
+                    refreshRepository.deleteAllBySubject(subject);
                     log.info("Refresh token delete success!!");
                 } else {
                     log.info("No refresh token found to delete.");

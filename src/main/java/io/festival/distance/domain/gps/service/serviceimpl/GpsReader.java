@@ -2,7 +2,6 @@ package io.festival.distance.domain.gps.service.serviceimpl;
 
 import io.festival.distance.domain.gps.dto.MatchResponseDto;
 import io.festival.distance.domain.gps.dto.MatchUserDto;
-import io.festival.distance.domain.gps.dto.request.SearchRequest;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import java.util.Collections;
@@ -38,16 +37,18 @@ public class GpsReader {
      * 로그인 유저 매칭
      */
     public MatchResponseDto getLoginUserMatchList(
-        Member centerUser, SearchRequest searchRequest
+        Member centerUser,
+        Double searchRange,
+        Boolean isPermitOtherSchool
     ) {
-        System.out.println("search request type: "+searchRequest.isPermitOtherSchool());
-        List<MatchUserDto> userDtoList = memberReader.findMemberList()
+        System.out.println("search request type: "+isPermitOtherSchool);
+        List<MatchUserDto> userDtoList = memberReader.findMemberListByFilter()
             .stream()
             .filter(
                 gpsValidator::isActivatedMember
             )
             .filter(
-                user -> searchRequest.isPermitOtherSchool() || gpsValidator.isSameSchool(
+                user -> isPermitOtherSchool || gpsValidator.isSameSchool(
                     centerUser, user)
             )
             .filter(
@@ -58,7 +59,7 @@ public class GpsReader {
             )
             .filter(
                 user -> gpsValidator.isWithinSearchRange(centerUser, user,
-                    searchRequest.searchRange())
+                    searchRange)
             )
             .map(users -> MatchUserDto.fromMember(users, memberReader.getMemberProfileDto(users)))
             .collect(Collectors.toList());
@@ -70,7 +71,7 @@ public class GpsReader {
      * 로그인 & 위치정보가 없는 유저 매칭
      */
     public MatchResponseDto getNotFoundPositionMatchList(Member centerUser) {
-        List<MatchUserDto> userDtoList = memberReader.findMemberList().stream()
+        List<MatchUserDto> userDtoList = memberReader.findMemberListByFilter().stream()
             .filter(
                 gpsValidator::isActivatedMember
             )

@@ -4,9 +4,8 @@ import io.festival.distance.domain.gps.dto.DistanceResponse;
 import io.festival.distance.domain.gps.dto.GpsDto;
 import io.festival.distance.domain.gps.dto.GpsResponseDto;
 import io.festival.distance.domain.gps.dto.MatchResponseDto;
-import io.festival.distance.domain.gps.dto.request.SearchRequest;
-import io.festival.distance.domain.gps.service.serviceimpl.GpsProcessor;
 import io.festival.distance.domain.gps.service.GpsService;
+import io.festival.distance.domain.gps.service.serviceimpl.GpsProcessor;
 import io.festival.distance.domain.studentcouncil.dto.response.SchoolLocation;
 import java.security.Principal;
 import java.util.Objects;
@@ -44,15 +43,18 @@ public class GpsController {
      * NOTE
      * 현재 유저 위치의 반경에 다른 사용자들의 위치가 속하는지 판단 API
      */
-    @PostMapping("/matching")
+    @GetMapping("/matching")
     public ResponseEntity<MatchResponseDto> matching(
 		Principal principal,
-        @RequestBody SearchRequest searchRequest
+        @RequestParam("searchRange") double searchRange,
+        @RequestParam("isPermitOtherSchool") boolean isPermitOtherSchool
 	) {
         if (Objects.isNull(principal)) {
             return ResponseEntity.ok(gpsService.matchNonLoginUser());
         }
-        return ResponseEntity.ok(gpsService.matchUser(principal.getName(),searchRequest));
+        return ResponseEntity.ok(
+            gpsService.matchUser(principal.getName(),searchRange,isPermitOtherSchool)
+        );
     }
 
     @GetMapping("/distance")

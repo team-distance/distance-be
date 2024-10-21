@@ -13,4 +13,7 @@ public interface RefreshRepository extends JpaRepository<Refresh,Long> {
 
     @Transactional(noRollbackFor = {DistanceException.class, ExpiredJwtException.class})
     void deleteByRefreshToken(String refreshToken);
+
+    @Transactional(noRollbackFor = {DistanceException.class, ExpiredJwtException.class})
+    void deleteAllBySubject(String subject);
 }

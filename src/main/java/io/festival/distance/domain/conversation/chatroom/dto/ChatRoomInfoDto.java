@@ -22,10 +22,10 @@ public class ChatRoomInfoDto {
     private String mbti;
     private LocalDateTime createDt;
     private LocalDateTime modifyDt;
-    public ChatRoomInfoDto(ChatRoom chatRoom) {
+   /* public ChatRoomInfoDto(ChatRoom chatRoom) {
         this.chatRoomId = chatRoom.getChatRoomId();
         this.createDt = chatRoom.getCreateDt();
         this.modifyDt = chatRoom.getModifyDt();
         //this.roomName = chatRoom.getRoomName();
-    }
+    }*/
 }
