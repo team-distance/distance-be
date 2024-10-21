@@ -19,7 +19,6 @@ public class RefreshTokenService {
 
     public AccessTokenDto recreateAccessToken(RefreshTokenDto tokenDto) {
         log.error("token12 : "+tokenDto);
-        //log.debug("is True?? " + tokenProvider.validateToken(tokenDto.refreshToken(), "REFRESH"));
         if (tokenProvider.validateToken(tokenDto.refreshToken(), "REFRESH")) {//refresh 유효성 검증
             return AccessTokenDto.builder()
                 .accessToken(tokenProvider.createAccessToken(
