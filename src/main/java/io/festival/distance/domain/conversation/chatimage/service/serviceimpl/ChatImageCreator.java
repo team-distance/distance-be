@@ -9,9 +9,7 @@ public class ChatImageCreator {
 
     public ChatImageResponse create(S3UrlResponse s3UrlResponse) {
         return ChatImageResponse.builder()
-            .imageUrl("https://distance-buckets.s3.ap-northeast-2.amazonaws.com/"
-                + s3UrlResponse.fileName()
-            )
+            .imageUrl(s3UrlResponse.s3Url())
             .build();
     }
 }
