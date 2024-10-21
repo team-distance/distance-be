@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 public class ChatImageService {
     private final ChatImageCreator chatImageCreator;
     private final S3PreSignedUrlProvider s3PreSignedUrlProvider;
-    public ChatImageResponse uploadImage(String fileName) {
+    public ChatImageResponse uploadImage() {
         S3UrlResponse s3UrlResponse =
-            s3PreSignedUrlProvider.getGeneratePreSignedUrlRequest(fileName);
-        return chatImageCreator.create(s3UrlResponse.s3Url());
+            s3PreSignedUrlProvider.getGeneratePreSignedUrlRequest("11");
+        return chatImageCreator.create(s3UrlResponse);
     }
 }

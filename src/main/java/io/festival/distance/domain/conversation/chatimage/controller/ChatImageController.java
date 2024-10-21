@@ -3,6 +3,7 @@ package io.festival.distance.domain.conversation.chatimage.controller;
 import io.festival.distance.domain.conversation.chatimage.dto.response.ChatImageResponse;
 import io.festival.distance.domain.conversation.chatimage.service.ChatImageService;
 import io.festival.distance.domain.image.dto.request.FileRequest;
+import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,9 +22,7 @@ public class ChatImageController {
     private final ChatImageService chatImageService;
 
     @PostMapping
-    public ResponseEntity<ChatImageResponse> sendImage(
-        @RequestBody FileRequest fileRequest
-    ){
-        return ResponseEntity.ok(chatImageService.uploadImage(fileRequest.fileName()));
+    public ResponseEntity<ChatImageResponse> sendImage(Principal principal){
+        return ResponseEntity.ok(chatImageService.uploadImage());
     }
 }

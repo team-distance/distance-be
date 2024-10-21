@@ -24,7 +24,7 @@ public class CouncilImageCreator {
             CouncilImage councilImage = CouncilImage.builder()
                 .fileName(s3UrlResponses.get(i).fileName())
                 .imageUrl("https://distance-buckets.s3.ap-northeast-2.amazonaws.com/" + s3UrlResponses.get(i).fileName())
-                .imageHash("Aaa")
+                .imageHash("distance")
                 .priority(priority.get(i))
                 .isUsed(true)
                 .studentCouncil(studentCouncil)
