@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -62,12 +63,13 @@ public class ChatRoomController {
     @GetMapping("/{chatRoomId}/message")
     public ResponseEntity<List<ChatMessageResponseDto>> getAllMessage(
         @PathVariable Long chatRoomId,
-        PageRequestDto pageRequestDto,
+        @RequestParam("page") int page,
+        @RequestParam("size") int size,
         Principal principal
     ) {
         return ResponseEntity.ok(
             chatMessageService.findAllMessage(chatRoomReader.findChatRoom(chatRoomId),
-                pageGenerate(pageRequestDto), principal));
+                pageGenerate(page, size), principal));
     }
 
     @GetMapping("/message/count/{chatRoomId}")
@@ -99,9 +101,7 @@ public class ChatRoomController {
         return ResponseEntity.ok(chatRoomService.getAgreedStatus(chatRoomId));
     }
 
-    public static PageRequest pageGenerate(PageRequestDto dto) {
-        int page = dto.page();
-        int size = dto.size();
+    public static PageRequest pageGenerate(int page, int size) {
         return PageRequest.of(page, size);
     }
 }
