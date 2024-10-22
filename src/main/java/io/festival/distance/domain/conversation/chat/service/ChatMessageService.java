@@ -9,6 +9,7 @@ import io.festival.distance.domain.conversation.chat.entity.ChatMessage;
 import io.festival.distance.domain.conversation.chat.entity.SenderType;
 import io.festival.distance.domain.conversation.chat.repository.ChatMessageRepository;
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
+import io.festival.distance.domain.conversation.chatroom.service.serviceimpl.ChatRoomReader;
 import io.festival.distance.domain.conversation.roommember.entity.RoomMember;
 import io.festival.distance.domain.conversation.roommember.service.RoomMemberService;
 import io.festival.distance.domain.member.entity.Member;
@@ -32,6 +33,7 @@ public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
     private final RoomMemberService roomMemberService;
     private final MemberReader memberReader;
+    private final ChatRoomReader chatRoomReader;
 
     private final static Integer INITIAL_COUNT = 2;
 
@@ -146,18 +148,29 @@ public class ChatMessageService {
      * @return
      */
     @Transactional(readOnly = true)
-    public List<ChatMessageResponseDto> findAllMessage(ChatRoom chatRoom, PageRequest pageRequest,
-        Principal principal) {
+    public List<ChatMessageResponseDto> findAllMessage(
+        ChatRoom chatRoom,
+        PageRequest pageRequest,
+        Principal principal
+    ) {
         Member member = memberReader.findTelNum(principal.getName());
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom);
-        Long lastChatMessageId = roomMember.getLastReadMessageId();
+        return chatMessageRepository.findAllByChatRoom(chatRoom,pageRequest)
+            .map(ChatMessageResponseDto::new)
+            .toList();
+        /*Long lastChatMessageId = roomMember.getLastReadMessageId();
         return chatMessageRepository.findByChatRoomAndChatMessageIdLessThanOrderByCreateDtDesc(
                 chatRoom, pageRequest,
                 lastChatMessageId)
             .stream()
             .map(ChatMessageResponseDto::new)
-            .toList();
+            .toList();*/
     }
 
 
+    public Integer calculateMessageCount(Long chatRoomId) {
+        ChatRoom chatRoom = chatRoomReader.findChatRoom(chatRoomId);
+        return chatMessageRepository.countByChatRoom(chatRoom);
+
+    }
 }
