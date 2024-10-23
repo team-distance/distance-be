@@ -17,10 +17,15 @@ public class SqsService {
         this.sqsClient = sqsClient;
     }
 
-    public void sendMessage(String clientToken,String title, String message) {
+    public void sendMessage(
+        String clientToken,
+        String title,
+        String message,
+        String imageUrl
+        ) {
         String messageBody = String.format(
-            "{\"clientToken\": \"%s\", \"message\": \"%s\",\"title\": \"%s\"}",
-            clientToken, message, title
+            "{\"clientToken\": \"%s\", \"message\": \"%s\",\"title\": \"%s\",\"imageUrl\": \"%s\"}",
+            clientToken, message, title, imageUrl
         );
 
         System.out.println("messageBody = " + messageBody);

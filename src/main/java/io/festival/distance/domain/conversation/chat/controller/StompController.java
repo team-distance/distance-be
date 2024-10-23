@@ -147,18 +147,21 @@ public class  StompController {
         // receiver 에게 PUSH 알림 전송
         Member opponent = memberReader.findMember(chatMessageDto.getSenderId());
         Member member = memberReader.findMember(chatMessageDto.getReceiverId());
-        if(SenderType.of(chatMessageDto.getPublishType()).equals(IMAGE)){
+        if(SenderType.of(chatMessageDto.getPublishType()).equals(IMAGE)) {
             sqsService.sendMessage(
                 opponent.getClientToken(),
                 member.getNickName(),
-                "사진을 보냈습니다."
+                "사진을 보냈습니다.",
+                chatMessageDto.getChatMessage()
+            );
+        }else {
+            sqsService.sendMessage(
+                opponent.getClientToken(),
+                member.getNickName(),
+                chatMessageDto.getChatMessage(),
+                null
             );
         }
-        sqsService.sendMessage(
-            opponent.getClientToken(),
-            member.getNickName(),
-            chatMessageDto.getChatMessage()
-        );
         // 채팅 읽음 갱신
         for (ChatRoomSession chatRoomSession : sessionByChatRoom) {
             Long memberId = chatRoomSession.getMemberId();
