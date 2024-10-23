@@ -66,8 +66,8 @@ cloud:
       bucket: ${S3_BUCKET}
     sqs:
       queue:
-        name: DISTANCE_MESSAGE.fifo
-        url: https://sqs.ap-northeast-2.amazonaws.com/211125577464/DISTANCE_MESSAGE.fifo
+        name: ${SQS_QUEUE_NAME}
+        url: ${SQS_QUEUE_URL}
     stack:
       auto: false
 
