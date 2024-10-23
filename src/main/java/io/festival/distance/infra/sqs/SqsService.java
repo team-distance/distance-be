@@ -1,5 +1,6 @@
 package io.festival.distance.infra.sqs;
 
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,7 @@ public class SqsService {
             .queueUrl(sqsUrl)
             .messageBody(messageBody)
             .messageGroupId("distance-group")
+            .messageDeduplicationId(UUID.randomUUID().toString())
             .build();
 
         sqsClient.sendMessage(sendMsgRequest);
