@@ -25,6 +25,7 @@ public class SqsService {
         SendMessageRequest sendMsgRequest = SendMessageRequest.builder()
             .queueUrl(sqsUrl)
             .messageBody(messageBody)
+            .messageGroupId("distance-group")
             .build();
 
         sqsClient.sendMessage(sendMsgRequest);
