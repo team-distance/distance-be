@@ -1,8 +1,8 @@
 package io.festival.distance.domain.conversation.chat.controller;
 
 import static io.festival.distance.domain.conversation.chat.entity.SenderType.COME;
+import static io.festival.distance.domain.conversation.chat.entity.SenderType.IMAGE;
 import static io.festival.distance.domain.conversation.roommember.service.RoomMemberService.IN_ACTIVE;
-import static io.festival.distance.domain.firebase.entity.FcmType.MESSAGE;
 
 import io.festival.distance.domain.conversation.chat.dto.ChatMessageDto;
 import io.festival.distance.domain.conversation.chat.dto.ChatMessageResponseDto;
@@ -147,10 +147,18 @@ public class  StompController {
         // receiver 에게 PUSH 알림 전송
         Member opponent = memberReader.findMember(chatMessageDto.getSenderId());
         Member member = memberReader.findMember(chatMessageDto.getReceiverId());
-        sqsService.sendMessage(opponent.getClientToken(),member.getNickName(),chatMessageDto.getChatMessage());
-        //fcmService.createFcm(opponent, member.getNickName(), "새로운 메시지가 도착했습니다!", MESSAGE);
-        //chatMessageService.sendNotificationIfReceiverNotInChatRoom(chatMessageDto, roomId);
-
+        if(SenderType.of(chatMessageDto.getPublishType()).equals(IMAGE)){
+            sqsService.sendMessage(
+                opponent.getClientToken(),
+                member.getNickName(),
+                "사진을 보냈습니다."
+            );
+        }
+        sqsService.sendMessage(
+            opponent.getClientToken(),
+            member.getNickName(),
+            chatMessageDto.getChatMessage()
+        );
         // 채팅 읽음 갱신
         for (ChatRoomSession chatRoomSession : sessionByChatRoom) {
             Long memberId = chatRoomSession.getMemberId();
