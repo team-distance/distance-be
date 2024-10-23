@@ -23,6 +23,8 @@ public class SqsService {
             clientToken, message, title
         );
 
+        System.out.println("messageBody = " + messageBody);
+
         SendMessageRequest sendMsgRequest = SendMessageRequest.builder()
             .queueUrl(sqsUrl)
             .messageBody(messageBody)
