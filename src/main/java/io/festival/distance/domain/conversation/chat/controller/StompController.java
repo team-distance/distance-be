@@ -20,6 +20,7 @@ import io.festival.distance.domain.firebase.service.FcmService;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.global.exception.DistanceException;
+import io.festival.distance.infra.sqs.SqsService;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +48,7 @@ public class  StompController {
     private final FcmService fcmService;
     private final MemberReader memberReader;
     private final ChatRoomReader chatRoomReader;
+    private final SqsService sqsService;
     private static final String LEAVE = "LEAVE";
 
     @MessageMapping("/chat/{roomId}") //app/chat/{roomId}로 요청이 들어왔을 때 -> 발신
@@ -145,7 +147,8 @@ public class  StompController {
         // receiver 에게 PUSH 알림 전송
         Member opponent = memberReader.findMember(chatMessageDto.getSenderId());
         Member member = memberReader.findMember(chatMessageDto.getReceiverId());
-        fcmService.createFcm(opponent, member.getNickName(), "새로운 메시지가 도착했습니다!", MESSAGE);
+        sqsService.sendMessage(opponent.getClientToken(),member.getNickName(),chatMessageDto.getChatMessage());
+        //fcmService.createFcm(opponent, member.getNickName(), "새로운 메시지가 도착했습니다!", MESSAGE);
         //chatMessageService.sendNotificationIfReceiverNotInChatRoom(chatMessageDto, roomId);
 
         // 채팅 읽음 갱신

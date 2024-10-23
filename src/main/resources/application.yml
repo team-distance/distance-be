@@ -64,6 +64,12 @@ cloud:
       secret-key: ${S3_SECRET_KEY}
       region: ${S3_REGION}
       bucket: ${S3_BUCKET}
+    sqs:
+      queue:
+        name: DISTANCE_MESSAGE.fifo
+        url: https://sqs.ap-northeast-2.amazonaws.com/211125577464/DISTANCE_MESSAGE.fifo
+    stack:
+      auto: false
 
 slack:
   webhook:
