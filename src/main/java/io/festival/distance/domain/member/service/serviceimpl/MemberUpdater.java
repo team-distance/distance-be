@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberUpdater {
     private final PasswordEncoder encoder;
+    private final MemberReader memberReader;
     public String modifyPassword(String password){
         return encoder.encode(password);
     }
@@ -45,5 +46,11 @@ public class MemberUpdater {
     @Transactional
     public void updateGps(Member member, GpsDto gpsDto){
         member.memberGpsUpdate(gpsDto);
+    }
+
+    @Transactional
+    public void increaseRoomCount(String telNum){
+        Member member = memberReader.findTelNum(telNum);
+        member.updateRoomCount();
     }
 }

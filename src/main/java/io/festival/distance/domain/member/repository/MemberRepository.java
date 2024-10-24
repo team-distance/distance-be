@@ -1,6 +1,7 @@
 package io.festival.distance.domain.member.repository;
 
 import io.festival.distance.domain.member.entity.Member;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +26,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     List<Member> findAllBySchoolAndGender(String school, String gender);
 
+    List<Member> findByModifyDtAfter(LocalDateTime time);
 
     @Query("select m from Member m "
         + "where m.school = :school and "

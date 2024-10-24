@@ -13,6 +13,7 @@ import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.domain.member.validlogin.ValidUnivCert;
 import java.security.Principal;
 import java.util.List;
+import javax.persistence.criteria.CriteriaBuilder.In;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -61,12 +63,18 @@ public class ChatRoomController {
     @GetMapping("/{chatRoomId}/message")
     public ResponseEntity<List<ChatMessageResponseDto>> getAllMessage(
         @PathVariable Long chatRoomId,
-        PageRequestDto pageRequestDto,
+        @RequestParam("page") int page,
+        @RequestParam("size") int size,
         Principal principal
     ) {
         return ResponseEntity.ok(
             chatMessageService.findAllMessage(chatRoomReader.findChatRoom(chatRoomId),
-                pageGenerate(pageRequestDto), principal));
+                pageGenerate(page, size), principal));
+    }
+
+    @GetMapping("/message/count/{chatRoomId}")
+    public ResponseEntity<Integer> getMessageCount(@PathVariable Long chatRoomId){
+        return ResponseEntity.ok(chatMessageService.calculateMessageCount(chatRoomId));
     }
 
     /**
@@ -93,9 +101,7 @@ public class ChatRoomController {
         return ResponseEntity.ok(chatRoomService.getAgreedStatus(chatRoomId));
     }
 
-    public static PageRequest pageGenerate(PageRequestDto dto) {
-        int page = dto.page();
-        int size = dto.size();
+    public static PageRequest pageGenerate(int page, int size) {
         return PageRequest.of(page, size);
     }
 }

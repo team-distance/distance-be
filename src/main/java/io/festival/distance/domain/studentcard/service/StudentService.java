@@ -16,6 +16,7 @@ import io.festival.distance.domain.studentcard.entity.StudentCard;
 import io.festival.distance.domain.studentcard.service.serviceimpl.StudentCardCreator;
 import io.festival.distance.domain.studentcard.service.serviceimpl.StudentCardReader;
 import io.festival.distance.domain.studentcard.service.serviceimpl.StudentCardUpdater;
+import io.festival.distance.infra.sqs.SqsService;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,7 @@ public class StudentService {
     private final StudentCardReader studentCardReader;
     private final StudentCardUpdater studentCardUpdater;
     private final FcmService fcmService;
+    private final SqsService sqsService;
     @Transactional
     public void sendImage(MultipartFile file, String telNum) throws IOException {
         Member member = memberReader.findTelNum(telNum);
@@ -60,6 +62,12 @@ public class StudentService {
         StudentCard studentCard = studentCardReader.getStudentCard(studentCardId);
         Member member = studentCardReader.getMember(studentCard);
         memberUpdater.updateUniv(member, UnivCert.valueOf(adminRequest.type()));
-        fcmService.createFcm(member,SET_SENDER_NAME,REJECT_STUDENT_CARD, STUDENT_CARD);
+        sqsService.sendMessage(
+            member.getClientToken(),
+            SET_SENDER_NAME,
+            UnivCert.valueOf(adminRequest.type()).getMessage(),
+            null
+        );
+        //fcmService.createFcm(member,SET_SENDER_NAME,REJECT_STUDENT_CARD, STUDENT_CARD);
     }
 }

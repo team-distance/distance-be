@@ -15,7 +15,8 @@ public enum SenderType {
     SYSTEM("SYSTEM"),
     CALL_REQUEST("CALL_REQUEST"),
     CALL_RESPONSE("CALL_RESPONSE"),
-    IMAGE("IMAGE");
+    IMAGE("IMAGE"),
+    COME("COME");
 
     private final String senderType;
 

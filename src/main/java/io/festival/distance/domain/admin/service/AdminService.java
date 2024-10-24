@@ -1,10 +1,8 @@
 package io.festival.distance.domain.admin.service;
 
-import static io.festival.distance.authuniversity.domain.University.getDomainByName;
 import static io.festival.distance.authuniversity.domain.University.getEnumByName;
 
 import io.festival.distance.domain.admin.dto.AdminSignUpDto;
-import io.festival.distance.domain.member.entity.Authority;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +27,7 @@ public class AdminService {
             .memberCharacter("운영자")
             .reportCount(0)
             .activated(true)
+            .school(adminSignUpDto.school())
             .build();
         return memberRepository.save(member).getMemberId();
     }

@@ -11,6 +11,8 @@ import io.festival.distance.domain.member.repository.MemberRepository;
 import io.festival.distance.domain.memberhobby.service.HobbyReader;
 import io.festival.distance.domain.membertag.service.TagReader;
 import io.festival.distance.global.exception.DistanceException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -58,6 +60,12 @@ public class MemberReader {
     @Transactional(readOnly = true)
     public List<Member> findMemberList() {
         return memberRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Member> findMemberListByFilter(){
+        LocalDateTime oneMonthAgo = LocalDateTime.now().minusMonths(1);
+        return memberRepository.findByModifyDtAfter(oneMonthAgo);
     }
 
     @Transactional(readOnly = true)
