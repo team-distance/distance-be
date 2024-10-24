@@ -14,6 +14,7 @@ import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.repository.MemberRepository;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.global.exception.DistanceException;
+import io.festival.distance.infra.sqs.SqsService;
 import io.festival.distance.infra.sse.event.ChatWaitingAddedEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ public class ChatWaitingService {
     private final MemberRepository memberRepository;
     private final MemberReader memberReader;
     private final ApplicationEventPublisher aep;
+    private final SqsService sqsService;
 
     /**
      * 대기열 증가하는 로직 -> 그럼 여기다가 eventListener을 달면?
@@ -49,8 +51,8 @@ public class ChatWaitingService {
                 .myRoomName(me.getNickName())
                 .build();
             chatWaitingRepository.save(chatWaiting);
-
-            fcmService.createFcm(opponent, SET_SENDER_NAME, ADD_WAITING_ROOM_MESSAGE,WAITING);
+            sqsService.sendMessage(opponent.getClientToken(),SET_SENDER_NAME,ADD_WAITING_ROOM_MESSAGE,null);
+            //fcmService.createFcm(opponent, SET_SENDER_NAME, ADD_WAITING_ROOM_MESSAGE,WAITING);
             aep.publishEvent(new ChatWaitingAddedEvent(opponent.getMemberId()));
             aep.publishEvent(new ChatWaitingAddedEvent(me.getMemberId()));
         }
