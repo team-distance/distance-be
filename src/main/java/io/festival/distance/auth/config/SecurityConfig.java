@@ -91,8 +91,7 @@ public class SecurityConfig {
             .anyRequest().authenticated()
             .and()
             .apply(
-                new JwtSecurityConfig(
-                tokenProvider)); // JwtFilter를 addFilterBefore로 등록했던 JwtSecurityConfig class 적용
+                new JwtSecurityConfig(tokenProvider));
 
         return httpSecurity.build();
     }
