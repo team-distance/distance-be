@@ -89,6 +89,7 @@ public class MemberService {
     public String resignMember(String telNum) {
         Member member = memberReader.findTelNum(telNum);
         chatRoomDeleter.deleteByMemberResign(member);
+        roomMemberProcessor.createWithdrawEvent(telNum);
         memberDeleter.deleteMember(telNum);
         refreshDeleter.deleteRefreshToken(telNum);
         return telNum;

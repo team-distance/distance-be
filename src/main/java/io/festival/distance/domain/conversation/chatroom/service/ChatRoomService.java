@@ -179,9 +179,9 @@ public class ChatRoomService {
                         })
                     .orElseGet(() -> {
                         String message = "상대방이 탈퇴했습니다.";
-                        aep.publishEvent(
+                        /*aep.publishEvent(
                             new ChatRoomDeleteEvent(memberId,chatRoom.getChatRoomId(),roomMember.getCreateDt())
-                        );
+                        );*/
                         return ChatRoomInfoDto.builder()
                             .chatRoomId(chatRoom.getChatRoomId())
                             .department("탈퇴한 사용자")
