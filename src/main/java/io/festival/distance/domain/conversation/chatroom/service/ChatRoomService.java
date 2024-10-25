@@ -14,12 +14,14 @@ import io.festival.distance.domain.conversation.roommember.repository.RoomMember
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.repository.MemberRepository;
 import io.festival.distance.global.exception.DistanceException;
+import io.festival.distance.infra.sse.event.ChatWaitingAddedEvent;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +34,7 @@ public class ChatRoomService {
     private final RoomMemberRepository roomMemberRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomReader chatRoomReader;
+    private final ApplicationEventPublisher aep;
 
     @Transactional(readOnly = true)
     public List<ChatRoomInfoDto> findAllRoom(String telNum) {
@@ -158,7 +161,8 @@ public class ChatRoomService {
                                     : message.getCreateDt();
 
                             Integer count = getUnreadMessageCount(roomMember, chatRoom);
-
+                            aep.publishEvent(new ChatWaitingAddedEvent(opponentMember.getMemberId()));
+                            aep.publishEvent(new ChatWaitingAddedEvent(member.getMemberId()));
                             return ChatRoomInfoDto.builder()
                                 .chatRoomId(chatRoom.getChatRoomId())
                                 .department(opponentMember.getDepartment())
@@ -174,6 +178,7 @@ public class ChatRoomService {
                         })
                     .orElseGet(() -> {
                         String message = "상대방이 탈퇴했습니다.";
+                        aep.publishEvent(new ChatWaitingAddedEvent(member.getMemberId()));
                         return ChatRoomInfoDto.builder()
                             .chatRoomId(chatRoom.getChatRoomId())
                             .department("탈퇴한 사용자")

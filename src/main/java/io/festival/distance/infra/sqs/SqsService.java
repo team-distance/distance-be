@@ -28,16 +28,14 @@ public class SqsService {
             clientToken, message, title, imageUrl
         );
 
-        System.out.println("messageBody = " + messageBody);
 
         SendMessageRequest sendMsgRequest = SendMessageRequest.builder()
             .queueUrl(sqsUrl)
             .messageBody(messageBody)
-            .messageGroupId("distance-group")
+            .messageGroupId("distance-message-group")
             .messageDeduplicationId(UUID.randomUUID().toString())
             .build();
 
         sqsClient.sendMessage(sendMsgRequest);
-        System.out.println("Message sent to SQS: " + message);
     }
 }

@@ -28,13 +28,9 @@ public class SseService {
      * @return SseEmitter - 서버에서 보낸 이벤트 Emitter
      */
     public SseEmitter subscribe(Long memberId) {
-        log.info("subscribe started");
         SseEmitter emitter = createEmitter(memberId);
-        log.info("success emitter Create");
-         sendToClient(memberId,chatRoomService.findAllRoomTest(memberId),"chatRoom");
+        sendToClient(memberId,chatRoomService.findAllRoomTest(memberId),"chatRoom");
         sendToClient(memberId,chatWaitingService.countingWaitingRoom(memberId),"waitingCount");
-        log.info("success send to client");
-        log.info("emitter>>> " + emitter);
         return emitter;
     }
 
@@ -59,16 +55,11 @@ public class SseService {
      */
     private void sendToClient(Long memberId, Object data,String eventName) {
         SseEmitter emitter = sseRepository.get(memberId);
-        log.info("sentToClient come");
         if (emitter != null) {
             try {
-                //emitter.send(SseEmitter.event().name("dummyData").data("start event stream"));
                 emitter.send(SseEmitter.event().name(eventName).data(data));
-                log.info("success emitter send");
             } catch (IOException exception) {
-                log.info("come catch");
                 sseRepository.deleteById(memberId);
-                log.info("failed sse");
                 //emitter.completeWithError(exception);
             }
         }
