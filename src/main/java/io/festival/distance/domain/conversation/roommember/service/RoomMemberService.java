@@ -11,10 +11,13 @@ import io.festival.distance.domain.conversation.chatroom.service.serviceimpl.Cha
 import io.festival.distance.domain.conversation.roommember.dto.RoomMemberResponse;
 import io.festival.distance.domain.conversation.roommember.entity.RoomMember;
 import io.festival.distance.domain.conversation.roommember.repository.RoomMemberRepository;
+import io.festival.distance.domain.conversation.roommember.service.serviceimpl.RoomMemberReader;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.global.exception.DistanceException;
+import io.festival.distance.infra.sse.event.ChatMessageAddedEvent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +30,8 @@ public class RoomMemberService {
     private final MemberReader memberReader;
     private final ChatRoomReader chatRoomReader;
     private final ChatRoomDeleter chatRoomDeleter;
+    private final RoomMemberReader roomMemberReader;
+    private final ApplicationEventPublisher aep;
 
     public static final String IN_ACTIVE="INACTIVE";
     @Transactional
@@ -47,7 +52,9 @@ public class RoomMemberService {
     public Member goOutRoom(Long chatRoomId, Long memberId) {
         ChatRoom chatRoom = chatRoomReader.findChatRoom(chatRoomId);
         Member member = memberReader.findMember(memberId);
-
+        RoomMember roomMember = roomMemberRepository.findByMemberAndChatRoom(member, chatRoom)
+            .orElseThrow(()-> new DistanceException(NOT_EXIST_CHATROOM));
+        Long opponentId = memberReader.findNickName(roomMember.getMyRoomName()).getMemberId();
         if (!roomMemberRepository.existsByMemberAndChatRoom(member, chatRoom)) {
             throw new DistanceException(NOT_EXIST_CHATROOM);
         }
@@ -56,11 +63,13 @@ public class RoomMemberService {
             roomMemberRepository.deleteByChatRoomAndMember(chatRoom, member);
             chatRoomDeleter.delete(chatRoomId);
             chatMessageRepository.deleteAllByChatRoom(chatRoom);
+            aep.publishEvent(new ChatMessageAddedEvent(opponentId));
             return member;
         }
 
         chatRoom.roomInActive();
         roomMemberRepository.deleteByChatRoomAndMember(chatRoom, member);
+        aep.publishEvent(new ChatMessageAddedEvent(opponentId));
         return member;
     }
 
