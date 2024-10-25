@@ -180,7 +180,7 @@ public class ChatRoomService {
                     .orElseGet(() -> {
                         String message = "상대방이 탈퇴했습니다.";
                         aep.publishEvent(
-                            new ChatRoomDeleteEvent(chatRoom.getChatRoomId(),roomMember.getCreateDt())
+                            new ChatRoomDeleteEvent(memberId,chatRoom.getChatRoomId(),roomMember.getCreateDt())
                         );
                         return ChatRoomInfoDto.builder()
                             .chatRoomId(chatRoom.getChatRoomId())

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ChatWaitingEventListener {
+public class ChatEventListener {
     private final SseService sseService;
     private final ChatWaitingService chatWaitingService;
     private final ChatRoomService chatRoomService;
@@ -28,8 +28,9 @@ public class ChatWaitingEventListener {
 
     @EventListener
     public void onDeleteChatRoom(ChatRoomDeleteEvent event) {
+        Long memberId = event.memberId();
         Long chatRoomId = event.chatRoomId();
         LocalDateTime createDt = event.createDt();
-        sseService.messageNotify(chatRoomId, chatRoomService.withdrawMessage(chatRoomId,createDt));
+        sseService.messageNotify(memberId, chatRoomService.withdrawMessage(chatRoomId,createDt));
     }
 }
