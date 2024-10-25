@@ -15,6 +15,7 @@ import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.repository.MemberRepository;
 import io.festival.distance.global.exception.DistanceException;
 import io.festival.distance.infra.sse.event.ChatMessageAddedEvent;
+import io.festival.distance.infra.sse.event.ChatRoomDeleteEvent;
 import io.festival.distance.infra.sse.event.ChatWaitingAddedEvent;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -162,8 +163,8 @@ public class ChatRoomService {
                                     : message.getCreateDt();
 
                             Integer count = getUnreadMessageCount(roomMember, chatRoom);
-                            aep.publishEvent(new ChatMessageAddedEvent(opponentMember.getMemberId()));
-                            aep.publishEvent(new ChatMessageAddedEvent(member.getMemberId()));
+                            //aep.publishEvent(new ChatMessageAddedEvent(opponentMember.getMemberId()));
+                            //aep.publishEvent(new ChatMessageAddedEvent(member.getMemberId()));
                             return ChatRoomInfoDto.builder()
                                 .chatRoomId(chatRoom.getChatRoomId())
                                 .department(opponentMember.getDepartment())
@@ -178,7 +179,9 @@ public class ChatRoomService {
                         })
                     .orElseGet(() -> {
                         String message = "상대방이 탈퇴했습니다.";
-                        aep.publishEvent(new ChatMessageAddedEvent(member.getMemberId()));
+                        aep.publishEvent(
+                            new ChatRoomDeleteEvent(chatRoom.getChatRoomId(),roomMember.getCreateDt())
+                        );
                         return ChatRoomInfoDto.builder()
                             .chatRoomId(chatRoom.getChatRoomId())
                             .department("탈퇴한 사용자")
@@ -195,5 +198,14 @@ public class ChatRoomService {
                 chatRoom,
                 roomMember.getLastReadMessageId()
             );
+    }
+
+    public ChatRoomInfoDto withdrawMessage(Long chatRoomId, LocalDateTime createDt){
+        return ChatRoomInfoDto.builder()
+            .chatRoomId(chatRoomId)
+            .department("탈퇴한 사용자")
+            .createDt(createDt)
+            .lastMessage("상대방이 탈퇴했습니다.")
+            .build();
     }
 }

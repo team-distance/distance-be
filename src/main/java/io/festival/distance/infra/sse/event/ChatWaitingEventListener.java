@@ -3,6 +3,7 @@ package io.festival.distance.infra.sse.event;
 import io.festival.distance.domain.conversation.chatroom.service.ChatRoomService;
 import io.festival.distance.domain.conversation.waiting.service.ChatWaitingService;
 import io.festival.distance.infra.sse.service.SseService;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -23,5 +24,12 @@ public class ChatWaitingEventListener {
     public void onChatMessageAdded(ChatMessageAddedEvent event) {
         Long memberId = event.memberId();
         sseService.messageNotify(memberId, chatRoomService.findAllRoomTest(memberId));
+    }
+
+    @EventListener
+    public void onDeleteChatRoom(ChatRoomDeleteEvent event) {
+        Long chatRoomId = event.chatRoomId();
+        LocalDateTime createDt = event.createDt();
+        sseService.messageNotify(chatRoomId, chatRoomService.withdrawMessage(chatRoomId,createDt));
     }
 }
