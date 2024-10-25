@@ -57,7 +57,7 @@ public class SseService {
         log.info("sentToClient come");
         if (emitter != null) {
             try {
-                emitter.send(SseEmitter.event().name("dummyData").data("start event stream"));
+                //emitter.send(SseEmitter.event().name("dummyData").data("start event stream"));
                 emitter.send(SseEmitter.event().name("waitingCount").data(data));
                 log.info("success emitter send");
             } catch (IOException exception) {
