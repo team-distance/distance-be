@@ -6,6 +6,7 @@ import io.festival.distance.domain.conversation.roommember.service.serviceimpl.R
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.infra.sse.event.ChatMessageAddedEvent;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -29,12 +30,20 @@ public class RoomMemberProcessor {
         }
     }
 
-    public void createWithdrawEvent(String telNum){
+    public List<Long> saveWithdrawMemberInfo(String telNum){
+        List<Long> roomNames = new ArrayList<>();
         Member member = memberReader.findTelNum(telNum);
         roomMemberReader.findRoomMemberList(member)
             .forEach(roomMember ->{
                 Member opponent = memberReader.findNickName(roomMember.getMyRoomName());
-                aep.publishEvent(new ChatMessageAddedEvent(opponent.getMemberId()));
+                roomNames.add(opponent.getMemberId());
             });
+        return roomNames;
+    }
+
+    public void createWithdrawEvent(List<Long> opponentId){
+        opponentId.forEach(
+            id -> aep.publishEvent(new ChatMessageAddedEvent(id))
+        );
     }
 }

@@ -30,6 +30,7 @@ import io.festival.distance.infra.redis.authenticate.AuthenticateRedisCreator;
 import io.festival.distance.infra.redis.authenticate.AuthenticateRedisReader;
 import io.festival.distance.infra.redis.authenticate.AuthenticateRedisSaver;
 import io.festival.distance.infra.sms.SmsUtil;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,13 +86,13 @@ public class MemberService {
      * NOTE
      * 회원 PK값으로 DB에서 삭제 -> 회원탈퇴
      */
-    @Transactional
     public String resignMember(String telNum) {
         Member member = memberReader.findTelNum(telNum);
         chatRoomDeleter.deleteByMemberResign(member);
-        roomMemberProcessor.createWithdrawEvent(telNum);
-        memberDeleter.deleteMember(telNum);
+        List<Long> memberInfo = roomMemberProcessor.saveWithdrawMemberInfo(telNum);
+        memberDeleter.deleteMember(member);
         refreshDeleter.deleteRefreshToken(telNum);
+        roomMemberProcessor.createWithdrawEvent(memberInfo);
         return telNum;
     }
 

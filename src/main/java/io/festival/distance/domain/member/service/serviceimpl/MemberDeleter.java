@@ -12,8 +12,8 @@ public class MemberDeleter {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void deleteMember(String telNum){
-        memberRepository.deleteByTelNum(telNum);
+    public void deleteMember(Member member){
+        memberRepository.delete(member);
     }
 
     @Transactional
