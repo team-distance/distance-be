@@ -54,7 +54,7 @@ public class RoomMemberService {
         Member member = memberReader.findMember(memberId);
         RoomMember roomMember = roomMemberRepository.findByMemberAndChatRoom(member, chatRoom)
             .orElseThrow(()-> new DistanceException(NOT_EXIST_CHATROOM));
-        Long opponentId = memberReader.findNickName(roomMember.getMyRoomName()).getMemberId();
+
         if (!roomMemberRepository.existsByMemberAndChatRoom(member, chatRoom)) {
             throw new DistanceException(NOT_EXIST_CHATROOM);
         }
@@ -63,13 +63,15 @@ public class RoomMemberService {
             roomMemberRepository.deleteByChatRoomAndMember(chatRoom, member);
             chatRoomDeleter.delete(chatRoomId);
             chatMessageRepository.deleteAllByChatRoom(chatRoom);
-            aep.publishEvent(new ChatMessageAddedEvent(opponentId));
+            aep.publishEvent(new ChatMessageAddedEvent(memberId));
             return member;
         }
 
+        Long opponentId = memberReader.findNickName(roomMember.getMyRoomName()).getMemberId();
         chatRoom.roomInActive();
         roomMemberRepository.deleteByChatRoomAndMember(chatRoom, member);
         aep.publishEvent(new ChatMessageAddedEvent(opponentId));
+        aep.publishEvent(new ChatMessageAddedEvent(memberId));
         return member;
     }
 
