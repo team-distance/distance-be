@@ -22,6 +22,6 @@ public class ChatWaitingEventListener {
     @EventListener
     public void onChatMessageAdded(ChatMessageAddedEvent event) {
         Long memberId = event.memberId();
-        sseService.notify(memberId, chatRoomService.findAllRoomTest(memberId));
+        sseService.messageNotify(memberId, chatRoomService.findAllRoomTest(memberId));
     }
 }

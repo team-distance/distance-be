@@ -45,11 +45,11 @@ public class SseService {
      * @param event  - 전송할 이벤트 객체.
      */
     public void notify(Long memberId, Object event) {
-        sendToClient(memberId, event,"Name");
+        sendToClient(memberId, event,"waiting");
     }
 
-    public void MessageNotify(Long memberId, Object event){
-        sendToClient(memberId,event,"Name");
+    public void messageNotify(Long memberId, Object event){
+        sendToClient(memberId,event,"message");
     }
     /**
      * 클라이언트에게 데이터를 전송
