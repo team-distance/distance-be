@@ -15,12 +15,15 @@ import io.festival.distance.domain.conversation.roommember.service.RoomMemberSer
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.global.exception.DistanceException;
+import io.festival.distance.infra.sse.event.ChatMessageAddedEvent;
+import io.festival.distance.infra.sse.event.ChatWaitingAddedEvent;
 import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +37,7 @@ public class ChatMessageService {
     private final RoomMemberService roomMemberService;
     private final MemberReader memberReader;
     private final ChatRoomReader chatRoomReader;
+    private final ApplicationEventPublisher aep;
 
     private final static Integer INITIAL_COUNT = 2;
 
@@ -66,12 +70,18 @@ public class ChatMessageService {
      * 메소드 네이밍 변경 필요!
      */
     @Transactional
-    public ChatMessageResponseDto generateMessage(Long chatMessageId, int currentMemberCount,
-        ChatRoom chatRoom) {
+    public ChatMessageResponseDto generateMessage(
+        Long chatMessageId,
+        int currentMemberCount,
+        ChatRoom chatRoom,
+        Long memberId,
+        Long opponentId
+    ) {
         ChatMessage chatMessage = chatMessageRepository.findById(chatMessageId)
             .orElseThrow(() -> new DistanceException(NOT_EXIST_MESSAGE));
         chatMessage.readCountUpdate(currentMemberCount);
-
+        aep.publishEvent(new ChatMessageAddedEvent(opponentId));
+        aep.publishEvent(new ChatMessageAddedEvent(memberId));
         return ChatMessageResponseDto.builder()
             .messageId(chatMessageId)
             .chatMessage(chatMessage.getChatMessage())

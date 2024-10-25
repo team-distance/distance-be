@@ -1,5 +1,6 @@
 package io.festival.distance.infra.sse.service;
 
+import io.festival.distance.domain.conversation.chatroom.service.ChatRoomService;
 import io.festival.distance.domain.conversation.waiting.service.ChatWaitingService;
 import io.festival.distance.infra.sse.repository.SseRepository;
 import java.io.IOException;
@@ -18,6 +19,7 @@ public class SseService {
 
     private final SseRepository sseRepository;
     private final ChatWaitingService chatWaitingService;
+    private final ChatRoomService chatRoomService;
 
     /**
      * 클라이언트가 구독을 위해 호출하는 메서드.
@@ -29,8 +31,8 @@ public class SseService {
         log.info("subscribe started");
         SseEmitter emitter = createEmitter(memberId);
         log.info("success emitter Create");
-        //sendToClient(memberId,"start Server-Sent-Event!");
-        sendToClient(memberId,chatWaitingService.countingWaitingRoom(memberId));
+         sendToClient(memberId,chatRoomService.findAllRoomTest(memberId),"chatRoom");
+        sendToClient(memberId,chatWaitingService.countingWaitingRoom(memberId),"waitingCount");
         log.info("success send to client");
         log.info("emitter>>> " + emitter);
         return emitter;
@@ -43,28 +45,31 @@ public class SseService {
      * @param event  - 전송할 이벤트 객체.
      */
     public void notify(Long memberId, Object event) {
-        sendToClient(memberId, event);
+        sendToClient(memberId, event,"Name");
     }
 
+    public void MessageNotify(Long memberId, Object event){
+        sendToClient(memberId,event,"Name");
+    }
     /**
      * 클라이언트에게 데이터를 전송
      *
      * @param memberId   - 데이터를 받을 사용자의 아이디.
      * @param data - 전송할 데이터.
      */
-    private void sendToClient(Long memberId, Object data) {
+    private void sendToClient(Long memberId, Object data,String eventName) {
         SseEmitter emitter = sseRepository.get(memberId);
         log.info("sentToClient come");
         if (emitter != null) {
             try {
                 //emitter.send(SseEmitter.event().name("dummyData").data("start event stream"));
-                emitter.send(SseEmitter.event().name("waitingCount").data(data));
+                emitter.send(SseEmitter.event().name(eventName).data(data));
                 log.info("success emitter send");
             } catch (IOException exception) {
                 log.info("come catch");
                 sseRepository.deleteById(memberId);
                 log.info("failed sse");
-                emitter.completeWithError(exception);
+                //emitter.completeWithError(exception);
             }
         }
     }

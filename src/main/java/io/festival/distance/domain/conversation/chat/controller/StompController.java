@@ -110,7 +110,13 @@ public class  StompController {
                 }
 
                 return ResponseEntity.ok(
-                    chatMessageService.generateMessage(messageId, 2, chatRoom)
+                    chatMessageService.generateMessage(
+                        messageId,
+                        2,
+                        chatRoom,
+                        chatMessageDto.getReceiverId(),
+                        chatMessageDto.getSenderId()
+                    )
                 );
             }
 
@@ -170,8 +176,14 @@ public class  StompController {
         }
 
         return ResponseEntity.ok(
-            chatMessageService.generateMessage(chatMessageId, sessionByChatRoom.size(),
-                chatRoom));
+            chatMessageService.generateMessage(
+                chatMessageId,
+                sessionByChatRoom.size(),
+                chatRoom,
+                member.getMemberId(),
+                opponent.getMemberId()
+            )
+        );
     }
 
    /* @MessageMapping("/waiting/{memberId}")
