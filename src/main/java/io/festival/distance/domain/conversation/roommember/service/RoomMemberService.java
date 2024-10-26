@@ -16,6 +16,7 @@ import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.global.exception.DistanceException;
 import io.festival.distance.infra.sse.event.ChatMessageAddedEvent;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -59,6 +60,7 @@ public class RoomMemberService {
             throw new DistanceException(NOT_EXIST_CHATROOM);
         }
 
+        //상대방이 나갔거나 탈퇴한 경우
         if (chatRoom.getRoomStatus().equals(IN_ACTIVE)) {
             roomMemberRepository.deleteByChatRoomAndMember(chatRoom, member);
             chatRoomDeleter.delete(chatRoomId);
@@ -66,12 +68,17 @@ public class RoomMemberService {
             aep.publishEvent(new ChatMessageAddedEvent(memberId));
             return member;
         }
+        /**
+         * TODO
+         * 상대방이 이미 탈퇴한 경우 상대방은 이미 DB에서 사라짐
+         */
+        Long opponentId = memberReader.findNickNameNullAble(roomMember.getMyRoomName()).getMemberId();
 
-        Long opponentId = memberReader.findNickName(roomMember.getMyRoomName()).getMemberId();
+        //내가 제일 먼저 나간 경우, 나랑 상대방한테 이벤트 발송
         chatRoom.roomInActive();
         roomMemberRepository.deleteByChatRoomAndMember(chatRoom, member);
         aep.publishEvent(new ChatMessageAddedEvent(opponentId));
-        aep.publishEvent(new ChatMessageAddedEvent(memberId));
+        aep.publishEvent(new ChatMessageAddedEvent(memberId ));
         return member;
     }
 
