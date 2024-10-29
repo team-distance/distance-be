@@ -208,4 +208,13 @@ public class MemberController {
     public ResponseEntity<Integer> checkRoomCount(Principal principal){
         return ResponseEntity.ok(memberService.identifyRoomCount(principal.getName()));
     }
+
+    /**
+     * NOTE
+     * 유저 전화번호
+     */
+    @GetMapping("/own/telnum")
+    public ResponseEntity<String> getOwnTelNum(Principal principal){
+        return ResponseEntity.ok(principal.getName());
+    }
 }
