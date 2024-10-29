@@ -172,4 +172,8 @@ public class MemberService {
         smsUtil.sendOne(telNumRequest, num);
         return num;
     }
+
+    public Integer identifyRoomCount(String telNum) {
+        return memberReader.findTelNum(telNum).getRoomCount();
+    }
 }
