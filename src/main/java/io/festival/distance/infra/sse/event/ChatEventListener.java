@@ -26,11 +26,11 @@ public class ChatEventListener {
         sseService.messageNotify(memberId, chatRoomService.findAllRoomTest(memberId));
     }
 
-    @EventListener
+    /*@EventListener
     public void onDeleteChatRoom(ChatRoomDeleteEvent event) {
         Long memberId = event.memberId();
         Long chatRoomId = event.chatRoomId();
         LocalDateTime createDt = event.createDt();
         sseService.messageNotify(memberId, chatRoomService.withdrawMessage(chatRoomId,createDt));
-    }
+    }*/
 }

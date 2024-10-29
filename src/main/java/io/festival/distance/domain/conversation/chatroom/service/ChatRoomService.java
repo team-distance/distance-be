@@ -14,9 +14,6 @@ import io.festival.distance.domain.conversation.roommember.repository.RoomMember
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.repository.MemberRepository;
 import io.festival.distance.global.exception.DistanceException;
-import io.festival.distance.infra.sse.event.ChatMessageAddedEvent;
-import io.festival.distance.infra.sse.event.ChatRoomDeleteEvent;
-import io.festival.distance.infra.sse.event.ChatWaitingAddedEvent;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
