@@ -163,8 +163,6 @@ public class ChatRoomService {
                                     : message.getCreateDt();
 
                             Integer count = getUnreadMessageCount(roomMember, chatRoom);
-                            //aep.publishEvent(new ChatMessageAddedEvent(opponentMember.getMemberId()));
-                            //aep.publishEvent(new ChatMessageAddedEvent(member.getMemberId()));
                             return ChatRoomInfoDto.builder()
                                 .chatRoomId(chatRoom.getChatRoomId())
                                 .department(opponentMember.getDepartment())
@@ -179,9 +177,6 @@ public class ChatRoomService {
                         })
                     .orElseGet(() -> {
                         String message = "상대방이 탈퇴했습니다.";
-                        /*aep.publishEvent(
-                            new ChatRoomDeleteEvent(memberId,chatRoom.getChatRoomId(),roomMember.getCreateDt())
-                        );*/
                         return ChatRoomInfoDto.builder()
                             .chatRoomId(chatRoom.getChatRoomId())
                             .department("탈퇴한 사용자")
@@ -200,12 +195,12 @@ public class ChatRoomService {
             );
     }
 
-    public ChatRoomInfoDto withdrawMessage(Long chatRoomId, LocalDateTime createDt){
+/*    public ChatRoomInfoDto withdrawMessage(Long chatRoomId, LocalDateTime createDt){
         return ChatRoomInfoDto.builder()
             .chatRoomId(chatRoomId)
             .department("탈퇴한 사용자")
             .createDt(createDt)
             .lastMessage("상대방이 탈퇴했습니다.")
             .build();
-    }
+    }*/
 }
