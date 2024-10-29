@@ -13,6 +13,8 @@ import io.festival.distance.domain.membertag.service.TagReader;
 import io.festival.distance.global.exception.DistanceException;
 import io.festival.distance.global.exception.ErrorCode;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -70,8 +72,11 @@ public class MemberReader {
 
     @Transactional(readOnly = true)
     public List<Member> findMemberListByFilter(){
-        LocalDateTime oneMonthAgo = LocalDateTime.now().minusMonths(1);
-        return memberRepository.findByModifyDtAfter(oneMonthAgo);
+        LocalDateTime oneWeekAgo = ZonedDateTime
+            .now(ZoneId.of("Asia/Seoul"))
+            .minusWeeks(1)
+            .toLocalDateTime();
+        return memberRepository.findByModifyDtAfter(oneWeekAgo);
     }
 
     @Transactional(readOnly = true)

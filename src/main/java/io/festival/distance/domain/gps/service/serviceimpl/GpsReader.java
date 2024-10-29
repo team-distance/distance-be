@@ -22,7 +22,7 @@ public class GpsReader {
      * 비로그인 유저 매칭
      */
     public List<MatchUserDto> getNonLoginUserMatchList() {
-        return memberReader.findMemberList()
+        return memberReader.findMemberListByFilter()
             .stream()
             .filter(
                 gpsValidator::isActivatedMember
@@ -41,7 +41,6 @@ public class GpsReader {
         Double searchRange,
         Boolean isPermitOtherSchool
     ) {
-        System.out.println("search request type: "+isPermitOtherSchool);
         List<MatchUserDto> userDtoList = memberReader.findMemberListByFilter()
             .stream()
             .filter(
