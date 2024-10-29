@@ -24,6 +24,7 @@ import io.festival.distance.domain.memberhobby.service.HobbyUpdater;
 import io.festival.distance.domain.membertag.service.TagCreator;
 import io.festival.distance.domain.membertag.service.TagUpdater;
 import io.festival.distance.domain.recommender.service.RecommenderProcessor;
+import io.festival.distance.domain.recommender.service.RecommenderValidator;
 import io.festival.distance.global.exception.DistanceException;
 import io.festival.distance.infra.redis.authenticate.AuthenticateNumber;
 import io.festival.distance.infra.redis.authenticate.AuthenticateRedisCreator;
@@ -31,6 +32,7 @@ import io.festival.distance.infra.redis.authenticate.AuthenticateRedisReader;
 import io.festival.distance.infra.redis.authenticate.AuthenticateRedisSaver;
 import io.festival.distance.infra.sms.SmsUtil;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,6 +65,7 @@ public class MemberService {
     private final AuthenticateRedisSaver authenticateRedisSaver;
     private final AuthenticateRedisCreator authenticateRedisCreator;
     private final RecommenderProcessor recommenderProcessor;
+    private final RecommenderValidator recommenderValidator;
 
     /**
      * NOTE
@@ -74,11 +77,9 @@ public class MemberService {
         hobbyCreator.createHobbies(member, signDto.memberHobbyDto());
         tagCreator.createTags(member, signDto.memberTagDto());
         memberCreator.memberNickNameUpdate(member);
-        signDto.referredTel().ifPresent(
-            recommenderTel ->{
-                recommenderProcessor.recommendGenerate(member.getMemberId(), recommenderTel);
-            }
-        );
+        if(!recommenderValidator.isExistNumber(signDto.referredTel())){
+            recommenderProcessor.recommendGenerate(member.getMemberId(), signDto.referredTel());
+        }
         return member.getMemberId();
     }
 

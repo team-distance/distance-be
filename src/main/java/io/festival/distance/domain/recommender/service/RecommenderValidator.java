@@ -38,4 +38,8 @@ public class RecommenderValidator {
             throw new DistanceException(ErrorCode.NOT_REGISTER_SELF);
         }
     }
+
+    public boolean isExistNumber(String referredTel) {
+        return referredTel.isEmpty();
+    }
 }

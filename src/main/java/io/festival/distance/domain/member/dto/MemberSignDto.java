@@ -14,7 +14,7 @@ public record MemberSignDto(
     String memberCharacter,
     List<MemberTagDto> memberTagDto,
     List<MemberHobbyDto> memberHobbyDto,
-    Optional<String> referredTel
+    String referredTel
 ) {
 
 }
