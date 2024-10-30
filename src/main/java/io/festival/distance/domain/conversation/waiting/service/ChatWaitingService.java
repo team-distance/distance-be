@@ -4,6 +4,7 @@ import static io.festival.distance.domain.firebase.entity.FcmType.WAITING;
 import static io.festival.distance.domain.firebase.service.FcmService.ADD_WAITING_ROOM_MESSAGE;
 import static io.festival.distance.domain.firebase.service.FcmService.SET_SENDER_NAME;
 import static io.festival.distance.global.exception.ErrorCode.NOT_EXIST_MEMBER;
+import static io.festival.distance.infra.sqs.SqsService.SYSTEM_ICON;
 
 import io.festival.distance.domain.conversation.waiting.dto.ChatWaitingCountDto;
 import io.festival.distance.domain.conversation.waiting.dto.ChatWaitingDto;
@@ -30,7 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ChatWaitingService {
 
     private final ChatWaitingRepository chatWaitingRepository;
-    private final FcmService fcmService;
     private final MemberRepository memberRepository;
     private final MemberReader memberReader;
     private final ApplicationEventPublisher aep;
@@ -51,7 +51,7 @@ public class ChatWaitingService {
                 .myRoomName(me.getNickName())
                 .build();
             chatWaitingRepository.save(chatWaiting);
-            sqsService.sendMessage(opponent.getClientToken(),SET_SENDER_NAME,ADD_WAITING_ROOM_MESSAGE,null);
+            sqsService.sendMessage(opponent.getClientToken(),SET_SENDER_NAME,ADD_WAITING_ROOM_MESSAGE,null,SYSTEM_ICON);
             //fcmService.createFcm(opponent, SET_SENDER_NAME, ADD_WAITING_ROOM_MESSAGE,WAITING);
             aep.publishEvent(new ChatWaitingAddedEvent(opponent.getMemberId()));
             aep.publishEvent(new ChatWaitingAddedEvent(me.getMemberId()));

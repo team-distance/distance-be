@@ -9,9 +9,12 @@ import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
 
 @Component
 public class SqsService {
+
     private final SqsClient sqsClient;
     @Value("${cloud.aws.sqs.queue.url}")
     private String sqsUrl;
+
+    public final static String SYSTEM_ICON = "DISTANCE";
     @Autowired
     public SqsService(SqsClient sqsClient) {
         this.sqsClient = sqsClient;
@@ -21,13 +24,13 @@ public class SqsService {
         String clientToken,
         String title,
         String message,
-        String imageUrl
-        ) {
+        String imageUrl,
+        String icon
+    ) {
         String messageBody = String.format(
-            "{\"clientToken\": \"%s\", \"message\": \"%s\",\"title\": \"%s\",\"imageUrl\": \"%s\"}",
-            clientToken, message, title, imageUrl
+            "{\"clientToken\": \"%s\", \"message\": \"%s\",\"title\": \"%s\",\"imageUrl\": \"%s\",\"icon\": \"%s\"}",
+            clientToken, message, title, imageUrl, icon
         );
-
 
         SendMessageRequest sendMsgRequest = SendMessageRequest.builder()
             .queueUrl(sqsUrl)

@@ -16,7 +16,6 @@ import io.festival.distance.domain.conversation.chatroom.service.serviceimpl.Cha
 import io.festival.distance.domain.conversation.chatroomsession.entity.ChatRoomSession;
 import io.festival.distance.domain.conversation.chatroomsession.service.ChatRoomSessionService;
 import io.festival.distance.domain.conversation.roommember.service.RoomMemberService;
-import io.festival.distance.domain.firebase.service.FcmService;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.global.exception.DistanceException;
@@ -45,7 +44,6 @@ public class  StompController {
     private final ChatRoomSessionService chatRoomSessionService;
     private final RoomMemberService roomMemberService;
     private final CheckMessageLength checkMessageLength;
-    private final FcmService fcmService;
     private final MemberReader memberReader;
     private final ChatRoomReader chatRoomReader;
     private final SqsService sqsService;
@@ -158,14 +156,16 @@ public class  StompController {
                 opponent.getClientToken(),
                 member.getNickName(),
                 "사진을 보냈습니다.",
-                chatMessageDto.getChatMessage()
+                chatMessageDto.getChatMessage(),
+                member.getMemberCharacter()
             );
         }else {
             sqsService.sendMessage(
                 opponent.getClientToken(),
                 member.getNickName(),
                 chatMessageDto.getChatMessage(),
-                null
+                null,
+                member.getMemberCharacter()
             );
         }
         // 채팅 읽음 갱신

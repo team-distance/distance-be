@@ -60,7 +60,6 @@ public class SseService {
                 emitter.send(SseEmitter.event().name(eventName).data(data));
             } catch (IOException exception) {
                 sseRepository.deleteById(memberId);
-                //emitter.completeWithError(exception);
             }
         }
     }
@@ -75,9 +74,7 @@ public class SseService {
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
         sseRepository.save(memberId, emitter);
 
-        // Emitter가 완료될 때(모든 데이터가 성공적으로 전송된 상태) Emitter를 삭제한다.
         emitter.onCompletion(() -> sseRepository.deleteById(memberId));
-        // Emitter가 타임아웃 되었을 때(지정된 시간동안 어떠한 이벤트도 전송되지 않았을 때) Emitter를 삭제한다.
         emitter.onTimeout(() -> sseRepository.deleteById(memberId));
 
         return emitter;

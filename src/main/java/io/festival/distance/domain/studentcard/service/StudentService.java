@@ -2,6 +2,7 @@ package io.festival.distance.domain.studentcard.service;
 
 
 import static io.festival.distance.domain.firebase.service.FcmService.SET_SENDER_NAME;
+import static io.festival.distance.infra.sqs.SqsService.SYSTEM_ICON;
 
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.entity.UnivCert;
@@ -64,7 +65,8 @@ public class StudentService {
             member.getClientToken(),
             SET_SENDER_NAME,
             UnivCert.valueOf(adminRequest.type()).getMessage(),
-            null
+            null,
+            SYSTEM_ICON
         );
     }
 
