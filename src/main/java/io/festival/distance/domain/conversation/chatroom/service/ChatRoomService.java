@@ -170,6 +170,7 @@ public class ChatRoomService {
                                 .memberCharacter(opponentMember.getMemberCharacter())
                                 .lastMessage(lastMessage)
                                 .askedCount(count)
+                                .roomStatus(chatRoom.getRoomStatus())
                                 .build();
                         })
                     .orElseGet(() -> {
@@ -179,6 +180,7 @@ public class ChatRoomService {
                             .department("탈퇴한 사용자")
                             .createDt(roomMember.getCreateDt())
                             .lastMessage(message)
+                            .roomStatus(chatRoom.getRoomStatus())
                             .build();
                     });
             }).collect(Collectors.toList());
