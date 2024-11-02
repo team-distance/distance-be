@@ -159,7 +159,7 @@ public class ChatMessageService {
      * @param principal
      * @return
      */
-    @Transactional(readOnly = true)
+    @Transactional
     public List<ChatMessageResponseDto> findAllMessage(
         ChatRoom chatRoom,
         PageRequest pageRequest,
