@@ -147,7 +147,6 @@ public class  StompController {
 
         Long chatMessageId = chatMessageService.createMessage(chatRoom,
             chatMessageDto, SenderType.of(chatMessageDto.getPublishType())); //메시지 생성
-
         // receiver 에게 PUSH 알림 전송
         Member opponent = memberReader.findMember(chatMessageDto.getSenderId());
         Member member = memberReader.findMember(chatMessageDto.getReceiverId());
@@ -171,6 +170,7 @@ public class  StompController {
         // 채팅 읽음 갱신
         for (ChatRoomSession chatRoomSession : sessionByChatRoom) {
             Long memberId = chatRoomSession.getMemberId();
+            System.out.println("memberId = " + memberId);
             roomMemberService.updateLastMessage(memberId, chatMessageId,
                 roomId); //가장 최근에 읽은 메시지 수정
         }

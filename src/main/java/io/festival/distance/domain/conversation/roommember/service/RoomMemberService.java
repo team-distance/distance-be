@@ -41,6 +41,8 @@ public class RoomMemberService {
         ChatRoom chatRoom = chatRoomReader.findChatRoom(roomId);
         RoomMember roomMember = roomMemberRepository.findByMemberAndChatRoom(member, chatRoom)
             .orElseThrow(()-> new DistanceException(NOT_EXIST_CHATROOM));
+        System.out.println("roomMemberId = " + roomMember.getRoomMemberId());
+        System.out.println("roomMemberLastMessage = " + roomMember.getLastReadMessageId());
         roomMember.updateMessageId(chatMessageId);
     }
 
