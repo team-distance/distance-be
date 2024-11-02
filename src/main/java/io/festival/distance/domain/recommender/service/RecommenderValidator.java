@@ -19,17 +19,12 @@ public class RecommenderValidator {
     public void validRecommend(Long referrerId, String referredTel) {
         isOwned(referrerId, referredTel);
         isAlreadyRecommend(referrerId);
-        isExistMember(referredTel);
     }
 
     public void isAlreadyRecommend(Long referrerId) {
         if (recommenderRepository.existsByReferrerId(referrerId)) {
             throw new DistanceException(ErrorCode.ALREADY_EXIST_RECOMMEND);
         }
-    }
-
-    public void isExistMember(String referredTel) {
-        memberReader.findTelNum(referredTel);
     }
 
     public void isOwned(Long referrerId, String referredTel) {

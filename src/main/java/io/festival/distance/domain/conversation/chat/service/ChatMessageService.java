@@ -177,13 +177,6 @@ public class ChatMessageService {
         return chatMessageRepository.findAllByChatRoom(chatRoom,pageRequest)
             .map(ChatMessageResponseDto::new)
             .toList();
-        /*Long lastChatMessageId = roomMember.getLastReadMessageId();
-        return chatMessageRepository.findByChatRoomAndChatMessageIdLessThanOrderByCreateDtDesc(
-                chatRoom, pageRequest,
-                lastChatMessageId)
-            .stream()
-            .map(ChatMessageResponseDto::new)
-            .toList();*/
     }
 
     @Transactional
