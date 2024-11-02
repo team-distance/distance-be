@@ -139,9 +139,11 @@ public class ChatMessageService {
     @Transactional
     public List<ChatMessage> getChatMessages(ChatRoom chatRoom, RoomMember roomMember) {
         Long lastChatMessageId = roomMember.getLastReadMessageId(); //가장 나중에 읽은 메시지 PK값
+        System.out.println("lastChatMessageId = " + lastChatMessageId);
         List<ChatMessage> messages = chatMessageRepository.findByChatRoomAndChatMessageIdGreaterThan(
             chatRoom, lastChatMessageId
         );
+        System.out.println("messages = " + messages.size());
         messages.forEach(message -> {
             message.readCountUpdate(1);
             chatMessageRepository.save(message);
@@ -171,10 +173,7 @@ public class ChatMessageService {
             .map(ChatMessageResponseDto::new)
             .toList();
         // 현재 채팅방에 들어온 사람의 가장 최근에 읽은 곳까지 unReadCount 갱신 (다시 접속했는데 새로운 메세지가 없는 경우)
-        if (!responseDtoList.isEmpty()) { //최신 메시지가 있다면
-            roomMember.updateMessageId(
-                responseDtoList.get(responseDtoList.size() - 1).getMessageId());
-        }
+        updateLastMessage(responseDtoList, roomMember);
         return chatMessageRepository.findAllByChatRoom(chatRoom,pageRequest)
             .map(ChatMessageResponseDto::new)
             .toList();
@@ -187,6 +186,17 @@ public class ChatMessageService {
             .toList();*/
     }
 
+    @Transactional
+    public void updateLastMessage(List<ChatMessageResponseDto> responseDtoList,
+        RoomMember roomMember) {
+        if (!responseDtoList.isEmpty()) { //최신 메시지가 있다면
+            System.out.println("responseDtoList.get(responseDtoList.size()-1).getMessageId() = "
+                + responseDtoList.get(responseDtoList.size() - 1).getMessageId());
+            roomMember.updateMessageId(
+                responseDtoList.get(responseDtoList.size() - 1).getMessageId()
+            );
+        }
+    }
 
     public Integer calculateMessageCount(Long chatRoomId) {
         ChatRoom chatRoom = chatRoomReader.findChatRoom(chatRoomId);
