@@ -50,8 +50,10 @@ public class ChatRoomController {
     }
 
     @GetMapping("/{chatRoomId}") //채팅방에 들어온 경우
-    public ResponseEntity<List<ChatMessageResponseDto>> readMessage(@PathVariable Long chatRoomId,
-        Principal principal) {
+    public ResponseEntity<List<ChatMessageResponseDto>> readMessage(
+        @PathVariable Long chatRoomId,
+        Principal principal
+    ) {
         Member member = memberReader.findTelNum(principal.getName());
         validUnivCert.checkUnivCert(member);
 

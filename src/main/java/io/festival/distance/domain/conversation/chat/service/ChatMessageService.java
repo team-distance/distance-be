@@ -165,6 +165,16 @@ public class ChatMessageService {
     ) {
         Member member = memberReader.findTelNum(principal.getName());
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom);
+        List<ChatMessage> messages = getChatMessages(chatRoom, roomMember);
+
+        List<ChatMessageResponseDto> responseDtoList = messages.stream()
+            .map(ChatMessageResponseDto::new)
+            .toList();
+        // 현재 채팅방에 들어온 사람의 가장 최근에 읽은 곳까지 unReadCount 갱신 (다시 접속했는데 새로운 메세지가 없는 경우)
+        if (!responseDtoList.isEmpty()) { //최신 메시지가 있다면
+            roomMember.updateMessageId(
+                responseDtoList.get(responseDtoList.size() - 1).getMessageId());
+        }
         return chatMessageRepository.findAllByChatRoom(chatRoom,pageRequest)
             .map(ChatMessageResponseDto::new)
             .toList();
