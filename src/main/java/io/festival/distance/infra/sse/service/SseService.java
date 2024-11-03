@@ -59,8 +59,13 @@ public class SseService {
             try {
                 emitter.send(SseEmitter.event().name(eventName).data(data));
             } catch (IOException exception) {
+                log.warn("IOException occurred while sending event '{}' to memberId {}: {}", eventName, memberId, exception.getMessage());
                 sseRepository.deleteById(memberId);
+            } catch (Exception ex) {
+                log.error("Unexpected exception occurred while sending event '{}' to memberId {}: {}", eventName, memberId, ex.getMessage(), ex);
             }
+        } else {
+            log.warn("Emitter not found for memberId {}", memberId);
         }
     }
 
