@@ -9,8 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 public class EventUpdater {
+    private final EventReader eventReader;
     @Transactional
-    public void update(EventMatch eventMatch, Member member){
+    public void update(Long memberId, Member member){
+        EventMatch eventMatch = eventReader.findEventMatch(memberId);
         eventMatch.updateMatching(member);
     }
 }

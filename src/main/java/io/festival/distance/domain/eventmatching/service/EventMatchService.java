@@ -63,8 +63,7 @@ public class EventMatchService {
     }
 
     public void updateEventMatch(AdminUpdateRequest adminUpdateRequest) {
-        EventMatch eventMatch = eventReader.findEventMatch(adminUpdateRequest.memberId());
         Member opponent = memberReader.findMember(adminUpdateRequest.opponentId());
-        eventUpdater.update(eventMatch,opponent);
+        eventUpdater.update(adminUpdateRequest.memberId(),opponent);
     }
 }

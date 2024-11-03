@@ -56,6 +56,7 @@ public class EventMatch {
     }
 
     public void updateMatching(Member member){
+        System.out.println("sdsd");
         this.opponentId = member.getMemberId();
         this.opponentNickname = member.getNickName();
         this.opponentCharacter = member.getMemberCharacter();
