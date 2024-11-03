@@ -1,5 +1,6 @@
 package io.festival.distance.infra.sse.service;
 
+import io.festival.distance.domain.conversation.chatroom.service.ChatRoomService;
 import io.festival.distance.domain.conversation.waiting.service.ChatWaitingService;
 import io.festival.distance.infra.sse.repository.SseRepository;
 import java.io.IOException;
@@ -14,10 +15,11 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class SseService {
 
     // 기본 타임아웃 설정
-    private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
+    private static final Long DEFAULT_TIMEOUT = 60L * 1000;
 
     private final SseRepository sseRepository;
     private final ChatWaitingService chatWaitingService;
+    private final ChatRoomService chatRoomService;
 
     /**
      * 클라이언트가 구독을 위해 호출하는 메서드.
@@ -26,13 +28,9 @@ public class SseService {
      * @return SseEmitter - 서버에서 보낸 이벤트 Emitter
      */
     public SseEmitter subscribe(Long memberId) {
-        log.info("subscribe started");
         SseEmitter emitter = createEmitter(memberId);
-        log.info("success emitter Create");
-        //sendToClient(memberId,"start Server-Sent-Event!");
-        sendToClient(memberId,chatWaitingService.countingWaitingRoom(memberId));
-        log.info("success send to client");
-        log.info("emitter>>> " + emitter);
+        sendToClient(memberId,chatRoomService.findAllRoomTest(memberId),"chatRoom");
+        sendToClient(memberId,chatWaitingService.countingWaitingRoom(memberId),"waitingCount");
         return emitter;
     }
 
@@ -43,28 +41,25 @@ public class SseService {
      * @param event  - 전송할 이벤트 객체.
      */
     public void notify(Long memberId, Object event) {
-        sendToClient(memberId, event);
+        sendToClient(memberId, event,"waitingCount");
     }
 
+    public void messageNotify(Long memberId, Object event){
+        sendToClient(memberId,event,"chatRoom");
+    }
     /**
      * 클라이언트에게 데이터를 전송
      *
      * @param memberId   - 데이터를 받을 사용자의 아이디.
      * @param data - 전송할 데이터.
      */
-    private void sendToClient(Long memberId, Object data) {
+    private void sendToClient(Long memberId, Object data,String eventName) {
         SseEmitter emitter = sseRepository.get(memberId);
-        log.info("sentToClient come");
         if (emitter != null) {
             try {
-                emitter.send(SseEmitter.event().name("dummyData").data("start event stream"));
-                emitter.send(SseEmitter.event().name("waitingCount").data(data));
-                log.info("success emitter send");
+                emitter.send(SseEmitter.event().name(eventName).data(data));
             } catch (IOException exception) {
-                log.info("come catch");
                 sseRepository.deleteById(memberId);
-                log.info("failed sse");
-                emitter.completeWithError(exception);
             }
         }
     }
@@ -79,9 +74,7 @@ public class SseService {
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
         sseRepository.save(memberId, emitter);
 
-        // Emitter가 완료될 때(모든 데이터가 성공적으로 전송된 상태) Emitter를 삭제한다.
         emitter.onCompletion(() -> sseRepository.deleteById(memberId));
-        // Emitter가 타임아웃 되었을 때(지정된 시간동안 어떠한 이벤트도 전송되지 않았을 때) Emitter를 삭제한다.
         emitter.onTimeout(() -> sseRepository.deleteById(memberId));
 
         return emitter;

@@ -38,12 +38,12 @@ public class FcmService {
     private final FcmWebPushCreator fcmWebPushCreator;
     private final FcmMessageCreator fcmMessageCreator;
 
-    @Transactional
+/*    @Transactional
     @Scheduled(fixedRate = 30000)
     public void sendUserNotification() {
         log.info("메시지 fcm scheduled 실행!!");
         sendNotification("새로운 메시지가 도착했습니다!");
-    }
+    }*/
 
     @Transactional(readOnly = true)
     public void sendNotification(String message) {
@@ -66,16 +66,16 @@ public class FcmService {
         }
     }
 
-    /**
+/*    *//**
      * 채팅 대기열 알림
-     */
+     *//*
     @Transactional
     @Scheduled(fixedRate = 60000)
     public void sendSystemNotification() {
         log.info("scheduled 실행!!");
         sendNotificationForMessage(ADD_WAITING_ROOM_MESSAGE);
         sendNotificationForMessage(REJECT_STUDENT_CARD);
-    }
+    }*/
 
     @Transactional(noRollbackFor = DisabledException.class)
     public void createFcm(Member opponent, String title, String message, FcmType fcmType) {

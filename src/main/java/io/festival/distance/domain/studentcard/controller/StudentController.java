@@ -81,6 +81,17 @@ public class StudentController {
         return ResponseEntity.ok().build();
 
     }
+
+    /**
+     * NOTE
+     * 학생증 삭제하는 API
+     */
+    @DeleteMapping("/delete/{studentCardId}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<Void> deleteStudentCard(@PathVariable Long studentCardId){
+        studentService.removeStudentCard(studentCardId);
+        return ResponseEntity.ok().build();
+    }
 }
 
 

@@ -1,11 +1,6 @@
 package io.festival.distance.domain.member.service.serviceimpl;
 
-import static io.festival.distance.authuniversity.domain.University.UNIV_MAP;
-import static io.festival.distance.authuniversity.domain.University.getDomainByName;
-
-import io.festival.distance.authuniversity.domain.University;
 import io.festival.distance.domain.member.dto.MemberSignDto;
-import io.festival.distance.domain.member.entity.Authority;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.entity.UnivCert;
 import io.festival.distance.domain.member.repository.MemberRepository;
@@ -44,6 +39,7 @@ public class MemberCreator {
             .memberCharacter(signDto.memberCharacter())
             .nickName(signDto.department())
             .reportCount(0)
+            .roomCount(3)
             .authUniv(UnivCert.FAILED_1)
             .activated(true)
             .build();

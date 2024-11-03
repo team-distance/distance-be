@@ -22,6 +22,7 @@ public class WebSocketEventListener {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         GenericMessage generic = (GenericMessage) accessor.getHeader("simpConnectMessage");
         Map nativeHeaders = (Map) generic.getHeaders().get("nativeHeaders");
+        System.out.println("nativeHeaders.get(\"memberId\") = " + nativeHeaders.get("memberId"));
         if (nativeHeaders.containsKey("chatRoomId") && nativeHeaders.containsKey("memberId")) {
             Long chatRoomId = Long.parseLong((String) ((List) nativeHeaders.get("chatRoomId")).get(0));
             Long memberId = Long.parseLong((String) ((List) nativeHeaders.get("memberId")).get(0));

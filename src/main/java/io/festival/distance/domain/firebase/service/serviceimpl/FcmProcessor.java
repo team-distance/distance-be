@@ -11,9 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class FcmProcessor {
     private final FcmRepository fcmRepository;
 
-    @Transactional
+    /*@Transactional
     @Scheduled(cron = "0 0 6 * * *") //매일 6시에 작동
     public void deleteFcm(){
         fcmRepository.deleteAllFcmMessage();
-    }
+    }*/
 }

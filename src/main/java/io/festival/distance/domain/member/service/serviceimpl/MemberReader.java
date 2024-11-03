@@ -11,7 +11,12 @@ import io.festival.distance.domain.member.repository.MemberRepository;
 import io.festival.distance.domain.memberhobby.service.HobbyReader;
 import io.festival.distance.domain.membertag.service.TagReader;
 import io.festival.distance.global.exception.DistanceException;
+import io.festival.distance.global.exception.ErrorCode;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +44,11 @@ public class MemberReader {
             .orElseThrow(() -> new DistanceException(NOT_EXIST_MEMBER));
     }
 
+    public Member findNickNameNullAble(String nickName) {
+        return memberRepository.findByNickName(nickName)
+            .orElseThrow(()-> new DistanceException(NOT_EXIST_MEMBER));
+    }
+
     public String memberNickName(Member member) {
         return member.getNickName();
     }
@@ -58,6 +68,15 @@ public class MemberReader {
     @Transactional(readOnly = true)
     public List<Member> findMemberList() {
         return memberRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Member> findMemberListByFilter(){
+        LocalDateTime oneWeekAgo = ZonedDateTime
+            .now(ZoneId.of("Asia/Seoul"))
+            .minusWeeks(1)
+            .toLocalDateTime();
+        return memberRepository.findByModifyDtAfter(oneWeekAgo);
     }
 
     @Transactional(readOnly = true)

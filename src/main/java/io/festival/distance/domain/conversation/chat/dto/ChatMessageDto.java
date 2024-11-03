@@ -13,7 +13,7 @@ public class ChatMessageDto {
     private String chatMessage;
     private Long senderId; //상대방
     private Long receiverId; //나
-    private String publishType; //USER, LEAVE, CALL_REQUEST, CALL_RESPONSE, IMAGE
+    private String publishType; //USER, LEAVE, CALL_REQUEST, CALL_RESPONSE, IMAGE, COME
 
     public void updateMessage(String chatMessage){
         this.chatMessage = chatMessage;

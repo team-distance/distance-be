@@ -23,12 +23,16 @@ import io.festival.distance.domain.memberhobby.service.HobbyCreator;
 import io.festival.distance.domain.memberhobby.service.HobbyUpdater;
 import io.festival.distance.domain.membertag.service.TagCreator;
 import io.festival.distance.domain.membertag.service.TagUpdater;
+import io.festival.distance.domain.recommender.service.RecommenderProcessor;
+import io.festival.distance.domain.recommender.service.RecommenderValidator;
 import io.festival.distance.global.exception.DistanceException;
 import io.festival.distance.infra.redis.authenticate.AuthenticateNumber;
 import io.festival.distance.infra.redis.authenticate.AuthenticateRedisCreator;
 import io.festival.distance.infra.redis.authenticate.AuthenticateRedisReader;
 import io.festival.distance.infra.redis.authenticate.AuthenticateRedisSaver;
 import io.festival.distance.infra.sms.SmsUtil;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,18 +64,22 @@ public class MemberService {
     private final AuthenticateRedisReader authenticateRedisReader;
     private final AuthenticateRedisSaver authenticateRedisSaver;
     private final AuthenticateRedisCreator authenticateRedisCreator;
+    private final RecommenderProcessor recommenderProcessor;
+    private final RecommenderValidator recommenderValidator;
 
     /**
      * NOTE
      * 회원가입
      */
-    @Transactional
     public Long createMember(MemberSignDto signDto) {
         Member member = memberCreator.getMember(signDto);
         memberCreator.createMember(member);
         hobbyCreator.createHobbies(member, signDto.memberHobbyDto());
         tagCreator.createTags(member, signDto.memberTagDto());
         memberCreator.memberNickNameUpdate(member);
+        if(!recommenderValidator.isExistNumber(signDto.referredTel())){
+            recommenderProcessor.recommendGenerate(member.getMemberId(), signDto.referredTel());
+        }
         return member.getMemberId();
     }
 
@@ -79,12 +87,13 @@ public class MemberService {
      * NOTE
      * 회원 PK값으로 DB에서 삭제 -> 회원탈퇴
      */
-    @Transactional
     public String resignMember(String telNum) {
         Member member = memberReader.findTelNum(telNum);
         chatRoomDeleter.deleteByMemberResign(member);
-        memberDeleter.deleteMember(telNum);
+        List<Long> memberInfo = roomMemberProcessor.saveWithdrawMemberInfo(telNum);
+        memberDeleter.deleteMember(member);
         refreshDeleter.deleteRefreshToken(telNum);
+        roomMemberProcessor.createWithdrawEvent(memberInfo);
         return telNum;
     }
 
@@ -163,5 +172,9 @@ public class MemberService {
         authenticateRedisSaver.save(authenticateNumber);
         smsUtil.sendOne(telNumRequest, num);
         return num;
+    }
+
+    public Integer identifyRoomCount(String telNum) {
+        return memberReader.findTelNum(telNum).getRoomCount();
     }
 }

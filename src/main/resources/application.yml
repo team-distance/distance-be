@@ -1,20 +1,4 @@
 spring:
-  datasource:
-    master:
-      hikari:
-        driver-class-name: ${SPRING_DATASOURCE_DRIVER}
-        username: ${SPRING_DATASOURCE_USERNAME}
-        password: ${SPRING_DATASOURCE_PASSWORD}
-        jdbc-url: ${SPRING_DATASOURCE_MASTER_URL}
-        maximum-pool-size: 20
-    slave:
-      hikari:
-        driver-class-name: ${SPRING_DATASOURCE_DRIVER}
-        username: ${SPRING_DATASOURCE_USERNAME}
-        password: ${SPRING_DATASOURCE_PASSWORD}
-        jdbc-url: ${SPRING_DATASOURCE_SLAVE_URL}
-        maximum-pool-size: 20
-
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -29,6 +13,7 @@ spring:
         format_sql: true
         default_batch_fetch_size: 100
         dialect: org.hibernate.dialect.MySQL8Dialect
+    open-in-view: false
   mail:
     host: ${MAIL_HOST}
     port: ${MAIL_PORT}
@@ -80,6 +65,12 @@ cloud:
       secret-key: ${S3_SECRET_KEY}
       region: ${S3_REGION}
       bucket: ${S3_BUCKET}
+    sqs:
+      queue:
+        name: ${SQS_QUEUE_NAME}
+        url: ${SQS_QUEUE_URL}
+    stack:
+      auto: false
 
 slack:
   webhook:

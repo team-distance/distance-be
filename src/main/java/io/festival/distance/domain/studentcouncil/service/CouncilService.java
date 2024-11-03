@@ -2,6 +2,7 @@ package io.festival.distance.domain.studentcouncil.service;
 
 import io.festival.distance.domain.councilgps.serviceimpl.CouncilGpsCreator;
 import io.festival.distance.domain.councilimage.serviceimpl.CouncilImageCreator;
+import io.festival.distance.domain.image.dto.response.S3UrlResponse;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.domain.studentcouncil.dto.request.ContentRequest;
@@ -14,6 +15,7 @@ import io.festival.distance.domain.studentcouncil.service.serviceimpl.CouncilRea
 import io.festival.distance.domain.studentcouncil.service.serviceimpl.CouncilUpdater;
 import io.festival.distance.domain.studentcouncil.service.serviceimpl.CouncilValidator;
 import io.festival.distance.infra.redis.statistics.StatisticsRedisUpdater;
+import io.festival.distance.infra.s3.config.S3PreSignedUrlProvider;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -34,17 +36,20 @@ public class CouncilService {
     private final CouncilUpdater councilUpdater;
     private final CouncilValidator councilValidator;
     private final StatisticsRedisUpdater statisticsRedisUpdater;
-
-    public void create(
+    private final S3PreSignedUrlProvider s3PreSignedUrlProvider;
+    public List<S3UrlResponse> create(
         String telNum,
         ContentRequest contentRequest,
-        List<MultipartFile> files,
+        List<String> fileRequest,
         List<Integer> priority
     ) {
         Member member = memberReader.findTelNum(telNum); //총학계정
         StudentCouncil studentCouncil = councilCreator.create(contentRequest, member);
         councilGpsCreator.create(contentRequest.councilGpsRequestList(), studentCouncil);
-        councilImageCreator.create(files, studentCouncil, priority);
+        List<S3UrlResponse> s3UrlResponses =
+            s3PreSignedUrlProvider.generatePreSignedUrl(fileRequest);
+        councilImageCreator.create(s3UrlResponses,priority,studentCouncil);
+        return s3UrlResponses;
     }
 
     public CouncilResponse findContents(String telNum, String school) {

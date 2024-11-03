@@ -3,7 +3,9 @@ package io.festival.distance.domain.conversation.chatroom.service.serviceimpl;
 import io.festival.distance.domain.conversation.chatroom.repository.ChatRoomRepository;
 import io.festival.distance.domain.conversation.roommember.service.serviceimpl.RoomMemberReader;
 import io.festival.distance.domain.member.entity.Member;
+import io.festival.distance.infra.sse.event.ChatMessageAddedEvent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +16,7 @@ public class ChatRoomDeleter {
     private final RoomMemberReader roomMemberReader;
     private final ChatRoomReader chatRoomReader;
     private final ChatRoomUpdater chatRoomUpdater;
+
     @Transactional
     public void delete(Long roomId) {
         chatRoomRepository.deleteById(roomId);

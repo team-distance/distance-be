@@ -1,10 +1,12 @@
 package io.festival.distance.domain.conversation.roommember.service.serviceimpl;
 
+import io.festival.distance.domain.conversation.roommember.entity.RoomMember;
 import io.festival.distance.domain.conversation.roommember.repository.RoomMemberRepository;
 import io.festival.distance.domain.member.entity.Member;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -18,5 +20,9 @@ public class RoomMemberReader {
             .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<RoomMember> findRoomMemberList(Member member){
+        return roomMemberRepository.findAllByMember(member);
+    }
 
 }

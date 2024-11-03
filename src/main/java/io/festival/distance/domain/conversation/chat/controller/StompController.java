@@ -1,10 +1,12 @@
 package io.festival.distance.domain.conversation.chat.controller;
 
+import static io.festival.distance.domain.conversation.chat.entity.SenderType.COME;
+import static io.festival.distance.domain.conversation.chat.entity.SenderType.IMAGE;
 import static io.festival.distance.domain.conversation.roommember.service.RoomMemberService.IN_ACTIVE;
-import static io.festival.distance.domain.firebase.entity.FcmType.MESSAGE;
 
 import io.festival.distance.domain.conversation.chat.dto.ChatMessageDto;
 import io.festival.distance.domain.conversation.chat.dto.ChatMessageResponseDto;
+import io.festival.distance.domain.conversation.chat.dto.ChatSystemResponse;
 import io.festival.distance.domain.conversation.chat.entity.SenderType;
 import io.festival.distance.domain.conversation.chat.service.ChatMessageService;
 import io.festival.distance.domain.conversation.chat.valid.CheckMessageLength;
@@ -14,10 +16,10 @@ import io.festival.distance.domain.conversation.chatroom.service.serviceimpl.Cha
 import io.festival.distance.domain.conversation.chatroomsession.entity.ChatRoomSession;
 import io.festival.distance.domain.conversation.chatroomsession.service.ChatRoomSessionService;
 import io.festival.distance.domain.conversation.roommember.service.RoomMemberService;
-import io.festival.distance.domain.firebase.service.FcmService;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.global.exception.DistanceException;
+import io.festival.distance.infra.sqs.SqsService;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -42,9 +44,9 @@ public class  StompController {
     private final ChatRoomSessionService chatRoomSessionService;
     private final RoomMemberService roomMemberService;
     private final CheckMessageLength checkMessageLength;
-    private final FcmService fcmService;
     private final MemberReader memberReader;
     private final ChatRoomReader chatRoomReader;
+    private final SqsService sqsService;
     private static final String LEAVE = "LEAVE";
 
     @MessageMapping("/chat/{roomId}") //app/chat/{roomId}로 요청이 들어왔을 때 -> 발신
@@ -61,6 +63,17 @@ public class  StompController {
             // 채팅방 새션 조회
             List<ChatRoomSession> sessionByChatRoom = chatRoomSessionService
                 .findSessionByChatRoom(chatRoom); //2개가 나올 듯?
+
+            if(chatMessageDto.getPublishType().equals(COME.getSenderType())){
+                return ResponseEntity.ok(
+                    ChatSystemResponse.builder()
+                        .roomStatus(chatRoom.getRoomStatus())
+                        .senderType(chatMessageDto.getPublishType())
+                        .senderId(chatMessageDto.getSenderId())
+                        .build()
+                );
+            }
+
             /**
              *  채팅방을 나가는 경우
              */
@@ -95,7 +108,13 @@ public class  StompController {
                 }
 
                 return ResponseEntity.ok(
-                    chatMessageService.generateMessage(messageId, 2, chatRoom)
+                    chatMessageService.generateMessage(
+                        messageId,
+                        2,
+                        chatRoom,
+                        chatMessageDto.getReceiverId(),
+                        chatMessageDto.getSenderId()
+                    )
                 );
             }
 
@@ -128,23 +147,43 @@ public class  StompController {
 
         Long chatMessageId = chatMessageService.createMessage(chatRoom,
             chatMessageDto, SenderType.of(chatMessageDto.getPublishType())); //메시지 생성
-
         // receiver 에게 PUSH 알림 전송
         Member opponent = memberReader.findMember(chatMessageDto.getSenderId());
         Member member = memberReader.findMember(chatMessageDto.getReceiverId());
-        fcmService.createFcm(opponent, member.getNickName(), "새로운 메시지가 도착했습니다!", MESSAGE);
-        //chatMessageService.sendNotificationIfReceiverNotInChatRoom(chatMessageDto, roomId);
-
+        if(SenderType.of(chatMessageDto.getPublishType()).equals(IMAGE)) {
+            sqsService.sendMessage(
+                opponent.getClientToken(),
+                member.getNickName(),
+                "사진을 보냈습니다.",
+                chatMessageDto.getChatMessage(),
+                member.getMemberCharacter()
+            );
+        }else {
+            sqsService.sendMessage(
+                opponent.getClientToken(),
+                member.getNickName(),
+                chatMessageDto.getChatMessage(),
+                null,
+                member.getMemberCharacter()
+            );
+        }
         // 채팅 읽음 갱신
         for (ChatRoomSession chatRoomSession : sessionByChatRoom) {
             Long memberId = chatRoomSession.getMemberId();
+            System.out.println("memberId = " + memberId);
             roomMemberService.updateLastMessage(memberId, chatMessageId,
                 roomId); //가장 최근에 읽은 메시지 수정
         }
 
         return ResponseEntity.ok(
-            chatMessageService.generateMessage(chatMessageId, sessionByChatRoom.size(),
-                chatRoom));
+            chatMessageService.generateMessage(
+                chatMessageId,
+                sessionByChatRoom.size(),
+                chatRoom,
+                member.getMemberId(),
+                opponent.getMemberId()
+            )
+        );
     }
 
    /* @MessageMapping("/waiting/{memberId}")

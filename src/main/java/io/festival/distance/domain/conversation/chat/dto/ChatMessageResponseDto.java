@@ -25,7 +25,7 @@ public class ChatMessageResponseDto {
     private Long checkTiKiTaKa;
     private LocalDateTime sendDt;
 
-    public ChatMessageResponseDto(ChatMessage message) {
+    public ChatMessageResponseDto(ChatMessage message, Long checkTiKiTaKa) {
         this.messageId = message.getChatMessageId();
         this.chatMessage = message.getChatMessage();
         this.senderId = message.getSenderId();
@@ -34,5 +34,6 @@ public class ChatMessageResponseDto {
         this.sendDt = message.getCreateDt();
         this.roomStatus = message.getChatRoom().getRoomStatus();
         this.senderType = message.getSenderType().getSenderType();
+        this.checkTiKiTaKa =checkTiKiTaKa;
     }
 }

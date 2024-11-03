@@ -1,6 +1,7 @@
 package io.festival.distance.domain.member.dto;
 
 import java.util.List;
+import java.util.Optional;
 
 public record MemberSignDto(
     String telNum,
@@ -12,7 +13,8 @@ public record MemberSignDto(
     String college,
     String memberCharacter,
     List<MemberTagDto> memberTagDto,
-    List<MemberHobbyDto> memberHobbyDto
+    List<MemberHobbyDto> memberHobbyDto,
+    String referredTel
 ) {
 
 }

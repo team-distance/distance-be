@@ -199,4 +199,22 @@ public class MemberController {
         memberService.modifyAccount(changePasswordDto.telNum(), changePasswordDto.password());
         return ResponseEntity.ok().build();
     }
+
+    /**
+     * NOTE
+     * 유저가 가질 수 있는 최대 채팅방 갯수 API
+     */
+    @GetMapping("/available/roomcount")
+    public ResponseEntity<Integer> checkRoomCount(Principal principal){
+        return ResponseEntity.ok(memberService.identifyRoomCount(principal.getName()));
+    }
+
+    /**
+     * NOTE
+     * 유저 전화번호
+     */
+    @GetMapping("/own/telnum")
+    public ResponseEntity<String> getOwnTelNum(Principal principal){
+        return ResponseEntity.ok(principal.getName());
+    }
 }

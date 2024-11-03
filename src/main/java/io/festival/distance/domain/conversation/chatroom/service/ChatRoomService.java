@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,7 @@ public class ChatRoomService {
     private final RoomMemberRepository roomMemberRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomReader chatRoomReader;
+    private final ApplicationEventPublisher aep;
 
     @Transactional(readOnly = true)
     public List<ChatRoomInfoDto> findAllRoom(String telNum) {
@@ -60,11 +62,7 @@ public class ChatRoomService {
                                 Objects.isNull(message) ? LocalDateTime.now()
                                     : message.getCreateDt();
 
-                            Integer count = chatMessageRepository
-                                .countByChatRoomAndChatMessageIdGreaterThan(
-                                    chatRoom,
-                                    roomMember.getLastReadMessageId()
-                                );
+                            Integer count = getUnreadMessageCount(roomMember, chatRoom);
 
                             return ChatRoomInfoDto.builder()
                                 .chatRoomId(chatRoom.getChatRoomId())
@@ -133,4 +131,75 @@ public class ChatRoomService {
     public void setAgreed(ChatRoom chatRoom) {
         chatRoom.updateAgreed();
     }
+
+    @Transactional(readOnly = true)
+    public List<ChatRoomInfoDto> findAllRoomTest(Long memberId) {
+        Member member = memberRepository.findById(memberId) //현재 로그인한 객체
+            .orElseThrow(() -> new DistanceException(NOT_EXIST_MEMBER));
+
+        return roomMemberRepository.findAllByMember(member)
+            .stream()
+            .map(roomMember -> {
+                ChatRoom chatRoom = roomMember.getChatRoom();
+
+                Optional<Member> opponent = memberRepository.findByNickName(
+                    roomMember.getMyRoomName());
+
+                return opponent.map(
+                        //멤버가 존재하는 경우
+                        opponentMember -> {
+                            ChatMessage message = chatMessageRepository
+                                .findTop1ByChatRoomOrderByCreateDtDesc(chatRoom); //가장 최근 메시지 불러옴
+
+                            String lastMessage =
+                                Objects.isNull(message) ? "새로운 채팅방이 생성되었습니다!"
+                                    : message.getChatMessage();
+
+                            LocalDateTime createDt =
+                                Objects.isNull(message) ? LocalDateTime.now()
+                                    : message.getCreateDt();
+
+                            Integer count = getUnreadMessageCount(roomMember, chatRoom);
+                            return ChatRoomInfoDto.builder()
+                                .chatRoomId(chatRoom.getChatRoomId())
+                                .department(opponentMember.getDepartment())
+                                .mbti(opponentMember.getMbti())
+                                .createDt(roomMember.getCreateDt())
+                                .modifyDt(createDt)
+                                .opponentMemberId(opponentMember.getMemberId())
+                                .memberCharacter(opponentMember.getMemberCharacter())
+                                .lastMessage(lastMessage)
+                                .askedCount(count)
+                                .roomStatus(chatRoom.getRoomStatus())
+                                .build();
+                        })
+                    .orElseGet(() -> {
+                        String message = "상대방이 탈퇴했습니다.";
+                        return ChatRoomInfoDto.builder()
+                            .chatRoomId(chatRoom.getChatRoomId())
+                            .department("탈퇴한 사용자")
+                            .createDt(roomMember.getCreateDt())
+                            .lastMessage(message)
+                            .roomStatus(chatRoom.getRoomStatus())
+                            .build();
+                    });
+            }).collect(Collectors.toList());
+    }
+
+    public Integer getUnreadMessageCount(RoomMember roomMember, ChatRoom chatRoom) {
+        return chatMessageRepository
+            .countByChatRoomAndChatMessageIdGreaterThan(
+                chatRoom,
+                roomMember.getLastReadMessageId()
+            );
+    }
+
+/*    public ChatRoomInfoDto withdrawMessage(Long chatRoomId, LocalDateTime createDt){
+        return ChatRoomInfoDto.builder()
+            .chatRoomId(chatRoomId)
+            .department("탈퇴한 사용자")
+            .createDt(createDt)
+            .lastMessage("상대방이 탈퇴했습니다.")
+            .build();
+    }*/
 }

@@ -48,7 +48,7 @@ public class TokenProvider implements InitializingBean {
         this.secret = secret;
         this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000; //30분 60*30
         this.refreshTokenExpireTime = refreshTokenExpireTime * 1000; //1주일로 설정
-        this.refreshRepository=refreshRepository;
+        this.refreshRepository = refreshRepository;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class TokenProvider implements InitializingBean {
             .collect(Collectors.joining(","));
 
         // 토큰의 expire 시간을 설정
-        Date date=new Date();
+        Date date = new Date();
         Date validity = new Date(date.getTime() + this.tokenValidityInMilliseconds);
 
         return Jwts.builder()
@@ -71,7 +71,7 @@ public class TokenProvider implements InitializingBean {
             .setIssuer("DISTANCE") //토큰 발급자 iss 지정
             .setIssuedAt(DateTimeUtils.toDate(Instant.now()))
             .claim(AUTHORITIES_KEY, authorities) // 정보 저장
-            .claim("type",ACCESS_TYPE)
+            .claim("type", ACCESS_TYPE)
             .signWith(key, SignatureAlgorithm.HS512) // 사용할 암호화 알고리즘과 , signature 에 들어갈 secret값 세팅
             .setExpiration(validity) // set Expire Time 해당 옵션 안넣으면 expire안함
             .compact();
@@ -84,7 +84,7 @@ public class TokenProvider implements InitializingBean {
 
         // 토큰의 expire 시간을 설정
         //long now = (new Date()).getTime();
-        Date date=new Date();
+        Date date = new Date();
         Date validity = new Date(date.getTime() + this.refreshTokenExpireTime);
 
         return Jwts.builder()
@@ -118,9 +118,12 @@ public class TokenProvider implements InitializingBean {
     }
 
     // 토큰의 유효성 검증을 수행
-    public boolean validateToken(String token,String type) {
+    public boolean validateToken(String token, String type) {
+        String subject = null;
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
+                .getBody();
+            subject = claims.getSubject();
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.error(MALFORMED_JWT);
@@ -130,10 +133,10 @@ public class TokenProvider implements InitializingBean {
             log.error(WRONG_JWT);
         } catch (ExpiredJwtException e) {
             log.error(EXPIRED_JWT);
-            if(type.equals("REFRESH")){
+            if (type.equals("REFRESH")) {
                 log.info(token);
-               if(refreshRepository.existsByRefreshToken(token)) {
-                    refreshRepository.deleteByRefreshToken(token);
+                if (refreshRepository.existsBySubject(subject)) {
+                    refreshRepository.deleteAllBySubject(subject);
                     log.info("Refresh token delete success!!");
                 } else {
                     log.info("No refresh token found to delete.");

@@ -9,17 +9,21 @@ import io.festival.distance.domain.conversation.chat.entity.ChatMessage;
 import io.festival.distance.domain.conversation.chat.entity.SenderType;
 import io.festival.distance.domain.conversation.chat.repository.ChatMessageRepository;
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
+import io.festival.distance.domain.conversation.chatroom.service.serviceimpl.ChatRoomReader;
 import io.festival.distance.domain.conversation.roommember.entity.RoomMember;
 import io.festival.distance.domain.conversation.roommember.service.RoomMemberService;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.global.exception.DistanceException;
+import io.festival.distance.infra.sse.event.ChatMessageAddedEvent;
+import io.festival.distance.infra.sse.event.ChatWaitingAddedEvent;
 import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +36,8 @@ public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
     private final RoomMemberService roomMemberService;
     private final MemberReader memberReader;
+    private final ChatRoomReader chatRoomReader;
+    private final ApplicationEventPublisher aep;
 
     private final static Integer INITIAL_COUNT = 2;
 
@@ -64,12 +70,18 @@ public class ChatMessageService {
      * 메소드 네이밍 변경 필요!
      */
     @Transactional
-    public ChatMessageResponseDto generateMessage(Long chatMessageId, int currentMemberCount,
-        ChatRoom chatRoom) {
+    public ChatMessageResponseDto generateMessage(
+        Long chatMessageId,
+        int currentMemberCount,
+        ChatRoom chatRoom,
+        Long memberId,
+        Long opponentId
+    ) {
         ChatMessage chatMessage = chatMessageRepository.findById(chatMessageId)
             .orElseThrow(() -> new DistanceException(NOT_EXIST_MESSAGE));
         chatMessage.readCountUpdate(currentMemberCount);
-
+        aep.publishEvent(new ChatMessageAddedEvent(opponentId));
+        aep.publishEvent(new ChatMessageAddedEvent(memberId));
         return ChatMessageResponseDto.builder()
             .messageId(chatMessageId)
             .chatMessage(chatMessage.getChatMessage())
@@ -94,9 +106,10 @@ public class ChatMessageService {
     public List<ChatMessageResponseDto> getChatMessageResponseDto(ChatRoom chatRoom,
         RoomMember roomMember) {
         List<ChatMessage> messages = getChatMessages(chatRoom, roomMember);
+        Long tiKiTaKa = checkTiKiTaKa(chatRoom);
 
         List<ChatMessageResponseDto> responseDtoList = messages.stream()
-            .map(ChatMessageResponseDto::new)
+            .map(message -> new ChatMessageResponseDto(message, tiKiTaKa))
             .collect(Collectors.toList());
         // 현재 채팅방에 들어온 사람의 가장 최근에 읽은 곳까지 unReadCount 갱신 (다시 접속했는데 새로운 메세지가 없는 경우)
         if (!responseDtoList.isEmpty()) { //최신 메시지가 있다면
@@ -111,6 +124,7 @@ public class ChatMessageService {
         Principal principal) {
         Member member = memberReader.findTelNum(principal.getName());
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom);
+        Long tiKiTaKa = checkTiKiTaKa(chatRoom);
 
         if (Objects.isNull(roomMember)) {
             throw new DistanceException(NOT_EXIST_CHATROOM);
@@ -120,7 +134,7 @@ public class ChatMessageService {
 
         return chatMessageRepository.findAllByChatRoomOrderByCreateDtAsc(chatRoom)
             .stream()
-            .map(ChatMessageResponseDto::new)
+            .map(message -> new ChatMessageResponseDto(message, tiKiTaKa))
             .toList();
     }
 
@@ -145,19 +159,42 @@ public class ChatMessageService {
      * @param principal
      * @return
      */
-    @Transactional(readOnly = true)
-    public List<ChatMessageResponseDto> findAllMessage(ChatRoom chatRoom, PageRequest pageRequest,
-        Principal principal) {
+    @Transactional
+    public List<ChatMessageResponseDto> findAllMessage(
+        ChatRoom chatRoom,
+        PageRequest pageRequest,
+        Principal principal
+    ) {
         Member member = memberReader.findTelNum(principal.getName());
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom);
-        Long lastChatMessageId = roomMember.getLastReadMessageId();
-        return chatMessageRepository.findByChatRoomAndChatMessageIdLessThanOrderByCreateDtDesc(
-                chatRoom, pageRequest,
-                lastChatMessageId)
-            .stream()
-            .map(ChatMessageResponseDto::new)
+        List<ChatMessage> messages = getChatMessages(chatRoom, roomMember);
+
+        Long tiKiTaKa = checkTiKiTaKa(chatRoom);
+
+        List<ChatMessageResponseDto> responseDtoList = messages.stream()
+            .map(message -> new ChatMessageResponseDto(message, tiKiTaKa))
+            .toList();
+
+        // 현재 채팅방에 들어온 사람의 가장 최근에 읽은 곳까지 unReadCount 갱신 (다시 접속했는데 새로운 메세지가 없는 경우)
+        updateLastMessage(responseDtoList, roomMember);
+        return chatMessageRepository.findAllByChatRoom(chatRoom,pageRequest)
+            .map(message -> new ChatMessageResponseDto(message, tiKiTaKa))
             .toList();
     }
 
+    @Transactional
+    public void updateLastMessage(List<ChatMessageResponseDto> responseDtoList,
+        RoomMember roomMember) {
+        if (!responseDtoList.isEmpty()) { //최신 메시지가 있다면
+            roomMember.updateMessageId(
+                responseDtoList.get(responseDtoList.size() - 1).getMessageId()
+            );
+        }
+    }
 
+    public Integer calculateMessageCount(Long chatRoomId) {
+        ChatRoom chatRoom = chatRoomReader.findChatRoom(chatRoomId);
+        return chatMessageRepository.countByChatRoom(chatRoom);
+
+    }
 }

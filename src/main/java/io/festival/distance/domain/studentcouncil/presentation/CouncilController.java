@@ -1,5 +1,6 @@
 package io.festival.distance.domain.studentcouncil.presentation;
 
+import io.festival.distance.domain.image.dto.response.S3UrlResponse;
 import io.festival.distance.domain.studentcouncil.dto.request.ContentRequest;
 import io.festival.distance.domain.studentcouncil.dto.response.ContentResponse;
 import io.festival.distance.domain.studentcouncil.dto.response.CouncilResponse;
@@ -10,13 +11,13 @@ import java.security.Principal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -37,19 +38,18 @@ public class CouncilController {
      * 총학 게시글 작성 API
      */
     @PostMapping
-    public ResponseEntity<Void> createContent(
+    public ResponseEntity<List<S3UrlResponse>> createContent(
         Principal principal,
-        @RequestPart(value = "contentRequest") ContentRequest contentRequest,
-        @RequestPart(value = "files", required = false) List<MultipartFile> files,
-        @RequestPart(value = "priority") List<Integer> priority
+        @RequestBody ContentRequest contentRequest
     ) {
-        councilService.create(
+        return ResponseEntity.ok(
+            councilService.create(
             principal.getName(),
             contentRequest,
-            files,
-            priority
+            contentRequest.fileListRequest().toStringList(),
+            contentRequest.priority()
+            )
         );
-        return ResponseEntity.ok().build();
     }
 
     /**
@@ -73,7 +73,7 @@ public class CouncilController {
         @PathVariable Long studentCouncilId,
         Principal principal
     ) {
-        return ResponseEntity.ok(councilService.findContent(studentCouncilId,principal.getName()));
+        return ResponseEntity.ok(councilService.findContent(studentCouncilId, principal.getName()));
     }
 
     /**

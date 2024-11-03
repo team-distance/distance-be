@@ -21,6 +21,7 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
 
     Integer countByChatRoomAndChatMessageIdGreaterThan(ChatRoom chatRoom, Long lastMessageId);
 
+    Integer countByChatRoom(ChatRoom chatRoom);
     @Query(value = "SELECT COUNT(*) FROM (" +
         "SELECT sender_id, LAG(sender_id) OVER (ORDER BY create_dt) AS prev_sender_id "
         + "FROM chatmessage WHERE chatroom_id =:chatRoomId) AS OrderedMessages "
@@ -32,6 +33,8 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
     Page<ChatMessage> findByChatRoomAndChatMessageIdLessThanOrderByCreateDtDesc(ChatRoom chatRoom,
         Pageable pageable,
         Long lastMessageId);
+
+    Page<ChatMessage> findAllByChatRoom(ChatRoom chatRoom, Pageable pageable);
 
     List<ChatMessage> findAllByChatRoomOrderByCreateDtAsc(ChatRoom chatRoom);
 }

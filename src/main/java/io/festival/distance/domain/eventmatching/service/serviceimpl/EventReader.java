@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class EventReader {
     private final EventMatchRepository eventMatchRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public EventMatch findEventMatch(Long memberId){
         return eventMatchRepository.findByMemberId(memberId);
     }
