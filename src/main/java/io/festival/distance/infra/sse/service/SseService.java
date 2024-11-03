@@ -53,7 +53,8 @@ public class SseService {
      * @param memberId   - 데이터를 받을 사용자의 아이디.
      * @param data - 전송할 데이터.
      */
-    private void sendToClient(Long memberId, Object data,String eventName) {
+    private void sendToClient(Long memberId, Object data, String eventName) {
+        log.debug("Sending event '{}' to memberId {}: data={}", eventName, memberId, data);
         SseEmitter emitter = sseRepository.get(memberId);
         if (emitter != null) {
             try {
@@ -68,6 +69,7 @@ public class SseService {
             log.warn("Emitter not found for memberId {}", memberId);
         }
     }
+
 
     /**
      * 사용자 아이디를 기반으로 이벤트 Emitter를 생성
