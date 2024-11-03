@@ -5,7 +5,6 @@ import io.festival.distance.domain.member.dto.MemberInfoDto;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.entity.UnivCert;
 import io.festival.distance.domain.member.repository.MemberRepository;
-import io.festival.distance.global.exception.DistanceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;

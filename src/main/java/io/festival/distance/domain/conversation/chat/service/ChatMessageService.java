@@ -106,9 +106,10 @@ public class ChatMessageService {
     public List<ChatMessageResponseDto> getChatMessageResponseDto(ChatRoom chatRoom,
         RoomMember roomMember) {
         List<ChatMessage> messages = getChatMessages(chatRoom, roomMember);
+        Long tiKiTaKa = checkTiKiTaKa(chatRoom);
 
         List<ChatMessageResponseDto> responseDtoList = messages.stream()
-            .map(ChatMessageResponseDto::new)
+            .map(message -> new ChatMessageResponseDto(message, tiKiTaKa))
             .collect(Collectors.toList());
         // 현재 채팅방에 들어온 사람의 가장 최근에 읽은 곳까지 unReadCount 갱신 (다시 접속했는데 새로운 메세지가 없는 경우)
         if (!responseDtoList.isEmpty()) { //최신 메시지가 있다면
@@ -123,6 +124,7 @@ public class ChatMessageService {
         Principal principal) {
         Member member = memberReader.findTelNum(principal.getName());
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom);
+        Long tiKiTaKa = checkTiKiTaKa(chatRoom);
 
         if (Objects.isNull(roomMember)) {
             throw new DistanceException(NOT_EXIST_CHATROOM);
@@ -132,18 +134,16 @@ public class ChatMessageService {
 
         return chatMessageRepository.findAllByChatRoomOrderByCreateDtAsc(chatRoom)
             .stream()
-            .map(ChatMessageResponseDto::new)
+            .map(message -> new ChatMessageResponseDto(message, tiKiTaKa))
             .toList();
     }
 
     @Transactional
     public List<ChatMessage> getChatMessages(ChatRoom chatRoom, RoomMember roomMember) {
         Long lastChatMessageId = roomMember.getLastReadMessageId(); //가장 나중에 읽은 메시지 PK값
-        System.out.println("lastChatMessageId = " + lastChatMessageId);
         List<ChatMessage> messages = chatMessageRepository.findByChatRoomAndChatMessageIdGreaterThan(
             chatRoom, lastChatMessageId
         );
-        System.out.println("messages = " + messages.size());
         messages.forEach(message -> {
             message.readCountUpdate(1);
             chatMessageRepository.save(message);
@@ -169,13 +169,16 @@ public class ChatMessageService {
         RoomMember roomMember = roomMemberService.findRoomMember(member, chatRoom);
         List<ChatMessage> messages = getChatMessages(chatRoom, roomMember);
 
+        Long tiKiTaKa = checkTiKiTaKa(chatRoom);
+
         List<ChatMessageResponseDto> responseDtoList = messages.stream()
-            .map(ChatMessageResponseDto::new)
+            .map(message -> new ChatMessageResponseDto(message, tiKiTaKa))
             .toList();
+
         // 현재 채팅방에 들어온 사람의 가장 최근에 읽은 곳까지 unReadCount 갱신 (다시 접속했는데 새로운 메세지가 없는 경우)
         updateLastMessage(responseDtoList, roomMember);
         return chatMessageRepository.findAllByChatRoom(chatRoom,pageRequest)
-            .map(ChatMessageResponseDto::new)
+            .map(message -> new ChatMessageResponseDto(message, tiKiTaKa))
             .toList();
     }
 
@@ -183,8 +186,6 @@ public class ChatMessageService {
     public void updateLastMessage(List<ChatMessageResponseDto> responseDtoList,
         RoomMember roomMember) {
         if (!responseDtoList.isEmpty()) { //최신 메시지가 있다면
-            System.out.println("responseDtoList.get(responseDtoList.size()-1).getMessageId() = "
-                + responseDtoList.get(responseDtoList.size() - 1).getMessageId());
             roomMember.updateMessageId(
                 responseDtoList.get(responseDtoList.size() - 1).getMessageId()
             );
