@@ -24,6 +24,10 @@ public class SlackService {
 
     @Async
     public void sendSlackAlertErrorLog(Exception e, HttpServletRequest request) {
+        if (e.getMessage() == null || e.getMessage().contains("SSE 관련 특정 메시지")) {
+            log.info("Slack 알림에서 제외된 에러: {}", e.getMessage());
+            return;
+        }
         try {
             slackClient.send(webhookUrl, payload(p -> p
                 .text("Server Error!!")
