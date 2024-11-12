@@ -14,3 +14,11 @@ spring:
         password: ${SPRING_DATASOURCE_PASSWORD}
         jdbc-url: ${SPRING_DATASOURCE_SLAVE_URL}
         maximum-pool-size: 20
+
+swagger:
+  enabled: false
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
