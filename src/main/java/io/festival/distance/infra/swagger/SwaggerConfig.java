@@ -23,7 +23,7 @@ public class SwaggerConfig {
             )
             .servers(List.of(
                 new Server().url("https://dev.dis-tance.com"),
-                new Server().url("https://api.dis-tance.com"),
+                //new Server().url("https://api.dis-tance.com"),
                 new Server().url("http://localhost:8080")
             ));
     }
