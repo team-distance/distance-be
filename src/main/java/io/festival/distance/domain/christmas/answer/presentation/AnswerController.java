@@ -39,10 +39,13 @@ public class AnswerController {
      * 답변 등록 API
      */
     @PostMapping
-    public ResponseEntity<Void> writeAnswer(@RequestBody AnswerRequest answerRequest,
-        Principal principal) {
-        answerService.write(answerRequest, principal.getName());
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Boolean> writeAnswer(
+        @RequestBody AnswerRequest answerRequest,
+        Principal principal
+    ) {
+        return ResponseEntity.ok(
+            answerService.write(answerRequest, principal.getName())
+        );
     }
 
     /**

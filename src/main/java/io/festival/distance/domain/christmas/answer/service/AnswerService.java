@@ -2,6 +2,7 @@ package io.festival.distance.domain.christmas.answer.service;
 
 import io.festival.distance.domain.christmas.answer.dto.request.AnswerRequest;
 import io.festival.distance.domain.christmas.answer.dto.response.CurrentResponse;
+import io.festival.distance.domain.christmas.entryticket.service.EntryTicketSaver;
 import io.festival.distance.domain.christmas.question.entity.Question;
 import io.festival.distance.domain.christmas.question.service.QuestionReader;
 import io.festival.distance.domain.christmas.question.service.QuestionUpdater;
@@ -22,11 +23,12 @@ public class AnswerService {
     private final QuestionUpdater questionUpdater;
     private final AnswerFacade answerFacade;
     private final AnswerValidator answerValidator;
+    private final EntryTicketSaver entryTicketSaver;
     public List<CurrentResponse> find(Long questionId) {
         return answerFacade.findAllAnswer(questionId);
     }
 
-    public void write(AnswerRequest answerRequest, String telNum) {
+    public Boolean write(AnswerRequest answerRequest, String telNum) {
         Member member = memberReader.findTelNum(telNum);
         Question question = questionReader.findById(answerRequest.questionId());
         answerValidator.alreadyWrite(member,question);
@@ -36,6 +38,7 @@ public class AnswerService {
             answerRequest.answer()
         );
         questionUpdater.updateStatus(question);
+        return entryTicketSaver.save(question.getChatRoom(),member.getTelNum());
     }
 
     public void update(
