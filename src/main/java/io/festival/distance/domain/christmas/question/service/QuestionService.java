@@ -5,6 +5,7 @@ import io.festival.distance.domain.christmas.question.dto.response.QuestionRespo
 import io.festival.distance.domain.christmas.question.entity.Question;
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import io.festival.distance.domain.conversation.chatroom.service.serviceimpl.ChatRoomReader;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,5 +32,10 @@ public class QuestionService {
             .questionId(question.getQuestionId())
             .question(question.getQuestion())
             .build();
+    }
+
+    public List<QuestionResponse> findAll(Long chatRoomId) {
+        ChatRoom chatRoom = chatRoomReader.findChatRoom(chatRoomId);
+        return questionReader.findAllByChatRoom(chatRoom);
     }
 }

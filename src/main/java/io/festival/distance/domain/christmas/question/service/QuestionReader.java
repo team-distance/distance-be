@@ -1,5 +1,6 @@
 package io.festival.distance.domain.christmas.question.service;
 
+import io.festival.distance.domain.christmas.question.dto.response.QuestionResponse;
 import io.festival.distance.domain.christmas.question.entity.Question;
 import io.festival.distance.domain.christmas.question.repository.QuestionRepository;
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
@@ -33,5 +34,13 @@ public class QuestionReader {
     @Transactional(readOnly = true)
     public Question findByChatRoomAndTikiTakaCount(ChatRoom chatRoom, Long tikiTakaCount){
         return questionRepository.findByChatRoomAndTikiTakaCount(chatRoom, tikiTakaCount);
+    }
+
+    @Transactional(readOnly = true)
+    public List<QuestionResponse> findAllByChatRoom(ChatRoom chatRoom){
+        return questionRepository.findAllByChatRoom(chatRoom)
+            .stream()
+            .map(QuestionResponse::toResponse)
+            .toList();
     }
 }
