@@ -15,9 +15,6 @@ public class RandomQuestionGenerator {
 
     private final QuestionReader questionReader;
 
-    /**
-     * TODO -> 랜덤으로 질문 생성 구현
-     */
     public String generateQuestion(ChatRoom chatRoom) {
         List<String> questions = questionReader.findQuestionsByChatRoom(chatRoom);
 

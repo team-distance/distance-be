@@ -27,6 +27,6 @@ public class QuestionController {
     public ResponseEntity<QuestionResponse> generateQuestion(
         @RequestBody QuestionRequest questionRequest
     ){
-        return ResponseEntity.ok(questionService.create(questionRequest.chatRoomId()));
+        return ResponseEntity.ok(questionService.create(questionRequest));
     }
 }

@@ -9,9 +9,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 public class QuestionValidator {
+
     private final QuestionRepository questionRepository;
+
     @Transactional(readOnly = true)
-    public Long completeQuestionCount(ChatRoom chatRoom){
+    public Long completeQuestionCount(ChatRoom chatRoom) {
         return questionRepository.findAllByChatRoomAndIsAnswer(chatRoom);
+    }
+
+    @Transactional(readOnly = true)
+    public Boolean isExistQuestion(ChatRoom chatRoom, Long tikiTakaCount) {
+        return questionRepository.existsByChatRoomAndTikiTakaCount(chatRoom, tikiTakaCount);
     }
 }

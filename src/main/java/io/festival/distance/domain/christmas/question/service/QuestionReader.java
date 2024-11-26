@@ -29,4 +29,9 @@ public class QuestionReader {
             .map(Question::getQuestion)
             .toList();
     }
+
+    @Transactional(readOnly = true)
+    public Question findByChatRoomAndTikiTakaCount(ChatRoom chatRoom, Long tikiTakaCount){
+        return questionRepository.findByChatRoomAndTikiTakaCount(chatRoom, tikiTakaCount);
+    }
 }

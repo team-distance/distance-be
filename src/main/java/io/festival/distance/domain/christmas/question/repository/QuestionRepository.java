@@ -12,4 +12,8 @@ public interface QuestionRepository extends JpaRepository<Question,Long> {
     Long findAllByChatRoomAndIsAnswer(@Param(value ="chatRoom") ChatRoom chatRoom);
 
     List<Question> findAllByChatRoom(ChatRoom chatRoom);
+
+    Boolean existsByChatRoomAndTikiTakaCount(ChatRoom chatRoom,Long tikiTakaCount);
+
+    Question findByChatRoomAndTikiTakaCount(ChatRoom chatRoom,Long tikiTakaCount);
 }

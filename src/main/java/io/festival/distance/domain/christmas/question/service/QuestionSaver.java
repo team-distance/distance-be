@@ -14,12 +14,17 @@ public class QuestionSaver {
     private final QuestionRepository questionRepository;
 
     @Transactional
-    public Long save(ChatRoom chatRoom, String question) {
+    public Question save(
+        ChatRoom chatRoom,
+        String question,
+        Long tikiTakaCount
+    ) {
         Question questionEntity = Question.builder()
             .question(question)
             .chatRoom(chatRoom)
+            .tikiTakaCount(tikiTakaCount)
             .isAnswer(false)
             .build();
-        return questionRepository.save(questionEntity).getQuestionId();
+        return questionRepository.save(questionEntity);
     }
 }

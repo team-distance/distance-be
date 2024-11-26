@@ -30,12 +30,16 @@ public class Question {
     @Column(name = "question")
     private String question;
 
+    @Column(name = "is_answer")
+    private Boolean isAnswer;
+
+    @Column(name = "tiki_taka_count")
+    private Long tikiTakaCount;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chatroom_id")
     private ChatRoom chatRoom;
 
-    @Column(name = "is_answer")
-    private Boolean isAnswer;
 
     public void update(){
         this.isAnswer = true;

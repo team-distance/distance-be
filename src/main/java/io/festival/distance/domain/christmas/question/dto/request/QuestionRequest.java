@@ -1,5 +1,8 @@
 package io.festival.distance.domain.christmas.question.dto.request;
 
-public record QuestionRequest(long chatRoomId) {
+public record QuestionRequest(
+    long chatRoomId,
+    Long tikiTakaCount
+) {
 
 }
