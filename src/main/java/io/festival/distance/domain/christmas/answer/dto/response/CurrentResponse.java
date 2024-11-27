@@ -7,6 +7,8 @@ import lombok.Builder;
 public record CurrentResponse(
     String question,
     String answer,
+    String memberCharacter,
+    String nickName,
     Long memberId,
     Long answerId
 ) {
@@ -14,6 +16,8 @@ public record CurrentResponse(
         return CurrentResponse.builder()
             .question(answer.getQuestion().getQuestion())
             .answer(answer.getAnswer())
+            .nickName(answer.getMember().getNickName())
+            .memberCharacter(answer.getMember().getMemberCharacter())
             .memberId(answer.getMember().getMemberId())
             .answerId(answer.getAnswerId())
             .build();
