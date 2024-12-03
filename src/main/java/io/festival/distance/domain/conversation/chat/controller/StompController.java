@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin
-public class  StompController {
+public class StompController {
 
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
@@ -64,7 +64,7 @@ public class  StompController {
             List<ChatRoomSession> sessionByChatRoom = chatRoomSessionService
                 .findSessionByChatRoom(chatRoom); //2개가 나올 듯?
 
-            if(chatMessageDto.getPublishType().equals(COME.getSenderType())){
+            if (chatMessageDto.getPublishType().equals(COME.getSenderType())) {
                 return ResponseEntity.ok(
                     ChatSystemResponse.builder()
                         .roomStatus(chatRoom.getRoomStatus())
@@ -92,8 +92,11 @@ public class  StompController {
                     .publishType(LEAVE)
                     .build();
 
-                Long messageId = chatMessageService.createMessage(chatRoom, messageDto,
-                    SenderType.SYSTEM);
+                Long messageId = chatMessageService.createMessage(
+                    chatRoom,
+                    messageDto,
+                    SenderType.SYSTEM
+                );
 
                 sessionByChatRoom = chatRoomSessionService
                     .findSessionByChatRoom(chatRoom); //2개가 나올 듯?
@@ -150,7 +153,7 @@ public class  StompController {
         // receiver 에게 PUSH 알림 전송
         Member opponent = memberReader.findMember(chatMessageDto.getSenderId());
         Member member = memberReader.findMember(chatMessageDto.getReceiverId());
-        if(SenderType.of(chatMessageDto.getPublishType()).equals(IMAGE)) {
+        if (SenderType.of(chatMessageDto.getPublishType()).equals(IMAGE)) {
             sqsService.sendMessage(
                 opponent.getClientToken(),
                 member.getNickName(),
@@ -158,7 +161,7 @@ public class  StompController {
                 chatMessageDto.getChatMessage(),
                 member.getMemberCharacter()
             );
-        }else {
+        } else {
             sqsService.sendMessage(
                 opponent.getClientToken(),
                 member.getNickName(),
@@ -170,9 +173,11 @@ public class  StompController {
         // 채팅 읽음 갱신
         for (ChatRoomSession chatRoomSession : sessionByChatRoom) {
             Long memberId = chatRoomSession.getMemberId();
-            System.out.println("memberId = " + memberId);
-            roomMemberService.updateLastMessage(memberId, chatMessageId,
-                roomId); //가장 최근에 읽은 메시지 수정
+            roomMemberService.updateLastMessage(
+                memberId,
+                chatMessageId,
+                roomId
+            ); //가장 최근에 읽은 메시지 수정
         }
 
         return ResponseEntity.ok(
