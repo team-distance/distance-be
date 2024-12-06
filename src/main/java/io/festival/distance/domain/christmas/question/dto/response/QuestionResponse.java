@@ -6,12 +6,14 @@ import lombok.Builder;
 @Builder
 public record QuestionResponse(
     String question,
-    Long questionId
+    Long questionId,
+    Boolean isAnswer
 ) {
     public static QuestionResponse toResponse(Question question){
         return QuestionResponse.builder()
             .questionId(question.getQuestionId())
             .question(question.getQuestion())
+            .isAnswer(question.getIsAnswer())
             .build();
     }
 }
