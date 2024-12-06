@@ -32,4 +32,6 @@ public interface RoomMemberRepository extends JpaRepository<RoomMember, Long> {
     Optional<RoomMember> findByMemberAndMyRoomName(Member member, String myRoomName);
 
     List<RoomMember> findAllByMyRoomName(String myRoomName);
+
+    List<RoomMember> findAllByChatRoom(ChatRoom chatRoom);
 }
