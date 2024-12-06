@@ -30,7 +30,7 @@ public class AnswerController {
      * 질문 현황체크
      */
     @GetMapping("/{questionId}")
-    public ResponseEntity<List<CurrentResponse>> showQuestionStatus(@PathVariable Long questionId) {
+    public ResponseEntity<CurrentResponse> showQuestionStatus(@PathVariable Long questionId) {
         return ResponseEntity.ok(answerService.find(questionId));
     }
 

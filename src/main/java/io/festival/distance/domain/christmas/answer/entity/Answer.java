@@ -31,6 +31,9 @@ public class Answer {
     @Column(name = "answer")
     private String answer;
 
+    @Column(name = "is_answered")
+    private Boolean isAnswered;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     private Question question;

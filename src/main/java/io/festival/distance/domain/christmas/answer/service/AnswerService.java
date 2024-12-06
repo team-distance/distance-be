@@ -24,7 +24,7 @@ public class AnswerService {
     private final AnswerFacade answerFacade;
     private final AnswerValidator answerValidator;
     private final EntryTicketSaver entryTicketSaver;
-    public List<CurrentResponse> find(Long questionId) {
+    public CurrentResponse find(Long questionId) {
         return answerFacade.findAllAnswer(questionId);
     }
 

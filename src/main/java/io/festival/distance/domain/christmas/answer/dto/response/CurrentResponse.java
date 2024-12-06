@@ -1,25 +1,22 @@
 package io.festival.distance.domain.christmas.answer.dto.response;
 
-import io.festival.distance.domain.christmas.answer.entity.Answer;
+import java.util.List;
 import lombok.Builder;
 
 @Builder
 public record CurrentResponse(
     String question,
-    String answer,
-    String memberCharacter,
-    String nickName,
-    Long memberId,
-    Long answerId
+    List<AnswerResponse> answers
+
 ) {
-    public static CurrentResponse toEntity(Answer answer){
+
+    public static CurrentResponse fromResponse(
+        List<AnswerResponse> answers,
+        String question
+    ) {
         return CurrentResponse.builder()
-            .question(answer.getQuestion().getQuestion())
-            .answer(answer.getAnswer())
-            .nickName(answer.getMember().getNickName())
-            .memberCharacter(answer.getMember().getMemberCharacter())
-            .memberId(answer.getMember().getMemberId())
-            .answerId(answer.getAnswerId())
+            .question(question)
+            .answers(answers)
             .build();
     }
 }

@@ -31,6 +31,7 @@ public class QuestionService {
         return QuestionResponse.builder()
             .questionId(question.getQuestionId())
             .question(question.getQuestion())
+            .isAnswer(question.getIsAnswer())
             .build();
     }
 

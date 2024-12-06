@@ -1,5 +1,6 @@
 package io.festival.distance.domain.christmas.answer.service;
 
+import io.festival.distance.domain.christmas.answer.dto.response.AnswerResponse;
 import io.festival.distance.domain.christmas.answer.dto.response.CurrentResponse;
 import io.festival.distance.domain.christmas.question.entity.Question;
 import io.festival.distance.domain.christmas.question.service.QuestionReader;
@@ -15,11 +16,12 @@ public class AnswerFacade {
     private final AnswerReader answerReader;
 
     @Transactional(readOnly = true)
-    public List<CurrentResponse> findAllAnswer(Long questionId){
+    public CurrentResponse findAllAnswer(Long questionId){
         Question question = questionReader.findById(questionId);
-        return answerReader.findByQuestion(question)
+        List<AnswerResponse> answerResponses = answerReader.findByQuestion(question)
             .stream()
-            .map(CurrentResponse::toEntity)
+            .map(AnswerResponse::toAnswerResponse)
             .toList();
+        return CurrentResponse.fromResponse(answerResponses,question.getQuestion());
     }
 }
