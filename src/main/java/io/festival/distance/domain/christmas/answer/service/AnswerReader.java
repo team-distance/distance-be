@@ -28,7 +28,12 @@ public class AnswerReader {
     }
 
    @Transactional(readOnly = true)
-   public Boolean findByMemberAndQuestion(Member member, Question question){
+   public Boolean existByMemberAndQuestion(Member member, Question question){
         return answerRepository.existsByMemberAndQuestion(member, question);
+   }
+
+   @Transactional(readOnly = true)
+    public Answer findByMemberAndQuestion(Member member, Question question){
+        return answerRepository.findByMemberAndQuestion(member, question);
    }
 }

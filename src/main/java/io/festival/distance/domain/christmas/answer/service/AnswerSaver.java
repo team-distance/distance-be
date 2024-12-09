@@ -18,12 +18,14 @@ public class AnswerSaver {
     public void save(
         Member member,
         Question question,
-        String answer
+        String answer,
+        Boolean isAnswer
     ) {
         Answer answerEntity = Answer.builder()
             .answer(answer)
             .member(member)
             .question(question)
+            .isAnswered(isAnswer)
             .build();
         answerRepository.save(answerEntity);
     }

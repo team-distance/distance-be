@@ -8,7 +8,6 @@ import io.festival.distance.domain.christmas.question.service.QuestionReader;
 import io.festival.distance.domain.christmas.question.service.QuestionUpdater;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +17,9 @@ public class AnswerService {
 
     private final QuestionReader questionReader;
     private final MemberReader memberReader;
-    private final AnswerSaver answerSaver;
     private final AnswerUpdater answerUpdater;
     private final QuestionUpdater questionUpdater;
     private final AnswerFacade answerFacade;
-    private final AnswerValidator answerValidator;
     private final EntryTicketSaver entryTicketSaver;
     public CurrentResponse find(Long questionId) {
         return answerFacade.findAllAnswer(questionId);
@@ -31,13 +28,8 @@ public class AnswerService {
     public Boolean write(AnswerRequest answerRequest, String telNum) {
         Member member = memberReader.findTelNum(telNum);
         Question question = questionReader.findById(answerRequest.questionId());
-        answerValidator.alreadyWrite(member,question);
-        answerSaver.save(
-            member,
-            question,
-            answerRequest.answer()
-        );
-        questionUpdater.updateStatus(question);
+        answerUpdater.writeAnswer(member,question,answerRequest.answer());
+        questionUpdater.updateStatus(answerRequest.questionId());
         return entryTicketSaver.save(question.getChatRoom(),member.getTelNum());
     }
 

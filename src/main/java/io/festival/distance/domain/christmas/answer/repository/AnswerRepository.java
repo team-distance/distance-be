@@ -10,4 +10,6 @@ public interface AnswerRepository extends JpaRepository<Answer,Long> {
     List<Answer> findAllByQuestion(Question question);
 
     Boolean existsByMemberAndQuestion(Member member, Question question);
+
+    Answer findByMemberAndQuestion(Member member,Question question);
 }

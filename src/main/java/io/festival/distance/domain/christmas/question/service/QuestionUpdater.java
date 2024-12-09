@@ -10,9 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class QuestionUpdater {
     private final AnswerValidator answerValidator;
-
+    private final QuestionReader questionReader;
     @Transactional
-    public void updateStatus(Question question){
+    public void updateStatus(Long questionId){
+        Question question = questionReader.findById(questionId);
         if(answerValidator.checkAnswerStatus(question)){
             question.update();
         }

@@ -28,7 +28,8 @@ public class QuestionCreator {
             answerSaver.save(
                 roomInfoDto.member(),
                 questionEntity,
-                INITIAL_ANSWER
+                INITIAL_ANSWER,
+                false
             )
         );
         return questionEntity;

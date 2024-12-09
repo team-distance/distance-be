@@ -1,7 +1,6 @@
 package io.festival.distance.domain.christmas.answer.service;
 
 import io.festival.distance.domain.christmas.question.entity.Question;
-import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.global.exception.DistanceException;
 import io.festival.distance.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +21,5 @@ public class AnswerValidator {
 
     public Boolean checkAnswerStatus(Question question) {
         return answerReader.findByQuestion(question).size() == ANSWER_COUNT;
-    }
-
-    public void alreadyWrite(Member member, Question question){
-        if(answerReader.findByMemberAndQuestion(member, question)){
-            throw new DistanceException(ErrorCode.ALREADY_EXIST_MEMBER);
-        }
     }
 }
