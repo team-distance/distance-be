@@ -65,7 +65,7 @@
 ---
 
 ## System Architecture
-![image](https://github.com/user-attachments/assets/fa665495-d435-415b-9c1e-4d9ec6581097)
+![image](https://github.com/user-attachments/assets/caecf41f-b6a7-4abf-a994-0b768b95b426)
 
 
 
