@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -42,5 +43,13 @@ public class QuestionController {
         @PathVariable Long chatRoomId
     ){
         return ResponseEntity.ok(questionService.findAll(chatRoomId));
+    }
+
+    @GetMapping
+    public ResponseEntity<QuestionResponse> getQuestion(
+        @RequestParam(name = "chatRoomId") Long chatRoomId,
+        @RequestParam(name = "tikiTakaCount") Long tikiTakaCount
+    ){
+        return ResponseEntity.ok(questionService.find(chatRoomId,tikiTakaCount));
     }
 }

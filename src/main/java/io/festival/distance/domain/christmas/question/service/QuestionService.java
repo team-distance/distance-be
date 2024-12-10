@@ -41,4 +41,14 @@ public class QuestionService {
         ChatRoom chatRoom = chatRoomReader.findChatRoom(chatRoomId);
         return questionReader.findAllByChatRoom(chatRoom);
     }
+
+    public QuestionResponse find(Long chatRoomId, Long tikiTakaCount) {
+        ChatRoom chatRoom = chatRoomReader.findChatRoom(chatRoomId);
+        Question question = questionReader.findByChatRoomAndTikiTakaCount(chatRoom, tikiTakaCount);
+        return QuestionResponse.builder()
+            .questionId(question.getQuestionId())
+            .question(question.getQuestion())
+            .isAnswer(question.getIsAnswer())
+            .build();
+    }
 }
