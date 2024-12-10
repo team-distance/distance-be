@@ -7,6 +7,7 @@ import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import io.festival.distance.global.exception.DistanceException;
 import io.festival.distance.global.exception.ErrorCode;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +46,7 @@ public class QuestionReader {
     }
 
     @Transactional(readOnly = true)
-    public Question findByChatRoomOrderById(ChatRoom chatRoom){
+    public Optional<Question> findByChatRoomOrderById(ChatRoom chatRoom){
         return questionRepository.findFirstByChatRoomOrderByQuestionIdDesc(chatRoom);
     }
 }

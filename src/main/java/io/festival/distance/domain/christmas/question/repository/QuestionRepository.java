@@ -3,6 +3,7 @@ package io.festival.distance.domain.christmas.question.repository;
 import io.festival.distance.domain.christmas.question.entity.Question;
 import io.festival.distance.domain.conversation.chatroom.entity.ChatRoom;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,5 +18,5 @@ public interface QuestionRepository extends JpaRepository<Question,Long> {
 
     Question findByChatRoomAndTikiTakaCount(ChatRoom chatRoom,Long tikiTakaCount);
 
-    Question findFirstByChatRoomOrderByQuestionIdDesc(ChatRoom chatRoom);
+    Optional<Question> findFirstByChatRoomOrderByQuestionIdDesc(ChatRoom chatRoom);
 }

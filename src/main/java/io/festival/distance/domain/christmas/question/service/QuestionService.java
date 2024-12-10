@@ -21,6 +21,7 @@ public class QuestionService {
         ChatRoom chatRoom = chatRoomReader.findChatRoom(questionRequest.chatRoomId());
 
         questionValidator.isAnsweredFromQuestion(chatRoom);
+
         Question question =
             questionValidator.isExistQuestion(chatRoom, questionRequest.tikiTakaCount())
                 ? questionReader.findByChatRoomAndTikiTakaCount(

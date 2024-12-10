@@ -28,9 +28,11 @@ public class QuestionValidator {
 
     @Transactional(readOnly = true)
     public void isAnsweredFromQuestion(ChatRoom chatRoom) {
-        Question question = questionReader.findByChatRoomOrderById(chatRoom);
-        if (!question.getIsAnswer()) {
-            throw new DistanceException(ErrorCode.YET_ANSWER_BY_QUESTION);
-        }
+        questionReader.findByChatRoomOrderById(chatRoom)
+            .ifPresent(questionEntity -> {
+                if (!questionEntity.getIsAnswer()) {
+                    throw new DistanceException(ErrorCode.YET_ANSWER_BY_QUESTION);
+                }
+            });
     }
 }
