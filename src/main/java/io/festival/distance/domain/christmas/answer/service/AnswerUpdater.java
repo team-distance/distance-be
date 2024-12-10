@@ -2,6 +2,7 @@ package io.festival.distance.domain.christmas.answer.service;
 
 import io.festival.distance.domain.christmas.answer.entity.Answer;
 import io.festival.distance.domain.christmas.question.entity.Question;
+import io.festival.distance.domain.christmas.question.service.QuestionUpdater;
 import io.festival.distance.domain.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,7 @@ public class AnswerUpdater {
 
     private final AnswerReader answerReader;
     private final AnswerValidator answerValidator;
-
+    private final QuestionUpdater questionUpdater;
     @Transactional
     public void update(
         String answer,
@@ -23,6 +24,7 @@ public class AnswerUpdater {
         Answer answerEntity = answerReader.findById(answerId);
         answerValidator.isWriter(telNum, answerEntity.getMember().getTelNum());
         answerEntity.updateAnswer(answer);
+        questionUpdater.updateStatus(answerEntity.getQuestion().getQuestionId());
     }
 
     @Transactional
