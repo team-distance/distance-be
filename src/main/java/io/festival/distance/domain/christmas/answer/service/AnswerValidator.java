@@ -1,14 +1,17 @@
 package io.festival.distance.domain.christmas.answer.service;
 
+import io.festival.distance.domain.christmas.answer.entity.Answer;
 import io.festival.distance.domain.christmas.question.entity.Question;
 import io.festival.distance.global.exception.DistanceException;
 import io.festival.distance.global.exception.ErrorCode;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class AnswerValidator {
+
     private static final Integer ANSWER_COUNT = 2;
 
     private final AnswerReader answerReader;
@@ -20,6 +23,9 @@ public class AnswerValidator {
     }
 
     public Boolean checkAnswerStatus(Question question) {
-        return answerReader.findByQuestion(question).size() == ANSWER_COUNT;
+        return answerReader.findByQuestion(question)
+            .stream()
+            .filter(answer -> !answer.getAnswer().isEmpty())
+            .count() == ANSWER_COUNT;
     }
 }
