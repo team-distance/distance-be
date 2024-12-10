@@ -23,9 +23,10 @@ public class AnswerValidator {
     }
 
     public Boolean checkAnswerStatus(Question question) {
-        return answerReader.findByQuestion(question)
+        long count = answerReader.findByQuestion(question)
             .stream()
             .filter(answer -> !answer.getAnswer().isEmpty())
-            .count() == ANSWER_COUNT;
+            .count();
+        return count == ANSWER_COUNT;
     }
 }
