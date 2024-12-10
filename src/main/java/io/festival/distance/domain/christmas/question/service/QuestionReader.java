@@ -43,4 +43,9 @@ public class QuestionReader {
             .map(QuestionResponse::toResponse)
             .toList();
     }
+
+    @Transactional(readOnly = true)
+    public Question findByChatRoomOrderById(ChatRoom chatRoom){
+        return questionRepository.findFirstByChatRoomOrderByQuestionIdDesc(chatRoom);
+    }
 }

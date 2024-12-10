@@ -16,4 +16,6 @@ public interface QuestionRepository extends JpaRepository<Question,Long> {
     Boolean existsByChatRoomAndTikiTakaCount(ChatRoom chatRoom,Long tikiTakaCount);
 
     Question findByChatRoomAndTikiTakaCount(ChatRoom chatRoom,Long tikiTakaCount);
+
+    Question findFirstByChatRoomOrderByQuestionIdDesc(ChatRoom chatRoom);
 }

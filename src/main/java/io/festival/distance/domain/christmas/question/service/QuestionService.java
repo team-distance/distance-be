@@ -17,9 +17,10 @@ public class QuestionService {
     private final QuestionValidator questionValidator;
     private final QuestionReader questionReader;
     private final QuestionCreator questionCreator;
-
     public QuestionResponse create(QuestionRequest questionRequest) {
         ChatRoom chatRoom = chatRoomReader.findChatRoom(questionRequest.chatRoomId());
+
+        questionValidator.isAnsweredFromQuestion(chatRoom);
         Question question =
             questionValidator.isExistQuestion(chatRoom, questionRequest.tikiTakaCount())
                 ? questionReader.findByChatRoomAndTikiTakaCount(
