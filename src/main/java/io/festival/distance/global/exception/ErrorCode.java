@@ -41,6 +41,7 @@ public enum ErrorCode {
     INVALID_TYPE(HttpStatusCode.BAD_REQUEST.getStatus(), "유효하지 않는 type입니다!"),
     ALREADY_EXIST_MEMBER(HttpStatusCode.CONFLICT.getStatus(),"이미 이벤트에 참여했습니다!"),
     ALREADY_EXIST_RECOMMEND(HttpStatusCode.CONFLICT.getStatus(), "이미 추천인을 등록했습니다!"),
+    YET_ANSWER_BY_QUESTION(HttpStatusCode.BAD_REQUEST.getStatus(), "아직 질문에 대답을 하지 않았습니다"),
     NOT_REGISTER_SELF(HttpStatusCode.BAD_REQUEST.getStatus(), "자기자신을 추천할 수 없습니다!");
     private final int status;
     private final String message;

@@ -58,6 +58,7 @@ public class MemberReader {
         List<MemberTagDto> tagDtoList = tagReader.showTagsDto(member);
         return MemberProfileDto.builder()
             .memberCharacter(member.getMemberCharacter())
+            .nickName(member.getNickName())
             .mbti(member.getMbti())
             .memberTagDto(tagDtoList)
             .memberHobbyDto(hobbyDtoList)
