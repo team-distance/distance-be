@@ -2,10 +2,9 @@ package io.festival.distance.domain.christmas.answer.presentation;
 
 import io.festival.distance.domain.christmas.answer.dto.request.AnswerRequest;
 import io.festival.distance.domain.christmas.answer.dto.request.AnswerUpdateRequest;
-import io.festival.distance.domain.christmas.answer.service.AnswerService;
 import io.festival.distance.domain.christmas.answer.dto.response.CurrentResponse;
+import io.festival.distance.domain.christmas.answer.service.AnswerService;
 import java.security.Principal;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -27,11 +27,23 @@ public class AnswerController {
 
     /**
      * NOTE
-     * 질문 현황체크
+     * 크리스마스 트리 내 질문 현황체크
      */
     @GetMapping("/{questionId}")
-    public ResponseEntity<CurrentResponse> showQuestionStatus(@PathVariable Long questionId) {
+    public ResponseEntity<CurrentResponse> showQuestionInTree(@PathVariable Long questionId) {
         return ResponseEntity.ok(answerService.find(questionId));
+    }
+
+    /**
+     * NOTE
+     * 채팅방 내 질문 현황 체크
+     */
+    @GetMapping
+    public ResponseEntity<CurrentResponse> showQuestionInRoom(
+        @RequestParam(name = "chatRoomId") Long chatRoomId,
+        @RequestParam(name = "tikiTakaCount") Long tikiTakaCount
+    ){
+        return ResponseEntity.ok(answerService.find(chatRoomId, tikiTakaCount));
     }
 
     /**

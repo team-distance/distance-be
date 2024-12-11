@@ -25,6 +25,10 @@ public class AnswerService {
         return answerFacade.findAllAnswer(questionId);
     }
 
+    public CurrentResponse find(Long chatRoomId,Long tikiTakaCount) {
+       return answerFacade.findAnswerInRoom(chatRoomId, tikiTakaCount);
+    }
+
     public Boolean write(AnswerRequest answerRequest, String telNum) {
         Member member = memberReader.findTelNum(telNum);
         Question question = questionReader.findById(answerRequest.questionId());
