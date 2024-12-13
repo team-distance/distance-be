@@ -45,6 +45,9 @@ public class QuestionController {
         return ResponseEntity.ok(questionService.findAll(chatRoomId));
     }
 
+    /**
+     * TODO => 제거해야함
+     */
     @GetMapping
     public ResponseEntity<QuestionResponse> getQuestion(
         @RequestParam(name = "chatRoomId") Long chatRoomId,

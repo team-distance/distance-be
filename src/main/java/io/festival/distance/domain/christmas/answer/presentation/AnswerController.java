@@ -42,7 +42,7 @@ public class AnswerController {
     public ResponseEntity<CurrentResponse> showQuestionInRoom(
         @RequestParam(name = "chatRoomId") Long chatRoomId,
         @RequestParam(name = "tikiTakaCount") Long tikiTakaCount
-    ){
+    ) {
         return ResponseEntity.ok(answerService.find(chatRoomId, tikiTakaCount));
     }
 
@@ -65,10 +65,13 @@ public class AnswerController {
      * 답변 수정 API
      */
     @PatchMapping("/{answerId}")
-    public ResponseEntity<Void> modifyAnswer(@PathVariable Long answerId,
-        @RequestBody AnswerUpdateRequest answerUpdateRequest, Principal principal) {
+    public ResponseEntity<Void> modifyAnswer(
+        @PathVariable Long answerId,
+        @RequestBody AnswerUpdateRequest answerUpdateRequest,
+        Principal principal
+    ) {
         answerService.update(
-            answerUpdateRequest.answer(),
+            answerUpdateRequest,
             principal.getName(),
             answerId
         );

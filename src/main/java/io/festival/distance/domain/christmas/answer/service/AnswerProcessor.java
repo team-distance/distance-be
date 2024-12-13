@@ -19,6 +19,6 @@ public class AnswerProcessor {
             .stream()
             .map(AnswerResponse::toAnswerResponse)
             .toList();
-        return CurrentResponse.fromResponse(answerResponses, question.getQuestion());
+        return CurrentResponse.fromResponse(answerResponses, question);
     }
 }

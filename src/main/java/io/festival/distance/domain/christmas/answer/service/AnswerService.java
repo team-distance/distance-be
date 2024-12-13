@@ -1,6 +1,7 @@
 package io.festival.distance.domain.christmas.answer.service;
 
 import io.festival.distance.domain.christmas.answer.dto.request.AnswerRequest;
+import io.festival.distance.domain.christmas.answer.dto.request.AnswerUpdateRequest;
 import io.festival.distance.domain.christmas.answer.dto.response.CurrentResponse;
 import io.festival.distance.domain.christmas.entryticket.service.EntryTicketSaver;
 import io.festival.distance.domain.christmas.question.entity.Question;
@@ -38,14 +39,15 @@ public class AnswerService {
     }
 
     public void update(
-        String answer,
+        AnswerUpdateRequest answerUpdateRequest,
         String telNum,
         Long answerId
     ) {
         answerUpdater.update(
-            answer,
+            answerUpdateRequest.answer(),
             telNum,
-            answerId
+            answerId,
+            answerUpdateRequest.questionId()
         );
     }
 }
