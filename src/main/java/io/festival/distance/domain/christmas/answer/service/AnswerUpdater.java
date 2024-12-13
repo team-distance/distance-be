@@ -31,7 +31,7 @@ public class AnswerUpdater {
         answerValidator.isWriter(telNum, answerEntity.getMember().getTelNum());
         answerEntity.updateAnswer(answer);
         questionUpdater.updateStatus(answerEntity.getQuestion().getQuestionId());
-        entryTicketSaver.save(question.getChatRoom(),telNum);
+        entryTicketSaver.save(question.getChatRoom());
     }
 
     @Transactional
