@@ -35,7 +35,7 @@ public class AnswerService {
         Question question = questionReader.findById(answerRequest.questionId());
         answerUpdater.writeAnswer(member,question,answerRequest.answer());
         questionUpdater.updateStatus(answerRequest.questionId());
-        return entryTicketSaver.save(question.getChatRoom(),member.getTelNum());
+        return entryTicketSaver.save(question.getChatRoom());
     }
 
     public void update(
