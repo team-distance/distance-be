@@ -1,9 +1,14 @@
 package io.festival.distance.domain.conversation.chat.controller;
 
+import static io.festival.distance.domain.conversation.chat.entity.SenderType.ANSWER;
 import static io.festival.distance.domain.conversation.chat.entity.SenderType.COME;
 import static io.festival.distance.domain.conversation.chat.entity.SenderType.IMAGE;
 import static io.festival.distance.domain.conversation.roommember.service.RoomMemberService.IN_ACTIVE;
+import static io.festival.distance.utils.JsonParser.parseQuestionId;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
+import io.festival.distance.domain.conversation.chat.dto.ChatAnswerResponse;
 import io.festival.distance.domain.conversation.chat.dto.ChatMessageDto;
 import io.festival.distance.domain.conversation.chat.dto.ChatMessageResponseDto;
 import io.festival.distance.domain.conversation.chat.dto.ChatSystemResponse;
@@ -24,6 +29,8 @@ import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -71,6 +78,15 @@ public class StompController {
                         .senderType(chatMessageDto.getPublishType())
                         .senderId(chatMessageDto.getSenderId())
                         .build()
+                );
+            }
+
+            if(chatMessageDto.getPublishType().equals(ANSWER.getSenderType())){
+                return ResponseEntity.ok(
+                    ChatAnswerResponse.builder()
+                        .questionId(parseQuestionId(chatMessageDto.getChatMessage()))
+                        .senderType(chatMessageDto.getPublishType())
+                        .senderId(chatMessageDto.getSenderId())
                 );
             }
 
@@ -140,6 +156,8 @@ public class StompController {
         } catch (DistanceException e) {
             return ResponseEntity.status(HttpStatus.LENGTH_REQUIRED)
                 .body(e.getErrorCode().getMessage());
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
         }
     }
 
