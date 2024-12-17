@@ -87,6 +87,7 @@ public class StompController {
                         .questionId(parseQuestionId(chatMessageDto.getChatMessage()))
                         .senderType(chatMessageDto.getPublishType())
                         .senderId(chatMessageDto.getSenderId())
+                        .build()
                 );
             }
 
