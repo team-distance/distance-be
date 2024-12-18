@@ -11,12 +11,10 @@ import io.festival.distance.domain.conversation.chatroom.service.serviceimpl.Cha
 import io.festival.distance.domain.conversation.roommember.dto.RoomMemberResponse;
 import io.festival.distance.domain.conversation.roommember.entity.RoomMember;
 import io.festival.distance.domain.conversation.roommember.repository.RoomMemberRepository;
-import io.festival.distance.domain.conversation.roommember.service.serviceimpl.RoomMemberReader;
 import io.festival.distance.domain.member.entity.Member;
 import io.festival.distance.domain.member.service.serviceimpl.MemberReader;
 import io.festival.distance.global.exception.DistanceException;
 import io.festival.distance.infra.sse.event.ChatMessageAddedEvent;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -31,7 +29,6 @@ public class RoomMemberService {
     private final MemberReader memberReader;
     private final ChatRoomReader chatRoomReader;
     private final ChatRoomDeleter chatRoomDeleter;
-    private final RoomMemberReader roomMemberReader;
     private final ApplicationEventPublisher aep;
 
     public static final String IN_ACTIVE="INACTIVE";
@@ -41,8 +38,6 @@ public class RoomMemberService {
         ChatRoom chatRoom = chatRoomReader.findChatRoom(roomId);
         RoomMember roomMember = roomMemberRepository.findByMemberAndChatRoom(member, chatRoom)
             .orElseThrow(()-> new DistanceException(NOT_EXIST_CHATROOM));
-        System.out.println("roomMemberId = " + roomMember.getRoomMemberId());
-        System.out.println("roomMemberLastMessage = " + roomMember.getLastReadMessageId());
         roomMember.updateMessageId(chatMessageId);
     }
 

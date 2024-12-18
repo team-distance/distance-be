@@ -1,9 +1,14 @@
 package io.festival.distance.domain.conversation.chat.controller;
 
+import static io.festival.distance.domain.conversation.chat.entity.SenderType.ANSWER;
 import static io.festival.distance.domain.conversation.chat.entity.SenderType.COME;
 import static io.festival.distance.domain.conversation.chat.entity.SenderType.IMAGE;
 import static io.festival.distance.domain.conversation.roommember.service.RoomMemberService.IN_ACTIVE;
+import static io.festival.distance.utils.JsonParser.parseQuestionId;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
+import io.festival.distance.domain.conversation.chat.dto.ChatAnswerResponse;
 import io.festival.distance.domain.conversation.chat.dto.ChatMessageDto;
 import io.festival.distance.domain.conversation.chat.dto.ChatMessageResponseDto;
 import io.festival.distance.domain.conversation.chat.dto.ChatSystemResponse;
@@ -24,6 +29,8 @@ import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -37,7 +44,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin
-public class  StompController {
+public class StompController {
 
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
@@ -64,10 +71,20 @@ public class  StompController {
             List<ChatRoomSession> sessionByChatRoom = chatRoomSessionService
                 .findSessionByChatRoom(chatRoom); //2개가 나올 듯?
 
-            if(chatMessageDto.getPublishType().equals(COME.getSenderType())){
+            if (chatMessageDto.getPublishType().equals(COME.getSenderType())) {
                 return ResponseEntity.ok(
                     ChatSystemResponse.builder()
                         .roomStatus(chatRoom.getRoomStatus())
+                        .senderType(chatMessageDto.getPublishType())
+                        .senderId(chatMessageDto.getSenderId())
+                        .build()
+                );
+            }
+
+            if(chatMessageDto.getPublishType().equals(ANSWER.getSenderType())){
+                return ResponseEntity.ok(
+                    ChatAnswerResponse.builder()
+                        .questionId(parseQuestionId(chatMessageDto.getChatMessage()))
                         .senderType(chatMessageDto.getPublishType())
                         .senderId(chatMessageDto.getSenderId())
                         .build()
@@ -92,8 +109,11 @@ public class  StompController {
                     .publishType(LEAVE)
                     .build();
 
-                Long messageId = chatMessageService.createMessage(chatRoom, messageDto,
-                    SenderType.SYSTEM);
+                Long messageId = chatMessageService.createMessage(
+                    chatRoom,
+                    messageDto,
+                    SenderType.SYSTEM
+                );
 
                 sessionByChatRoom = chatRoomSessionService
                     .findSessionByChatRoom(chatRoom); //2개가 나올 듯?
@@ -137,6 +157,8 @@ public class  StompController {
         } catch (DistanceException e) {
             return ResponseEntity.status(HttpStatus.LENGTH_REQUIRED)
                 .body(e.getErrorCode().getMessage());
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -150,7 +172,7 @@ public class  StompController {
         // receiver 에게 PUSH 알림 전송
         Member opponent = memberReader.findMember(chatMessageDto.getSenderId());
         Member member = memberReader.findMember(chatMessageDto.getReceiverId());
-        if(SenderType.of(chatMessageDto.getPublishType()).equals(IMAGE)) {
+        if (SenderType.of(chatMessageDto.getPublishType()).equals(IMAGE)) {
             sqsService.sendMessage(
                 opponent.getClientToken(),
                 member.getNickName(),
@@ -158,7 +180,7 @@ public class  StompController {
                 chatMessageDto.getChatMessage(),
                 member.getMemberCharacter()
             );
-        }else {
+        } else {
             sqsService.sendMessage(
                 opponent.getClientToken(),
                 member.getNickName(),
@@ -170,9 +192,11 @@ public class  StompController {
         // 채팅 읽음 갱신
         for (ChatRoomSession chatRoomSession : sessionByChatRoom) {
             Long memberId = chatRoomSession.getMemberId();
-            System.out.println("memberId = " + memberId);
-            roomMemberService.updateLastMessage(memberId, chatMessageId,
-                roomId); //가장 최근에 읽은 메시지 수정
+            roomMemberService.updateLastMessage(
+                memberId,
+                chatMessageId,
+                roomId
+            ); //가장 최근에 읽은 메시지 수정
         }
 
         return ResponseEntity.ok(
@@ -185,10 +209,4 @@ public class  StompController {
             )
         );
     }
-
-   /* @MessageMapping("/waiting/{memberId}")
-    @SendTo("/topic/waiting/{memberId}") // Subscription URL -> 수신
-    public ResponseEntity<ChatWaitingCountDto> getWaitingCount(@DestinationVariable Long memberId) {
-        return ResponseEntity.ok(chatWaitingService.countingWaitingRoom(memberId));
-    }*/
 }

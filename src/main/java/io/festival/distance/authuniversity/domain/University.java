@@ -141,6 +141,18 @@ public enum University {
     KAU("한국항공대학교", "kau", false, 37.596421, 126.864506),
     SEOULARTS("서울예술대학교", "seoularts", false, 37.452160, 126.792400),
     PUSAN("부산대학교", "pusan", false, 35.232075, 129.079593),
+    GAYA("가야대학교", "kaya", false, 35.272618, 128.411650),
+    CK("가톨릭관동대학교", "cku", false, 37.886941, 128.608380),
+    CATHOLIC("가톨릭대학교", "catholic", false, 37.485224, 126.802925),
+    KANGNAM("강남대학교", "kangnam", false, 37.277457, 127.134120),
+    KMOU("한국해양대학교", "kmou", false, 35.075528, 129.084842),
+    CHANGWON("창원대학교", "gs.cwnu", false, 35.243169, 128.694298),
+    CHONGSHIN("총신대학교", "chongshin", false, 37.484887, 126.981420),
+    KMSA("육군사관학교", "kma", false, 37.606503, 127.063303),
+    JEONJU("전주교육대학교", "jnue", false, 35.833385, 127.137685),
+    GJUE("광주교육대학교", "gnue", false, 35.162780, 126.925226),
+    PU("평택대학교", "ptu", false, 36.992158, 127.088574),
+    DSU("동신대학교", "dsu", false, 35.321835, 126.722256),
     SANGMYUNG("상명대학교", "sangmyung", false, 37.582095, 126.995864);
 
     private final String name;
