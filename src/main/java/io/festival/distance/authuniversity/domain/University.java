@@ -153,6 +153,8 @@ public enum University {
     GJUE("광주교육대학교", "gnue", false, 35.162780, 126.925226),
     PU("평택대학교", "ptu", false, 36.992158, 127.088574),
     DSU("동신대학교", "dsu", false, 35.321835, 126.722256),
+    GJUE_EDU("공주교육대학교", "gjue", false, 36.4550, 127.1245),
+    TUKOREA("한국공학대학교", "tukorea", false, 37.3402, 126.7337),
     SANGMYUNG("상명대학교", "sangmyung", false, 37.582095, 126.995864);
 
     private final String name;
