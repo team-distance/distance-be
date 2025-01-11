@@ -60,7 +60,8 @@
 ---
 
 ## DB구조도
-<img width="1243" alt="image" src="https://github.com/team-distance/distance-be/assets/56196986/f67b41aa-e0dc-4285-b2de-2fc22eeb837a">
+![image](https://github.com/user-attachments/assets/096f8b56-b9b8-4bf5-a3b3-2f48ca7d406b)
+
 
 ---
 
