@@ -38,4 +38,24 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
         @Param(value = "character") String character,
         @Param(value = "gender") String gender
     );
+
+    @Query(value = """
+    SELECT * 
+    FROM member
+    WHERE ST_CONTAINS(
+            ST_Buffer(
+                ST_GeomFromText(CONCAT('POINT(', :longitude, ' ', :latitude, ')'), 4326), 
+                :radius
+            ),
+            location 
+          )
+""", nativeQuery = true)
+    List<Member> findNearbyMembers(
+        @Param("latitude") Double latitude,
+        @Param("longitude") Double longitude,
+        @Param("radius") Double radius
+    );
+
+
+
 }
