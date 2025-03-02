@@ -1,9 +1,10 @@
 package io.festival.distance.infra.s3.config;
 
+import static io.festival.distance.utils.DateUtil.setExpirationTime;
+
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
-import io.festival.distance.domain.councilimage.serviceimpl.CouncilImageCreator;
 import io.festival.distance.domain.image.dto.response.S3UrlResponse;
 import java.util.Date;
 import java.util.List;
@@ -21,7 +22,6 @@ public class S3PreSignedUrlProvider {
     @Value("${cloud.aws.credentials.bucket}")
     private String bucket;
     private final AmazonS3Client amazonS3;
-    private final CouncilImageCreator councilImageCreator;
     public List<S3UrlResponse> generatePreSignedUrl(List<String> fileNames){
          return fileNames.stream()
             .map(this::getGeneratePreSignedUrlRequest)
@@ -30,13 +30,10 @@ public class S3PreSignedUrlProvider {
 
     public S3UrlResponse getGeneratePreSignedUrlRequest(String fileName) {
         String uuidFileName = UUID.randomUUID().toString();
-        Date expiration = new Date();
-        long expTimeMillis = expiration.getTime();
-        expTimeMillis += 1000 * 60 * 60; // 1시간
-        expiration.setTime(expTimeMillis);
+        Date expiration = setExpirationTime(System.currentTimeMillis());
         GeneratePresignedUrlRequest generatePresignedUrlRequest =
             new GeneratePresignedUrlRequest(bucket, uuidFileName)
-                .withMethod(HttpMethod.PUT) // PUT 요청
+                .withMethod(HttpMethod.PUT)
                 .withExpiration(expiration);
         String s3Url = amazonS3.generatePresignedUrl(generatePresignedUrlRequest).toString();
         return S3UrlResponse.toS3UrlResponse(s3Url,uuidFileName);
