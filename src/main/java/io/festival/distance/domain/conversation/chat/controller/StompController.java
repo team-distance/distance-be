@@ -6,8 +6,6 @@ import static io.festival.distance.domain.conversation.chat.entity.SenderType.IM
 import static io.festival.distance.domain.conversation.roommember.service.RoomMemberService.IN_ACTIVE;
 import static io.festival.distance.utils.JsonParser.parseQuestionId;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonObject;
 import io.festival.distance.domain.conversation.chat.dto.ChatAnswerResponse;
 import io.festival.distance.domain.conversation.chat.dto.ChatMessageDto;
 import io.festival.distance.domain.conversation.chat.dto.ChatMessageResponseDto;
@@ -30,7 +28,6 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
