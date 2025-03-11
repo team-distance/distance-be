@@ -18,8 +18,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     }
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/topic")
-            .setHeartbeatValue(new long[]{10000,10000});//메시지 받을때 -> 수신
+        registry.enableSimpleBroker("/topic");
         registry.setApplicationDestinationPrefixes("/app");//메시지 보낼 때 사용 -> 발신
     }
 }
