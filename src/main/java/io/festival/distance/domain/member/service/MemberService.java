@@ -30,9 +30,8 @@ import io.festival.distance.infra.redis.authenticate.AuthenticateNumber;
 import io.festival.distance.infra.redis.authenticate.AuthenticateRedisCreator;
 import io.festival.distance.infra.redis.authenticate.AuthenticateRedisReader;
 import io.festival.distance.infra.redis.authenticate.AuthenticateRedisSaver;
-import io.festival.distance.infra.sms.SmsUtil;
+import io.festival.distance.infra.sms.MessageFactory;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,7 +57,7 @@ public class MemberService {
 
     private final RefreshDeleter refreshDeleter;
     private final CommunicationFacade communicationFacade;
-    private final SmsUtil smsUtil;
+    private final MessageFactory messageFactory;
     private final RoomMemberProcessor roomMemberProcessor;
 
     private final AuthenticateRedisReader authenticateRedisReader;
@@ -170,7 +169,7 @@ public class MemberService {
             EXPIRE_TIME
         );
         authenticateRedisSaver.save(authenticateNumber);
-        smsUtil.sendOne(telNumRequest, num);
+        messageFactory.sendOne(telNumRequest, num);
         return num;
     }
 
