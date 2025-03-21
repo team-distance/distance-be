@@ -1,5 +1,5 @@
 # 대학축제 새로운 만남을 이어주는 서비스 Distance 
-[배포 주소]  (https://dis-tance.com/)
+[배포 주소]  (https://alpha.dis-tance.com/)
 
 ## 팀원 구성
 <div align="center">
