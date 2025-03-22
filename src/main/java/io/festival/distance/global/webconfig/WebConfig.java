@@ -1,3 +1,4 @@
+/*
 package io.festival.distance.global.webconfig;
 
 import java.io.IOException;
@@ -39,3 +40,4 @@ public class WebConfig implements Filter {
         filterChain.doFilter(servletRequest, servletResponse);
     }
 }
+*/
