@@ -18,6 +18,7 @@ public class CorsConfig {
         config.addAllowedMethod("*"); //모든 post,get,put,delete,patch의 응답 허용
         config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedOrigin("https://dis-tance.com");
+        config.addAllowedOrigin("https://alpha.dis-tance.com");
         config.addAllowedOrigin("http://localhost:8080");
         config.addAllowedOrigin("http://localhost:8090");
         config.addAllowedOrigin("https://api.coolsms.co.kr");
