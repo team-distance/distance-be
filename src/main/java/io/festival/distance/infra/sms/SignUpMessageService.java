@@ -41,4 +41,9 @@ public class SignUpMessageService implements MessageService {
             )
         );
     }
+
+    @Override
+    public MessageType getType() {
+        return MessageType.SIGNUP;
+    }
 }
