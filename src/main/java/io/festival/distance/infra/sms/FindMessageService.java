@@ -42,4 +42,8 @@ public class FindMessageService implements MessageService {
             )
         );
     }
+    @Override
+    public MessageType getType() {
+        return MessageType.FIND;
+    }
 }
