@@ -17,6 +17,7 @@ public class WebConfig implements Filter {
 
     private static final String ALLOWED_ORIGIN = "https://alpha.dis-tance.com";
     private static final String ALLOWED_ORIGIN_LOCAL = "http://localhost:8080";
+    private static final String  ALLOWED_ORIGIN_DEV = "http://localhost:3000";
     private static final String ORIGIN = "Origin";
 
     @Override
