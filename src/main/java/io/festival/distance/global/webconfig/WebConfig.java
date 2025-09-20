@@ -26,13 +26,12 @@ public class WebConfig implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
         String origin = httpRequest.getHeader(ORIGIN);
-        if (origin == null && !httpRequest.getRequestURL().toString()
-            .startsWith(ALLOWED_ORIGIN_LOCAL)) {
+        if (origin == null && !httpRequest.getRequestURL().toString().startsWith(ALLOWED_ORIGIN_LOCAL)) {
             httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Unauthorized request.");
             return;
         }
 
-        if (origin != null && !origin.equals(ALLOWED_ORIGIN)) {
+        if (origin != null && !origin.equals(ALLOWED_ORIGIN) && !origin.equals(ALLOWED_ORIGIN_DEV)) {
             httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Unauthorized request.");
             return;
         }
